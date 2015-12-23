@@ -1,0 +1,45 @@
+{
+    "name": "thinktomorrow/locale",
+    "description": "localisation logic for urls",
+    "keywords": [
+        "thinktomorrow",
+        "locale"
+    ],
+    "homepage": "https://github.com/thinktomorrow/locale",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ben Cavens",
+            "email": "cavensben@gmail.com"
+        }
+    ],
+    "require": {
+        "php" : ">=5.5.9",
+        "laravel/framework": "~5.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit" : "4.*",
+        "scrutinizer/ocular": "~1.1",
+       "mockery/mockery" : "~0.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "Thinktomorrow\\Locale\\": "src/Thinktomorrow/Locale"
+        },
+      "classmap":[]
+    },
+  "autoload-dev": {
+    "psr-4": {
+      "Thinktomorrow\\Locale\\Tests\\": "tests"
+    },
+    "classmap":[]
+  },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
+}
