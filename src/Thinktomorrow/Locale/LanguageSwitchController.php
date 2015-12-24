@@ -5,7 +5,7 @@ namespace Thinktomorrow\Locale;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
 
-class LanguageSwitcher
+class LanguageSwitchController
 {
     /**
      * Request to this controller will set a new preferred language locale and
@@ -18,7 +18,7 @@ class LanguageSwitcher
     {
         $locale = $request->get('locale');
 
-        if ($locale and array_key_exists($locale, config('thinktomorrow.locale.available_locales')))
+        if ($locale and array_search($locale, config('thinktomorrow.locale.available_locales')))
         {
             $cookie = Cookie::forever('locale', $locale);
             Cookie::queue($cookie);
