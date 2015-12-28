@@ -41,25 +41,4 @@ class LocaleTest extends TestCase
         $this->assertFalse($locale->getOrFail('lu'));
     }
 
-    /** @test */
-    public function it_can_create_a_localized_url()
-    {
-        $locale = app()->make(Locale::class);
-
-        $urls = [
-          '/foo/bar'                            => 'nl/foo/bar',
-          'foo/bar'                             => 'nl/foo/bar',
-          ''                             => 'nl',
-          'http://example.com'                  => 'http://example.com/nl',
-          'http://example.com/foo/bar'          => 'http://example.com/nl/foo/bar',
-          'http://example.com/foo/bar?s=q'          => 'http://example.com/nl/foo/bar?s=q',
-          'http://example.com/nl/foo/bar'          => 'http://example.com/nl/foo/bar',
-        ];
-
-        foreach($urls as $original => $result)
-        {
-            $this->assertEquals($result,$locale->localeUrl($original,'nl'));
-        }
-    }
-
 }

@@ -1,8 +1,6 @@
 # Changelog
 
-## NEXT - YYYY-MM-DD
-- make login fieldname configurable
-- how to make IoC container abstraction?
+## NEXT
 
 ### Added
 - Nothing

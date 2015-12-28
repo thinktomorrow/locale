@@ -41,38 +41,15 @@ class Locale
         return app()->getLocale();
     }
 
+    /**
+     * Get the current locale - Fail if passed locale is invalid
+     *
+     * @param null $locale
+     * @return null|string
+     */
     public function getOrFail($locale = null)
     {
         return $this->get($locale,true);
-    }
-
-    /**
-     * Generate a localized url for the application.
-     *
-     * @param  string $path
-     * @param null $locale
-     * @return string
-     */
-    public function localeUrl($url, $locale = null)
-    {
-        $locale = $this->get($locale);
-
-        if(!$url) return $locale;
-
-        // Check if already a full valid url
-        if($this->validateUrl($url))
-        {
-            if(!$this->shouldUrlBeIgnored($url) and $this->validateLocale($locale)) $url = $this->injectLocaleInUrl($url,$locale);
-        }
-        else
-        {
-            // let /example turn into /nl/example
-            $url = $locale.'/'.ltrim($url,'/');
-
-            $url = $this->injectLocaleInUrl($url,$locale);
-        }
-
-        return $url;
     }
 
     /**
@@ -91,26 +68,74 @@ class Locale
         if(!$locale or !in_array($locale,$this->available_locales))
         {
             $locale = $this->fallback_locale;
-        }
 
-        if($this->validateLocale($this->request->cookie('locale')))
-        {
-            $locale = $this->request->cookie('locale');
-        }
+            if($this->validateLocale($this->request->cookie('locale')))
+            {
+                $locale = $this->request->cookie('locale');
+            }
 
-        if($this->validateLocale($this->request->get('lang')))
-        {
-            $locale = $this->request->get('lang');
-        }
+            if($this->validateLocale($this->request->get('lang')))
+            {
+                $locale = $this->request->get('lang');
+            }
 
-        if($this->validateLocale($this->request->segment(1)))
-        {
-            $locale = $this->request->segment(1);
+            if($this->isLocaleInUrl())
+            {
+                $locale = $this->getLocaleFromUrl();
+            }
         }
 
         app()->setlocale($locale);
 
         return $locale;
+    }
+
+    private function getLocaleFromUrl()
+    {
+        if($locale = $this->getTldLocale()) return $locale;
+        if($locale = $this->getSubdomainLocale()) return $locale;
+        if($locale = $this->getLocaleSegment()) return $locale;
+
+        return false;
+    }
+
+    public function isLocaleInUrl()
+    {
+        if($this->getTldLocale()) return true;
+        if($this->getSubdomainLocale()) return true;
+        if($this->getLocaleSegment()) return true;
+
+        return false;
+    }
+
+    private function getLocaleSegment()
+    {
+        $segment = $this->request->segment(1);
+
+        return ($this->validateLocale($segment)) ? $segment : false;
+    }
+
+    private function getTldLocale()
+    {
+        $host = explode('.',$this->request->getHost());
+
+        $tld = last($host);
+
+        return ($this->validateLocale($tld)) ? $tld : false;
+    }
+
+    private function getSubdomainLocale()
+    {
+        $host = explode('.',$this->request->getHost());
+
+        if(count($host)>2)
+        {
+            $subdomain = $host[count($host)-2];
+
+            return ($this->validateLocale($subdomain)) ? $subdomain : false;
+        }
+
+        return false;
     }
 
     /**
@@ -124,49 +149,4 @@ class Locale
         return in_array($locale,$this->available_locales);
     }
 
-    /**
-     * @param null $url
-     * @param $locale
-     * @return mixed
-     */
-    private function injectLocaleInUrl($url,$locale = null)
-    {
-        $locale = $this->get($locale);
-
-        $path = $original_path = trim(parse_url($url,PHP_URL_PATH),'/');
-
-        // Should there already be a language segment present in the path url, we will remove it first
-        if(!$path)
-        {
-            return rtrim($url,'/').'/'.$locale;
-        }
-
-        $first_segment = substr($path,0,strpos($path,'/'));
-        if($this->validateLocale($first_segment)) $path = substr($path,strlen($first_segment)+1);
-
-        return str_replace($original_path, $locale . '/' . $path,$url);
-    }
-
-    /**
-     * @param $path
-     * @return bool
-     */
-    private function validateUrl($path)
-    {
-        if (Str::startsWith($path, ['#', '//', 'mailto:', 'tel:', 'http://', 'https://']))
-        {
-            return true;
-        }
-
-        return filter_var($path, FILTER_VALIDATE_URL) !== false;
-    }
-
-    /**
-     * @param $path
-     * @return bool
-     */
-    private function shouldUrlBeIgnored($path)
-    {
-        return (Str::startsWith($path, ['mailto:', 'tel:']));
-    }
 }

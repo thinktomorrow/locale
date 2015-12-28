@@ -2,6 +2,13 @@
 
 return [
 
+    /**
+     * Enable the localization of the application routes and
+     * listening to locales on the url. The locale will
+     * always be saved in cookie.
+     */
+    'enable' => true,
+
     'available_locales'     => ['nl','fr','en'],
 
     /**
@@ -18,6 +25,16 @@ return [
      *
      * e.g. /nl/example
      */
-    'locale_segment'    => 'locale_slug',
+    'locale_slug'    => 'locale_slug',
+
+    /**
+     * List of all locales and their specifics
+     *
+     */
+    'locales'   => [
+
+        'nl'        => '',
+
+    ],
 
 ];
