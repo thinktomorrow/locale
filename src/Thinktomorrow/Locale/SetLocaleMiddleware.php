@@ -19,7 +19,7 @@ class SetLocaleMiddleware
          * Set locale according to following priority:
          *
          * 1) If locale is in request (url query param e.g. ?lang=fr),
-         * 2) If locale is in request (url segment /fr/home), this locale will be forced
+         * 2) If locale is in request (url segment /fr/home)
          * 3) Default: get locale from cookie
          * 4) Otherwise: set locale to our fallback language
          */

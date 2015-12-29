@@ -42,21 +42,11 @@ class Locale
     }
 
     /**
-     * Get the current locale - Fail if passed locale is invalid
-     *
-     * @param null $locale
-     * @return null|string
-     */
-    public function getOrFail($locale = null)
-    {
-        return $this->get($locale,true);
-    }
-
-    /**
      * Set locale according to following priority:
      *
-     * 1) If locale is in request (url segment /fr/home), this locale will be forced
-     * 2) If locale is in request (url query param e.g. ?lang=fr),
+     * 0) If locale is passed as parameter, this locale will be forced
+     * 1) If locale is in request as query parameter e.g. ?lang=fr,
+     * 2) If locale is in request url (subdomain, domain or segment) eg. nl.example.com, example.nl or example.com/nl
      * 3) Default: get locale from cookie
      * 4) Otherwise: set locale to our fallback language
      *
@@ -74,20 +64,31 @@ class Locale
                 $locale = $this->request->cookie('locale');
             }
 
-            if($this->validateLocale($this->request->get('lang')))
-            {
-                $locale = $this->request->get('lang');
-            }
-
             if($this->isLocaleInUrl())
             {
                 $locale = $this->getLocaleFromUrl();
+            }
+
+            if($this->validateLocale($this->request->get('lang')))
+            {
+                $locale = $this->request->get('lang');
             }
         }
 
         app()->setlocale($locale);
 
         return $locale;
+    }
+
+    /**
+     * Get the current locale - Fail if passed locale is invalid
+     *
+     * @param null $locale
+     * @return null|string
+     */
+    public function getOrFail($locale = null)
+    {
+        return $this->get($locale,true);
     }
 
     private function getLocaleFromUrl()

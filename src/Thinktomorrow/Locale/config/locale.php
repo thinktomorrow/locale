@@ -9,14 +9,14 @@ return [
      */
     'enable' => true,
 
-    'available_locales'     => ['nl','fr','en'],
+    'available_locales'     => ['en'],
 
     /**
      * Fallback locale
      *
      * If null the default Laravel fallback will be used
      */
-    'fallback_locale'       => 'nl',
+    'fallback_locale'       => null,
 
     /**
      * Localise our routes by url segment.
