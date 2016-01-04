@@ -26,14 +26,26 @@ class LanguageSwitchController
             $cookie = Cookie::forever('locale', $locale_slug);
             Cookie::queue($cookie);
 
-            $routename = Session::get('_thinktomorrow.locale.previous_routename',config('thinktomorrow.locale.fallback_routename'));
-
-            // Remove our appended flag of duplicate route
-            $routename = str_replace('.localefallback','',$routename);
+            $routename = $this->getRoutename();
 
             return redirect()->route($routename);
         }
 
         return redirect()->back();
+    }
+
+    /**
+     * @return string
+     */
+    protected function getRoutename()
+    {
+        $routename = Session::get('_thinktomorrow.locale.previous_routename', config('thinktomorrow.locale.fallback_routename'));
+
+        if (!$routename) $routename = config('thinktomorrow.locale.fallback_routename');
+
+        // Remove our appended flag of duplicate route
+        $routename = str_replace('.localefallback', '', $routename);
+
+        return $routename;
     }
 }
