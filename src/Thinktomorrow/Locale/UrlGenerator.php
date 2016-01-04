@@ -33,7 +33,19 @@ class UrlGenerator extends BaseUrlGenerator
             {
                 if(!is_array($parameters)) $parameters = [$parameters];
 
-                if(!isset($parameters[$this->locale_slug])) $parameters[$this->locale_slug] = app()->make(Locale::class)->get();
+                // Locale slug could be passed manually which should have priority
+                if(!isset($parameters[$this->locale_slug]))
+                {
+                    $locale = app()->make(Locale::class);
+
+                    $parameters[$this->locale_slug] = $locale->get();
+
+                    if($locale->isNaked())
+                    {
+                        // If null value is passed, the route parameter will essentially be ignored
+                        $parameters[$this->locale_slug] = null;
+                    }
+                }
             }
 
             return $this->toRoute($route, $parameters, $absolute);
@@ -48,7 +60,7 @@ class UrlGenerator extends BaseUrlGenerator
 
         if(false !== strpos($route->uri(),'{'.$this->locale_slug.'}')) return true;
 
-        if($action = $route->getAction() and false !== strpos($action['domain'],'{'.$this->locale_slug.'}')) return true;
+        if($action = $route->getAction() and isset($action['domain']) and false !== strpos($action['domain'],'{'.$this->locale_slug.'}')) return true;
 
         return false;
     }

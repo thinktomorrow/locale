@@ -16,6 +16,7 @@ class LocaleTest extends TestCase
        $this->locale = new Locale(app()->make('request'),[
            'available_locales' => ['nl','fr'],
            'fallback_locale' => 'nl',
+           'naked_locale' => null,
        ]);
    }
 
@@ -61,6 +62,7 @@ class LocaleTest extends TestCase
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar'],
             'fallback_locale' => 'nl',
+            'naked_locale' => null,
         ]);
 
         $locale->set();
@@ -81,11 +83,33 @@ class LocaleTest extends TestCase
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar'],
             'fallback_locale' => 'nl',
+            'naked_locale' => 'fr',
         ]);
 
         $locale->set();
 
         $this->assertEquals('foobar',$locale->get());
+    }
+
+    /** @test */
+    public function it_sets_the_locale_if_naked_locale_is_set()
+    {
+        $request = \Mockery::mock('Illuminate\Http\Request');
+
+        $request->shouldReceive('cookie')->once()->withArgs(['locale'])->andReturn(false);
+        $request->shouldReceive('get')->once();
+        $request->shouldReceive('getHost')->times(4);
+        $request->shouldReceive('segment')->twice()->andReturn(null);
+
+        $locale = new Locale($request,[
+            'available_locales' => ['nl','fr','foobar'],
+            'fallback_locale' => 'nl',
+            'naked_locale' => 'fr',
+        ]);
+
+        $locale->set();
+
+        $this->assertEquals('fr',$locale->get());
     }
 
     /** @test */
@@ -101,6 +125,7 @@ class LocaleTest extends TestCase
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar'],
             'fallback_locale' => 'nl',
+            'naked_locale' => 'fr',
         ]);
 
         $locale->set();
@@ -121,6 +146,7 @@ class LocaleTest extends TestCase
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar','fooz'],
             'fallback_locale' => 'nl',
+            'naked_locale' => 'fr',
         ]);
 
         $locale->set('fooz');

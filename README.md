@@ -21,7 +21,8 @@ The locale on each request is determined by following priority:
 Include the package via composer:
 `composer require thinktomorrow/locale`
 
-Connect the package to the Laravel framework by adding the provider to the providers array in the /config/app.php file
+Connect the package to the Laravel framework by adding the provider to the providers array in the /config/app.php file.
+NOTE: make sure this is loaded AFTER the RouteServiceProvider!
 `Thinktomorrow\Locale\LocaleServiceProvider`
 
 Publish the configuration options to /config/thinktomorrow/locale.php
@@ -47,6 +48,19 @@ Route::group(['prefix' => '{locale_slug}'],function(){
 ```
 
 ## Elaborate setup
+
+### Add route pattern
+In /providers/RouteServiceProvider provide the route pattern for our locale slug. This will make sure the locale slug
+is valid and matches one of the available locales as set in config/thinktomorrow/locale.php:
+```php
+public function boot(Router $router)
+{
+    // Provide the locale route pattern
+    app()->make('Thinktomorrow\Locale\LocaleRoutePattern')->provide();
+
+    parent::boot($router);
+}
+``
 
 Set the locale via middleware
 

@@ -3,6 +3,8 @@
 namespace Thinktomorrow\Locale;
 
 use Closure;
+use Illuminate\Routing\Route;
+use Illuminate\Support\Facades\Session;
 
 class SetLocaleMiddleware
 {
@@ -25,6 +27,25 @@ class SetLocaleMiddleware
          */
         app()->make(Locale::class)->set();
 
-        return $next($request);
+        $response = $next($request);
+
+        // current route is only available after the global middleware is run
+        // So this should be handled after all others
+        $this->storeCurrentRouteInSession();
+
+        return $response;
+    }
+
+    private function storeCurrentRouteInSession()
+    {
+        $routename = config('thinktomorrow.locale.fallback_route');
+        $current = app('router')->getCurrentRoute();
+
+        if($current instanceof Route and ($action = $current->getAction()))
+        {
+            if(isset($action['as'])) $routename = $action['as'];
+        }
+
+        Session::put('_thinktomorrow.locale.previous_routename',$routename);
     }
 }

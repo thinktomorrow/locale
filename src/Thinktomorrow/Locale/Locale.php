@@ -12,6 +12,7 @@ class Locale
      */
     private $request;
     private $available_locales;
+    private $naked_locale;
     private $fallback_locale;
 
     public function __construct(Request $request,$config)
@@ -19,6 +20,7 @@ class Locale
         $this->request = $request;
 
         $this->available_locales = $config['available_locales'];
+        $this->naked_locale = $config['naked_locale'];
         $this->fallback_locale = $config['fallback_locale'] ?: config('app.fallback_locale');
     }
 
@@ -39,6 +41,17 @@ class Locale
         if($strict and (!$locale or !in_array($locale,$this->available_locales)) ) return false;
 
         return app()->getLocale();
+    }
+
+    /**
+     * Get the current locale - Fail if passed locale is invalid
+     *
+     * @param null $locale
+     * @return null|string
+     */
+    public function getOrFail($locale = null)
+    {
+        return $this->get($locale,true);
     }
 
     /**
@@ -80,15 +93,9 @@ class Locale
         return $locale;
     }
 
-    /**
-     * Get the current locale - Fail if passed locale is invalid
-     *
-     * @param null $locale
-     * @return null|string
-     */
-    public function getOrFail($locale = null)
+    public function isNaked()
     {
-        return $this->get($locale,true);
+        return ($this->getNakedLocale() and $this->get() === $this->getNakedLocale());
     }
 
     private function getLocaleFromUrl()
@@ -96,6 +103,10 @@ class Locale
         if($locale = $this->getTldLocale()) return $locale;
         if($locale = $this->getSubdomainLocale()) return $locale;
         if($locale = $this->getLocaleSegment()) return $locale;
+
+        // At this point is means the url does not contain a specific locale so
+        // it is assumed the naked locale is in effect
+        if($locale = $this->getNakedLocale()) return $locale;
 
         return false;
     }
@@ -105,6 +116,7 @@ class Locale
         if($this->getTldLocale()) return true;
         if($this->getSubdomainLocale()) return true;
         if($this->getLocaleSegment()) return true;
+        if($this->getNakedLocale()) return true;
 
         return false;
     }
@@ -137,6 +149,11 @@ class Locale
         }
 
         return false;
+    }
+
+    public function getNakedLocale()
+    {
+        return $this->naked_locale;
     }
 
     /**

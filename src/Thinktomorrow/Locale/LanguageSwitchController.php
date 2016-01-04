@@ -4,6 +4,7 @@ namespace Thinktomorrow\Locale;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cookie;
+use Illuminate\Support\Facades\Session;
 
 class LanguageSwitchController
 {
@@ -16,19 +17,21 @@ class LanguageSwitchController
      */
     public function store(Request $request)
     {
-        $locale = $request->get('locale');
+        $locale_slug = $request->get('locale');
 
-        if ($locale and array_search($locale, config('thinktomorrow.locale.available_locales')))
+        if ($locale_slug and false !== array_search($locale_slug, config('thinktomorrow.locale.available_locales')))
         {
-            $cookie = Cookie::forever('locale', $locale);
+            app()->make(Locale::class)->set($locale_slug);
+
+            $cookie = Cookie::forever('locale', $locale_slug);
             Cookie::queue($cookie);
 
-            if(false != config('thinktomorrow.locale.locale_segment'))
-            {
-                $referer = app()->make(Locale::class)->localeUrl($request->headers->get('referer'), $locale);
+            $routename = Session::get('_thinktomorrow.locale.previous_routename',config('thinktomorrow.locale.fallback_routename'));
 
-                return redirect()->to($referer);
-            }
+            // Remove our appended flag of duplicate route
+            $routename = str_replace('.localefallback','',$routename);
+
+            return redirect()->route($routename);
         }
 
         return redirect()->back();

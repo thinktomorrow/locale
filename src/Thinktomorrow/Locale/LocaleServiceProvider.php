@@ -1,5 +1,6 @@
 <?php namespace Thinktomorrow\Locale;
 
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 
 class LocaleServiceProvider extends ServiceProvider {
@@ -21,9 +22,35 @@ class LocaleServiceProvider extends ServiceProvider {
         $this->registerUrlGenerator();
     }
 
-    public function boot()
+    public function boot(Router $router)
     {
-        //
+        $locale_slug_key = config('thinktomorrow.locale.locale_slug','locale_slug');
+
+        $this->duplicateWithoutLocale($router, $locale_slug_key);
+    }
+
+    /**
+     * @param Router $router
+     * @param $locale_slug_key
+     */
+    protected function duplicateWithoutLocale(Router $router, $locale_slug_key)
+    {
+        $existing_routes = $router->getRoutes()->getRoutes();
+
+        foreach ($existing_routes as $route) {
+            /**
+             * Only GET routes are being duplicated
+             */
+            if (false !== strpos($route->getUri(), '{' . $locale_slug_key . '}') and in_array('GET', $route->getMethods())) {
+                $action = $route->getAction();
+                if (isset($action['as'])) $action['as'] = $action['as'] . '.localefallback';
+                if (isset($action['prefix'])) $action['prefix'] = null;
+
+                $uri = str_replace('{' . $locale_slug_key . '}', '', $route->getUri());
+
+                $router->get($uri, $action);
+            }
+        }
     }
 
     /**
