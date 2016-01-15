@@ -31,20 +31,23 @@ class UrlGenerator extends BaseUrlGenerator
 
             if($this->shouldLocaleBeInjected($route))
             {
-                if(!is_array($parameters)) $parameters = [$parameters];
+                if(!is_array($parameters)) $parameters = (array)$parameters;
 
                 // Locale slug could be passed manually which should have priority
                 if(!isset($parameters[$this->locale_slug]))
                 {
                     $locale = app()->make(Locale::class);
 
-                    $parameters[$this->locale_slug] = $locale->get();
+                    $locale_slug_value = $locale->get();
 
                     if($locale->isNaked())
                     {
                         // If null value is passed, the route parameter will essentially be ignored
-                        $parameters[$this->locale_slug] = null;
+                        $locale_slug_value = null;
                     }
+
+                    // Put locale_slug in front of queue to avoid collisions with non-assoc. parameters
+                    $parameters = array_merge([$this->locale_slug => $locale_slug_value],$parameters);
                 }
             }
 
