@@ -7,10 +7,11 @@ The second way is providing the localized content based on cookie. However each 
 
 ## Determine locale on request
 The locale on each request is determined by following priority:
-1) example.com?lang=nl: Passing the locale via query parameter has top priority. This can be usefull to force a specific locale for testing purposes.
-2) example.nl / nl.example.com / example.com/nl: Locale is in url as domain or segment. 
-3) Locale that is saved in browser cookie
-4) Fallback locale is used if none of the above are being met
+
+1. example.com?lang=nl: Passing the locale via query parameter has top priority. This can be usefull to force a specific locale for testing purposes.
+1. example.nl / nl.example.com / example.com/nl: Locale is in url as domain or segment. 
+1. Locale that is saved in browser cookie
+1. Fallback locale is used if none of the above are being met
 
 ## Locale url rendering
 - All localized routes should be placed inside a routegroup. The placeholder for the locale is required.
