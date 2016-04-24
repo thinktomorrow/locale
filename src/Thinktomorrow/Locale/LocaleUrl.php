@@ -2,82 +2,155 @@
 
 namespace Thinktomorrow\Locale;
 
-use Illuminate\Support\Str;
+use Illuminate\Contracts\Routing\UrlGenerator;
 
-/**
- * Class LocaleUrl
- *
- * @deprecated out the scope of our package
- * @package Thinktomorrow\Locale
- */
 class LocaleUrl
 {
     /**
-     * Generate a localized url for the application.
+     * @var Locale
+     */
+    private $locale;
+
+    /**
+     * @var Illuminate\Contracts\Routing\UrlGenerator
+     */
+    private $generator;
+
+    /**
+     * @var null|string
+     */
+    private $placeholder;
+
+    public function __construct(Locale $locale, UrlGenerator $generator, $config = [])
+    {
+        $this->locale = $locale;
+        $this->generator = $generator;
+
+        $this->placeholder = isset($config['placeholder']) ? $config['placeholder'] : null;
+    }
+
+    /**
+     * Generate a localized url
      *
      * @param $url
-     * @param $locale
-     * @return string
-     */
-    public function convert($url,$locale)
-    {
-        // Check if already a full valid url
-        if($this->validateUrl($url))
-        {
-            if(!$this->shouldUrlBeIgnored($url)) $url = $this->injectLocaleInUrl($url,$locale);
-        }
-        else
-        {
-            // let /example turn into /nl/example
-            //$url = $locale.'/'.ltrim($url,'/');
-
-            $url = $this->injectLocaleInUrl($url,$locale);
-        }
-
-        return $url;
-    }
-
-    /**
-     * @param null $url
-     * @param $locale
+     * @param null $locale
+     * @param array $extra
+     * @param null $secure
      * @return mixed
      */
-    private function injectLocaleInUrl($url,$locale)
+    public static function to($url, $locale = null, $extra = [], $secure = null)
     {
-        $path = $original_path = trim(parse_url($url,PHP_URL_PATH),'/');
+        $self = app(self::class);
+        $url = $self->prependLocaleToUri($url,$locale);
 
-        // Should there already be a language segment present in the path url, we will remove it first
-        if(!$path)
-        {
-            return rtrim($url,'/').'/'.$locale;
-        }
-
-        $first_segment = substr($path,0,strpos($path,'/'));
-        //if($this->validateLocale($first_segment)) $path = substr($path,strlen($first_segment)+1);
-
-        return str_replace($original_path, $locale . '/' . $path,$url);
+        return $self->resolveUrl($url, $extra, $secure);
     }
 
     /**
-     * @param $path
-     * @return bool
+     * Generate a localized route
+     *
+     * @param $name
+     * @param array $parameters
+     * @param bool $absolute
+     * @return mixed
      */
-    private function validateUrl($path)
+    public static function route($name, $parameters = [], $absolute = true)
     {
-        if (Str::startsWith($path, ['#', '//', 'mailto:', 'tel:', 'http://', 'https://']))
-        {
-            return true;
-        }
+        $self = app(self::class);
+        $locale = $self->extractLocaleFromParameter($parameters);
 
-        return filter_var($path, FILTER_VALIDATE_URL) !== false;
+        $url = $self->resolveRoute($name,$parameters,$absolute);
+
+        return self::to($url,$locale);
     }
 
     /**
-     * @param $path
-     * @return bool
+     * Place locale segment in front of url path
+     * e.g. /foo/bar is transformed into /en/foo/bar
+     *
+     * @param $url
+     * @param null $locale
+     * @return string
      */
-    private function shouldUrlBeIgnored($path)
+    public function prependLocaleToUri($url, $locale = null)
     {
-        return (Str::startsWith($path, ['mailto:', 'tel:']));
+        $locale = $this->locale->getSlug($locale);
+
+        $parsed = parse_url($url);
+
+        $parsed['path'] = isset($parsed['path']) ? $locale . '/' . ltrim($parsed['path'], '/') : $locale;
+        $parsed['path'] = str_replace('//', '/', '/' . rtrim($parsed['path'], '/'));
+
+        return $this->reassembleParsedUrl($parsed);
     }
+
+    /**
+     * Isolate locale value from parameters
+     *
+     * @param array $parameters
+     * @return null|string
+     */
+    public function extractLocaleFromParameter(&$parameters = [])
+    {
+        $locale = null;
+
+        if(!is_array($parameters))
+        {
+            $locale = $this->locale->getSlug($parameters);
+            $parameters = [];
+        }
+        elseif($this->placeholder && isset($parameters[$this->placeholder]))
+        {
+            $locale = $this->locale->getSlug($parameters[$this->placeholder]);
+            unset($parameters[$this->placeholder]);
+        }
+
+        return $locale;
+    }
+
+    /**
+     * Construct a full url with the parsed url elements
+     * resulted from a parse_url() function call
+     *
+     * @param array $parsed
+     * @return string
+     */
+    private function reassembleParsedUrl(array $parsed)
+    {
+        return
+            ((isset($parsed['scheme'])) ? $parsed['scheme'] . '://' : '')
+            .((isset($parsed['user'])) ? $parsed['user'] . ((isset($parsed['pass'])) ? ':' . $parsed['pass'] : '') .'@' : '')
+            .((isset($parsed['host'])) ? $parsed['host'] : '')
+            .((isset($parsed['port'])) ? ':' . $parsed['port'] : '')
+            .((isset($parsed['path'])) ? $parsed['path'] : '')
+            .((isset($parsed['query'])) ? '?' . $parsed['query'] : '')
+            .((isset($parsed['fragment'])) ? '#' . $parsed['fragment'] : '');
+    }
+
+    /**
+     * Generate url via illuminate
+     *
+     * @param $url
+     * @param array $extra
+     * @param null $secure
+     * @return string
+     */
+    private function resolveUrl($url, $extra = [], $secure = null)
+    {
+        return $this->generator->to($url, $extra, $secure);
+    }
+
+    /**
+     * Generate route via illuminate
+     *
+     * @param $name
+     * @param array $parameters
+     * @param bool $absolute
+     * @return string
+     */
+    private function resolveRoute($name, $parameters = [], $absolute = true)
+    {
+        return $this->generator->route($name, $parameters, $absolute);
+    }
+
 }

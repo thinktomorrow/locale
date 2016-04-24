@@ -16,7 +16,7 @@ class LocaleTest extends TestCase
        $this->locale = new Locale(app()->make('request'),[
            'available_locales' => ['nl','fr'],
            'fallback_locale' => 'nl',
-           'naked_locale' => null,
+           'hidden_locale' => null,
        ]);
    }
 
@@ -31,7 +31,8 @@ class LocaleTest extends TestCase
     /** @test */
     public function it_gets_available_locale()
     {
-        $this->assertEquals('fr',$this->locale->getOrFail('fr'));
+        $this->locale->set('fr');
+        $this->assertEquals('fr',$this->locale->get('fr'));
     }
 
     /** @test */
@@ -40,13 +41,6 @@ class LocaleTest extends TestCase
         $this->locale->set();
 
         $this->assertEquals('nl',$this->locale->get('foo'));
-    }
-
-    /** @test */
-    public function on_strict_mode_it_returns_false_if_locale_is_not_available()
-    {
-        $this->assertFalse($this->locale->getOrFail('foo'));
-        $this->assertFalse($this->locale->getOrFail('lu'));
     }
 
     /** @test */
@@ -62,7 +56,7 @@ class LocaleTest extends TestCase
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar'],
             'fallback_locale' => 'nl',
-            'naked_locale' => null,
+            'hidden_locale' => null,
         ]);
 
         $locale->set();
@@ -77,13 +71,13 @@ class LocaleTest extends TestCase
 
         $request->shouldReceive('cookie')->once()->withArgs(['locale'])->andReturn(false);
         $request->shouldReceive('get')->once();
-        $request->shouldReceive('getHost')->times(4);
-        $request->shouldReceive('segment')->twice()->andReturn('foobar');
+        $request->shouldReceive('getHost')->times(2);
+        $request->shouldReceive('segment')->once()->andReturn('foobar');
 
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar'],
             'fallback_locale' => 'nl',
-            'naked_locale' => 'fr',
+            'hidden_locale' => 'fr',
         ]);
 
         $locale->set();
@@ -92,19 +86,19 @@ class LocaleTest extends TestCase
     }
 
     /** @test */
-    public function it_sets_the_locale_if_naked_locale_is_set()
+    public function it_sets_the_locale_if_hidden_locale_is_set()
     {
         $request = \Mockery::mock('Illuminate\Http\Request');
 
         $request->shouldReceive('cookie')->once()->withArgs(['locale'])->andReturn(false);
         $request->shouldReceive('get')->once();
-        $request->shouldReceive('getHost')->times(4);
-        $request->shouldReceive('segment')->twice()->andReturn(null);
+        $request->shouldReceive('getHost')->times(2);
+        $request->shouldReceive('segment')->once()->andReturn(null);
 
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar'],
             'fallback_locale' => 'nl',
-            'naked_locale' => 'fr',
+            'hidden_locale' => 'fr',
         ]);
 
         $locale->set();
@@ -113,19 +107,19 @@ class LocaleTest extends TestCase
     }
 
     /** @test */
-    public function passing_query_param_has_priority()
+    public function passing_url_query_param_has_priority()
     {
         $request = \Mockery::mock('Illuminate\Http\Request');
 
         $request->shouldReceive('cookie')->twice()->withArgs(['locale'])->andReturn('fr');
         $request->shouldReceive('get')->twice()->andReturn('foobar');
-        $request->shouldReceive('getHost')->times(4);
-        $request->shouldReceive('segment')->twice()->andReturn('fr');
+        $request->shouldReceive('getHost')->times(2);
+        $request->shouldReceive('segment')->once()->andReturn('fr');
 
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar'],
             'fallback_locale' => 'nl',
-            'naked_locale' => 'fr',
+            'hidden_locale' => 'fr',
         ]);
 
         $locale->set();
@@ -134,7 +128,7 @@ class LocaleTest extends TestCase
     }
 
     /** @test */
-    public function passing_locale_to_method_has_priority()
+    public function passing_locale_to_method_has_top_priority()
     {
         $request = \Mockery::mock('Illuminate\Http\Request');
 
@@ -146,7 +140,7 @@ class LocaleTest extends TestCase
         $locale = new Locale($request,[
             'available_locales' => ['nl','fr','foobar','fooz'],
             'fallback_locale' => 'nl',
-            'naked_locale' => 'fr',
+            'hidden_locale' => 'fr',
         ]);
 
         $locale->set('fooz');

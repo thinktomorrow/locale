@@ -3,55 +3,59 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class Locale
 {
-    /**
-     * @var Request
-     */
     private $request;
     private $available_locales;
-    private $naked_locale;
+    private $hidden_locale;
     private $fallback_locale;
 
-    public function __construct(Request $request,$config)
+    public function __construct(Request $request, $config)
     {
         $this->request = $request;
 
-        $this->available_locales = $config['available_locales'];
-        $this->naked_locale = $config['naked_locale'];
-        $this->fallback_locale = $config['fallback_locale'] ?: config('app.fallback_locale');
+        $this->available_locales = (array)$config['available_locales'];
+        $this->hidden_locale = isset($config['hidden_locale']) ? $config['hidden_locale'] : null;
+        $this->fallback_locale = (isset($config['fallback_locale']) && $config['fallback_locale']) ? $config['fallback_locale'] : config('app.fallback_locale');
+    }
+
+    /**
+     * Setup the locale for current request and
+     * get the locale slug for the route
+     *
+     * @param null $locale
+     * @return null|string
+     */
+    public function set($locale = null)
+    {
+        $this->store($locale);
+
+        return $this->getSlug();
     }
 
     /**
      * Get the current locale
      *
-     * @param null $locale
-     * @param bool $strict - if locale is not found we abort
      * @return null|string
      */
-    public function get($locale = null,$strict = false)
+    public function get()
     {
-        if($this->validateLocale($locale))
-        {
-            return $locale;
-        }
-
-        if($strict and (!$locale or !in_array($locale,$this->available_locales)) ) return false;
-
         return app()->getLocale();
     }
 
-    /**
-     * Get the current locale - Fail if passed locale is invalid
-     *
-     * @param null $locale
-     * @return null|string
-     */
-    public function getOrFail($locale = null)
+    public function getSlug($locale = null)
     {
-        return $this->get($locale,true);
+        $locale = $this->validateLocale($locale) ? $locale : $this->get();
+
+        if ($this->hidden_locale == $locale) return null;
+
+        return $locale;
+    }
+
+    public function isHidden()
+    {
+        return ($this->hidden_locale == $this->get());
     }
 
     /**
@@ -66,24 +70,20 @@ class Locale
      * @param null $locale
      * @return array|mixed|null|string
      */
-    public function set($locale = null)
+    private function store($locale = null)
     {
-        if(!$locale or !in_array($locale,$this->available_locales))
-        {
+        if (!$locale or !in_array($locale, $this->available_locales)) {
             $locale = $this->fallback_locale;
 
-            if($this->validateLocale($this->request->cookie('locale')))
-            {
+            if ($this->validateLocale($this->request->cookie('locale'))) {
                 $locale = $this->request->cookie('locale');
             }
 
-            if($this->isLocaleInUrl())
-            {
-                $locale = $this->getLocaleFromUrl();
+            if ($locale_from_url = $this->getLocaleFromUrl()) {
+                $locale = $locale_from_url;
             }
 
-            if($this->validateLocale($this->request->get('lang')))
-            {
+            if ($this->validateLocale($this->request->get('lang'))) {
                 $locale = $this->request->get('lang');
             }
         }
@@ -93,30 +93,18 @@ class Locale
         return $locale;
     }
 
-    public function isNaked()
-    {
-        return ($this->getNakedLocale() and $this->get() === $this->getNakedLocale());
-    }
-
+    /**
+     * @return bool|string
+     */
     private function getLocaleFromUrl()
     {
-        if($locale = $this->getTldLocale()) return $locale;
-        if($locale = $this->getSubdomainLocale()) return $locale;
-        if($locale = $this->getLocaleSegment()) return $locale;
+        if ($locale = $this->getTldLocale()) return $locale;
+        if ($locale = $this->getSubdomainLocale()) return $locale;
+        if ($locale = $this->getLocaleSegment()) return $locale;
 
         // At this point is means the url does not contain a specific locale so
-        // it is assumed the naked locale is in effect
-        if($locale = $this->getNakedLocale()) return $locale;
-
-        return false;
-    }
-
-    public function isLocaleInUrl()
-    {
-        if($this->getTldLocale()) return true;
-        if($this->getSubdomainLocale()) return true;
-        if($this->getLocaleSegment()) return true;
-        if($this->getNakedLocale()) return true;
+        // it is assumed the hidden locale is in effect
+        if ($locale = $this->getHiddenLocale()) return $locale;
 
         return false;
     }
@@ -130,7 +118,7 @@ class Locale
 
     private function getTldLocale()
     {
-        $host = explode('.',$this->request->getHost());
+        $host = explode('.', $this->request->getHost());
 
         $tld = last($host);
 
@@ -139,11 +127,10 @@ class Locale
 
     private function getSubdomainLocale()
     {
-        $host = explode('.',$this->request->getHost());
+        $host = explode('.', $this->request->getHost());
 
-        if(count($host)>2)
-        {
-            $subdomain = $host[count($host)-2];
+        if (count($host) > 2) {
+            $subdomain = $host[count($host) - 2];
 
             return ($this->validateLocale($subdomain)) ? $subdomain : false;
         }
@@ -151,9 +138,9 @@ class Locale
         return false;
     }
 
-    public function getNakedLocale()
+    private function getHiddenLocale()
     {
-        return $this->naked_locale;
+        return $this->hidden_locale;
     }
 
     /**
@@ -162,9 +149,9 @@ class Locale
      */
     private function validateLocale($locale = null)
     {
-        if(!$locale) return false;
+        if (!$locale) return false;
 
-        return in_array($locale,$this->available_locales);
+        return in_array($locale, $this->available_locales);
     }
 
 }

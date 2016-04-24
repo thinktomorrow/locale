@@ -1,103 +1,137 @@
-# Locale
-Standardise the logic for using localization in routing. 
+# locale
 
-There are two distinct ways of keeping track of the visitor's choice of locale. The locale can be represented in the url as 
- in the form of a domain (example.nl, example.fr), subdomain (nl.example.com, fr.example.com) or url segment (example.com/nl, example.com/fr)/
-The second way is providing the localized content based on cookie. However each translation of an url page should have an unique endpoint, mostly for seo reasons.
+[![Latest Version on Packagist][ico-version]][link-packagist]
+[![Software License][ico-license]](LICENSE.md)
+[![Build Status][ico-travis]][link-travis]
+[![Coverage Status][ico-scrutinizer]][link-scrutinizer]
+[![Quality Score][ico-code-quality]][link-code-quality]
+[![Total Downloads][ico-downloads]][link-downloads]
 
-## Determine locale on request
-The locale on each request is determined by following priority:
+A lightweight laravel-specific package to provide route localization. 
+This package will determine the locale of your app based on the request url.
 
-1. example.com?lang=nl: Passing the locale via query parameter has top priority. This can be usefull to force a specific locale for testing purposes.
-1. example.nl / nl.example.com / example.com/nl: Locale is in url as domain or segment. 
-1. Locale that is saved in browser cookie
-1. Fallback locale is used if none of the above are being met
+## Install
 
-## Locale url rendering
-- All localized routes should be placed inside a routegroup. The placeholder for the locale is required.
-- only named routes are auto-injected with the proper locale. This means all the route() calls. So url(), or redirect()->to() and such are not being influenced.
-- Currently, there is no automatic support for language specific routeslugs such as example.com/about vs. example.com/over
+Via Composer
 
-## Installation
-Include the package via composer:
-`composer require thinktomorrow/locale`
+``` bash
+$ composer require thinktomorrow/locale
+```
 
-Connect the package to the Laravel framework by adding the provider to the providers array in the /config/app.php file.
-NOTE: make sure this is loaded AFTER the RouteServiceProvider!
-`Thinktomorrow\Locale\LocaleServiceProvider`
+Next add the provider to the providers array in the `/config/app.php` file:
 
-Publish the configuration options to /config/thinktomorrow/locale.php
-`php artisan vendor:publish`
+``` php
+    Thinktomorrow\Locale\LocaleServiceProvider::class,
+```
 
-## Quick setup
+Not required but if you want to use a facade you can add in the `config/app.php` file as well:
+
 ```php
-$locale = app()->make('Thinktomorrow\Locale\Locale');
-    
-    // Set the locale on the beginning of our request
-    $locale->set();
 
-    // Get the current locale
-    $locale_key = $locale->get(); // or app()->getLocale();
-
-    // Creation of named route will be localized
-    var_dump(route('example')); // prints out example.dev/nl/home
-});
-
-Route::group(['prefix' => '{locale_slug}'],function(){
-    Route::get('home',['as' => 'example','uses' => function(){  }]);
-});
+'aliases' => [
+    ...
+    'Locale' => 'Thinktomorrow\Locale\LocaleFacade',
+    'LocaleUrl' => 'Thinktomorrow\Locale\LocaleUrlFacade',
+];
 ```
 
-## Elaborate setup
 
-### Add route pattern
-In /providers/RouteServiceProvider provide the route pattern for our locale slug. This will make sure the locale slug
-is valid and matches one of the available locales as set in config/thinktomorrow/locale.php:
-```php
-public function boot(Router $router)
-{
-    // Provide the locale route pattern
-    app()->make('Thinktomorrow\Locale\LocaleRoutePattern')->provide();
+Finally create a configuration file to `/config/thinktomorrow/locale.php`
 
-    parent::boot($router);
-}
-``
-
-Set the locale via middleware
-
-Add the locale_slug to your routes. Perhaps place them in a group so you have a clean separation of all
-localised routes and non-localized ones.
-```php 
-Route::group(['prefix' => '{locale_slug}'],function(){ ... });
-```
-   
-Bind this segment to some logic to prevent improper links to unknown pages
-```php 
-Route::bind('locale_slug',function($locale_slug){
-
-    if(!$locale = app()->make('Thinktomorrow\Locale\Locale')->getOrFail($locale_slug))
-    {
-        return abort(404);
-    }
-    
-    return $locale;
-
-});
+``` bash
+    // artisan command from your laravel root
+    php artisan vendor:publish --provider="Thinktomorrow\Locale\LocaleServiceProvider"
 ```
 
-In order to allow the user to change his language, you can provide a form where the user can pick his desired language. 
-Pass the request to following controller. The request will lead the user to back to his page but in the chosen locale.
-```php
-Route::post('lang',['as' => 'lang.switch','uses' => \Thinktomorrow\Locale\LanguageSwitchController::class.'@store']);
-```
+
+## Configuration
+- **available_locales**: Whitelist of locales available for usage inside your application. 
+- **hidden_locale**: You can set one of the available locales as 'hidden' which means any request without a locale in its uri, should be localized as this hidden locale.
+For example if the hidden locale is 'nl' and the request uri is /foo/bar, this request is interpreted with the 'nl' locale. 
+Note that this is best used for your main / default locale.
 
 ## Usage
 
-Set the locale for current request based on the above priority rules:
-`app()->make(Locale::class)->set();`
+In order to make your routes localized, they need to be prefixed with the locale itself. You can for instance place them inside a Route::group() with a prefix
+value that is determined by the Locale class itself:
 
-Get the current locale:
-`app()->make(Locale::class)->get();`
+```php
+    
+    Route::group(['prefix' => app(Thinktomorrow\Locale\Locale::class)->set()],function(){
+        // Routes registered within this group will be localized
+    });
+    
+```
 
-Get the current locale or return false if passed locale is invalid:
-`app()->make(Locale::class)->getOrFail($locale);`
+**note**: *Currently only requests where the locale is set as the first path segment, are supported. Later this can be expanded to support subdomain- and tld-based localization.*
+
+## Generating a localized url
+
+For a clean and non-obtrusive integration with your app, it is advised to work with <a href="https://laravel.com/docs/5.2/routing#named-routes" target="_blank">named routes</a>.
+This way the localisation of your routes is done automatically. 
+
+```php
+    // Creation of all named routes will be localized based on current locale
+    route('pages.about'); // prints out http://example.com/en/about
+```
+
+By default all routes use the current locale. In order to force a different locale route, you can use the `Thinktomorrow\Locale\LocaleUrl` class.
+
+```php
+    
+    // Generate localized url from uri (resolves as laravel url() function)
+    Thinktomorrow\Locale\LocaleUrl::to('about','en'); // prints out http://example.com/en/about
+    
+    // Generate localized url from named route (resolves as laravel route() function)
+    Thinktomorrow\Locale\LocaleUrl::route('pages.about','en'); // prints out http://example.com/en/about
+   
+```
+
+Passing the locale as 'lang' query parameter will force the locale 
+*example.com/en/about?lang=nl* makes sure the request will deal with a 'nl' locale.
+
+#### Set a new locale for current request
+```php
+    app('Thinktomorrow\Locale\Locale')->set('en');
+```
+
+#### Get the current locale
+```php
+    app('Thinktomorrow\Locale\Locale')->get(); // returns 'en' and basically an alias for app()->getLocale();
+```
+
+## Change log
+
+Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
+
+## Testing
+
+``` bash
+$ vendor/bin/phpunit
+```
+
+## Security
+
+If you discover any security related issues, please email ben@thinktomorrow.be instead of using the issue tracker.
+
+## Credits
+
+- Ben Cavens <ben@thinktomorrow.be>
+
+## License
+
+The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+[ico-version]: https://img.shields.io/packagist/v/thinktomorrow/locale.svg?style=flat-square
+[ico-license]: https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square
+[ico-travis]: https://img.shields.io/travis/thinktomorrow/locale/master.svg?style=flat-square
+[ico-scrutinizer]: https://img.shields.io/scrutinizer/coverage/g/thinktomorrow/locale.svg?style=flat-square
+[ico-code-quality]: https://img.shields.io/scrutinizer/g/thinktomorrow/locale.svg?style=flat-square
+[ico-downloads]: https://img.shields.io/packagist/dt/thinktomorrow/locale.svg?style=flat-square
+
+[link-packagist]: https://packagist.org/packages/thinktomorrow/locale
+[link-travis]: https://travis-ci.org/thinktomorrow/locale
+[link-scrutinizer]: https://scrutinizer-ci.com/g/thinktomorrow/locale/code-structure
+[link-code-quality]: https://scrutinizer-ci.com/g/thinktomorrow/locale
+[link-downloads]: https://packagist.org/packages/thinktomorrow/locale
+[link-author]: https://github.com/bencavens
