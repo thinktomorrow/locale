@@ -75,11 +75,11 @@ class LocaleUrl
     public function prependLocaleToUri($url, $locale = null)
     {
         $locale = $this->locale->getSlug($locale);
-
         $parsed = parse_url($url);
 
-        $parsed['path'] = isset($parsed['path']) ? $locale . '/' . ltrim($parsed['path'], '/') : $locale;
-        $parsed['path'] = str_replace('//', '/', '/' . rtrim($parsed['path'], '/'));
+        $path = $this->cleanPathFromExistingLocale($parsed);
+
+        $parsed['path'] = str_replace('//','/','/'.$locale.$path);
 
         return $this->reassembleParsedUrl($parsed);
     }
@@ -151,6 +151,25 @@ class LocaleUrl
     private function resolveRoute($name, $parameters = [], $absolute = true)
     {
         return $this->generator->route($name, $parameters, $absolute);
+    }
+
+    /**
+     * @param $parsed
+     * @return array
+     */
+    private function cleanPathFromExistingLocale($parsed)
+    {
+        if (!isset($parsed['path'])) return null;
+
+        $path_segments = explode('/', trim($parsed['path'], '/'));
+
+        if (count($path_segments) < 1) return null;
+
+        if ($path_segments[0] == $this->locale->getSlug($path_segments[0]) || $this->locale->isHidden($path_segments[0])) {
+            unset($path_segments[0]);
+        }
+
+        return '/' . implode('/', $path_segments);
     }
 
 }

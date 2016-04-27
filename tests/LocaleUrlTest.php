@@ -54,7 +54,7 @@ class LocaleUrlTest extends TestCase
             'http://example.com/foo/bar' => 'http://example.com/nl/foo/bar',
             'http://example.com/foo/bar?s=q' => 'http://example.com/nl/foo/bar?s=q',
             'http://example.nl/foo/bar' => 'http://example.nl/nl/foo/bar',
-            'https://example.com/nl/foo/bar' => 'https://example.com/nl/nl/foo/bar',
+            'https://example.com/nl/foo/bar' => 'https://example.com/nl/foo/bar',
             'https://example.com/foo/bar#index' => 'https://example.com/nl/foo/bar#index',
         ];
 
@@ -82,7 +82,7 @@ class LocaleUrlTest extends TestCase
             'http://example.com/foo/bar' => 'http://example.com/foo/bar',
             'http://example.com/foo/bar?s=q' => 'http://example.com/foo/bar?s=q',
             'http://example.nl/foo/bar' => 'http://example.nl/foo/bar',
-            'https://example.com/nl/foo/bar' => 'https://example.com/nl/foo/bar',
+            'https://example.com/nl/foo/bar' => 'https://example.com/foo/bar',
             'https://example.com/foo/bar#index' => 'https://example.com/foo/bar#index',
         ];
 
