@@ -7,8 +7,9 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A lightweight laravel-specific package to provide route localization. 
-This package will determine the locale of your app based on the request url.
+A lightweight laravel package to provide route localization. 
+This package will set the locale for your app based on the request url. 
+`/nl/foo` will set locale to nl.
 
 ## Install
 
@@ -24,7 +25,7 @@ Next add the provider to the providers array in the `/config/app.php` file:
     Thinktomorrow\Locale\LocaleServiceProvider::class,
 ```
 
-Not required but if you want to use a facade you can add in the `config/app.php` file as well:
+Not required, but if you want to use a facade you can add in the `config/app.php` file as well:
 
 ```php
 
@@ -52,30 +53,31 @@ Note that this is best used for your main / default locale.
 
 ## Usage
 
-In order to make your routes localized, they need to be prefixed with the locale itself. You can for instance place them inside a Route::group() with a prefix
-value that is determined by the Locale class itself:
+To make your routes localized, place them inside a Route::group() with a prefix value that is determined by the Locale class itself. 
+To avoid possible conflicts with your deployments, you should call the `Thinktomorrow\Locale\Locale` class via the `app()` container instead of the facade inside the `routes.php` file.
 
 ```php
     
     Route::group(['prefix' => app(Thinktomorrow\Locale\Locale::class)->set()],function(){
+        
         // Routes registered within this group will be localized
+        
     });
     
 ```
-
-**note**: *Currently only requests where the locale is set as the first path segment, are supported. Later this can be expanded to support subdomain- and tld-based localization.*
+**Note**: *Subdomain- and tld-based localization should be possible as well but this is currently not fully supported yet.*
 
 ## Generating a localized url
 
-For a clean and non-obtrusive integration with your app, it is advised to work with <a href="https://laravel.com/docs/5.2/routing#named-routes" target="_blank">named routes</a>.
-This way the localisation of your routes is done automatically. 
+Localisation of your routes is done automatically when <a href="https://laravel.com/docs/5.2/routing#named-routes" target="_blank">named routes</a> are being used. 
+This assures a clean and non-obtrusive localization of your app.
 
 ```php
     // Creation of all named routes will be localized based on current locale
-    route('pages.about'); // prints out http://example.com/en/about
+    route('pages.about'); // prints out http://example.com/en/about (if en is the active locale)
 ```
 
-By default all routes use the current locale. In order to force a different locale route, you can use the `Thinktomorrow\Locale\LocaleUrl` class.
+In order to force a different locale than the active one, you can use the `Thinktomorrow\Locale\LocaleUrl` class.
 
 ```php
     
@@ -84,6 +86,9 @@ By default all routes use the current locale. In order to force a different loca
     
     // Generate localized url from named route (resolves as laravel route() function)
     Thinktomorrow\Locale\LocaleUrl::route('pages.about','en'); // prints out http://example.com/en/about
+    
+    // Generate localized url with hidden locale. e.g. 'fr' is our hidden (default) locale
+    Thinktomorrow\Locale\LocaleUrl::to('pages.about','fr'); // prints out http://example.com/about
    
 ```
 
