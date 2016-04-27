@@ -1,6 +1,6 @@
 {
     "name": "thinktomorrow/locale",
-    "description": "localisation logic for urls",
+    "description": "A Laravel package for lightweight route localization",
     "keywords": [
         "thinktomorrow",
         "locale"

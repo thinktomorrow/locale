@@ -7,7 +7,7 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A lightweight laravel package to provide route localization. 
+A Laravel package for lightweight route localization. 
 This package will set the locale for your app based on the request url. 
 `/nl/foo` will set locale to nl.
 
