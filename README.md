@@ -102,7 +102,7 @@ Passing the locale as 'lang' query parameter will force the locale
 
 #### Get the current locale
 ```php
-    app('Thinktomorrow\Locale\Locale')->get(); // returns 'en' and basically an alias for app()->getLocale();
+    app('Thinktomorrow\Locale\Locale')->get(); // returns 'en' and is basically an alias for app()->getLocale();
 ```
 
 ## Change log
