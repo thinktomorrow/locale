@@ -10,8 +10,8 @@
          processIsolation="false"
          stopOnFailure="true">
     <testsuites>
-        <testsuite name="Locale Test Suite">
-            <directory>tests/unit</directory>
+        <testsuite name="Thinktomorrow\Locale Test Suite">
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
     <filter>

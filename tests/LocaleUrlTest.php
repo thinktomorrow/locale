@@ -4,7 +4,6 @@ namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Route;
-use TestCase;
 use Thinktomorrow\Locale\Locale;
 use Thinktomorrow\Locale\LocaleUrl;
 

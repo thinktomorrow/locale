@@ -2,7 +2,6 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use TestCase;
 use Thinktomorrow\Locale\Locale;
 
 class LocaleTest extends TestCase
