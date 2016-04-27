@@ -9,7 +9,7 @@
 
 A Laravel package for lightweight route localization. 
 This package will set the locale for your app based on the request url. 
-`/nl/foo` will set locale to nl.
+E.g. request `/nl/foo` will set the active locale to `nl`.
 
 ## Install
 
