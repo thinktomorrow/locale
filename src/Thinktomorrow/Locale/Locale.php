@@ -44,6 +44,12 @@ class Locale
         return app()->getLocale();
     }
 
+    /**
+     * Retrieve the url slug for current or passed locale.
+     *
+     * @param null $locale
+     * @return null|string
+     */
     public function getSlug($locale = null)
     {
         $locale = $this->validateLocale($locale) ? $locale : $this->get();
@@ -53,9 +59,17 @@ class Locale
         return $locale;
     }
 
-    public function isHidden()
+    /**
+     * Check if current or passed locale is set as hidden
+     *
+     * @param null $locale
+     * @return bool
+     */
+    public function isHidden($locale = null)
     {
-        return ($this->hidden_locale == $this->get());
+        $locale = $this->validateLocale($locale) ? $locale : $this->get();
+
+        return ($this->hidden_locale == $locale);
     }
 
     /**
