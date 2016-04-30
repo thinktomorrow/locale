@@ -33,7 +33,7 @@ Finally create a configuration file to `/config/thinktomorrow/locale.php`
 
 Not required, but if you want to use a facade you can add in the `config/app.php` file as well:
 
-```php
+``` php
 'aliases' => [
     ...
     'Locale' => 'Thinktomorrow\Locale\LocaleFacade',
@@ -46,7 +46,7 @@ Not required, but if you want to use a facade you can add in the `config/app.php
 To make your routes localized, place them inside a Route::group() with a prefix value that is determined by the Locale class itself. 
 To avoid possible conflicts with your deployments, you should call the `Thinktomorrow\Locale\Locale` class via the `app()` container instead of the facade inside the `routes.php` file.
 
-```php
+``` php
     
     Route::group(['prefix' => app(Thinktomorrow\Locale\Locale::class)->set()],function(){
         
@@ -62,20 +62,18 @@ To avoid possible conflicts with your deployments, you should call the `Thinktom
 Localisation of your routes is done automatically when <a href="https://laravel.com/docs/5.2/routing#named-routes" target="_blank">named routes</a> are being used. 
 Creation of all named routes will be localized based on current locale. Quick non-obtrusive integration. 
 
-```php
+``` php
     route('pages.about'); // prints out http://example.com/en/about (if en is the active locale)
 ```
 
 To create an url with a specific locale other than the active one, you can use the `Thinktomorrow\Locale\LocaleUrl` class.
 
-```php
-    
+``` php
     // Generate localized url from uri (resolves as laravel url() function)
     Thinktomorrow\Locale\LocaleUrl::to('about','en'); // prints out http://example.com/en/about
     
     // Generate localized url from named route (resolves as laravel route() function)
-    Thinktomorrow\Locale\LocaleUrl::route('pages.about','en'); // prints out http://example.com/en/about
-       
+    Thinktomorrow\Locale\LocaleUrl::route('pages.about','en'); // prints out http://example.com/en/about  
 ```
 
 **Note:** Passing the locale as 'lang' query parameter will force the locale 
@@ -90,12 +88,12 @@ Note that this is best used for your main / default locale.
 ## Locale API
 
 #### Set a new locale for current request
-```php
+``` php
     app('Thinktomorrow\Locale\Locale')->set('en');
 ```
 
 #### Get the current locale
-```php
+``` php
     app('Thinktomorrow\Locale\Locale')->get(); // returns 'en' and is basically an alias for app()->getLocale();
 ```
 
@@ -103,17 +101,16 @@ Note that this is best used for your main / default locale.
 This is an example on how you allow an user to change the locale. In this case the route `/lang?locale=en` will
 set the new locale to `en` and returns to the user's current page in the new locale.
 
-```php
+``` php
 
-// Inside routes.php
+// /app/Http/routes.php:
 Route::get('lang',['as' => 'lang.switch','uses' => LanguageSwitcher::class.'@store']);
 
-// Inside /app/Http/Controllers
-
+// /app/Http/Controllers/LanguageSwitcher.php:
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
-use Locale;
-use Thinktomorrow\Locale\LocaleUrl;
+
+use URL, Illuminate\Http\Request;
+use Locale, LocaleUrl;
 
 class LanguageSwitcher extends Controller
 {
@@ -125,14 +122,14 @@ class LanguageSwitcher extends Controller
         Locale::set($locale);
         
         // Get current visited page and return to it in the new locale
-        $previous = LocaleUrl::to(url()->previous(),Locale::get());
+        $previous = LocaleUrl::to(URL::previous(),Locale::get());
         
         return redirect()->to($previous);
     }
 }
-```
+``
 
-## Testing
+## Testing`
 
 ``` bash
 $ vendor/bin/phpunit
