@@ -41,12 +41,6 @@ Not required, but if you want to use a facade you can add in the `config/app.php
 ];
 ```
 
-## Configuration
-- **available_locales**: Whitelist of locales available for usage inside your application. 
-- **hidden_locale**: You can set one of the available locales as 'hidden' which means any request without a locale in its uri, should be localized as this hidden locale.
-For example if the hidden locale is 'nl' and the request uri is /foo/bar, this request is interpreted with the 'nl' locale. 
-Note that this is best used for your main / default locale.
-
 ## Usage
 
 To make your routes localized, place them inside a Route::group() with a prefix value that is determined by the Locale class itself. 
@@ -84,8 +78,16 @@ To create an url with a specific locale other than the active one, you can use t
        
 ```
 
-Passing the locale as 'lang' query parameter will force the locale 
+**Note:** Passing the locale as 'lang' query parameter will force the locale 
 *example.com/en/about?lang=nl* makes sure the request will deal with a 'nl' locale.
+
+## Configuration
+- **available_locales**: Whitelist of locales available for usage inside your application. 
+- **hidden_locale**: You can set one of the available locales as 'hidden' which means any request without a locale in its uri, should be localized as this hidden locale.
+For example if the hidden locale is 'nl' and the request uri is /foo/bar, this request is interpreted with the 'nl' locale. 
+Note that this is best used for your main / default locale.
+
+## Locale API
 
 #### Set a new locale for current request
 ```php
@@ -95,6 +97,39 @@ Passing the locale as 'lang' query parameter will force the locale
 #### Get the current locale
 ```php
     app('Thinktomorrow\Locale\Locale')->get(); // returns 'en' and is basically an alias for app()->getLocale();
+```
+
+## Changing locale
+This is an example on how you allow an user to change the locale. In this case the route `/lang?locale=en` will
+set the new locale to `en` and returns to the user's current page in the new locale.
+
+```php
+
+// Inside routes.php
+Route::get('lang',['as' => 'lang.switch','uses' => LanguageSwitcher::class.'@store']);
+
+// Inside /app/Http/Controllers
+
+namespace App\Http\Controllers;
+use Illuminate\Http\Request;
+use Locale;
+use Thinktomorrow\Locale\LocaleUrl;
+
+class LanguageSwitcher extends Controller
+{
+    public function store(Request $request)
+    {
+        $locale = $request->get('locale');
+        
+        // Set new locale
+        Locale::set($locale);
+        
+        // Get current visited page and return to it in the new locale
+        $previous = LocaleUrl::to(url()->previous(),Locale::get());
+        
+        return redirect()->to($previous);
+    }
+}
 ```
 
 ## Testing
