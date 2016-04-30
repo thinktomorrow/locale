@@ -8,8 +8,8 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 A Laravel package for lightweight route localization. 
-This package will set the locale for your app based on the request url. 
-E.g. request `/nl/foo` will set the active locale to `nl`.
+This package will set the app locale based on the request. 
+E.g. `/nl/foo` will set locale to `nl`. 
 
 ## Install
 
@@ -25,25 +25,21 @@ Next add the provider to the providers array in the `/config/app.php` file:
     Thinktomorrow\Locale\LocaleServiceProvider::class,
 ```
 
+Finally create a configuration file to `/config/thinktomorrow/locale.php`
+
+``` bash
+    php artisan vendor:publish --provider="Thinktomorrow\Locale\LocaleServiceProvider"
+```
+
 Not required, but if you want to use a facade you can add in the `config/app.php` file as well:
 
 ```php
-
 'aliases' => [
     ...
     'Locale' => 'Thinktomorrow\Locale\LocaleFacade',
     'LocaleUrl' => 'Thinktomorrow\Locale\LocaleUrlFacade',
 ];
 ```
-
-
-Finally create a configuration file to `/config/thinktomorrow/locale.php`
-
-``` bash
-    // artisan command from your laravel root
-    php artisan vendor:publish --provider="Thinktomorrow\Locale\LocaleServiceProvider"
-```
-
 
 ## Configuration
 - **available_locales**: Whitelist of locales available for usage inside your application. 
@@ -70,14 +66,13 @@ To avoid possible conflicts with your deployments, you should call the `Thinktom
 ## Generating a localized url
 
 Localisation of your routes is done automatically when <a href="https://laravel.com/docs/5.2/routing#named-routes" target="_blank">named routes</a> are being used. 
-This assures a clean and non-obtrusive localization of your app.
+Creation of all named routes will be localized based on current locale. Quick non-obtrusive integration. 
 
 ```php
-    // Creation of all named routes will be localized based on current locale
     route('pages.about'); // prints out http://example.com/en/about (if en is the active locale)
 ```
 
-In order to force a different locale than the active one, you can use the `Thinktomorrow\Locale\LocaleUrl` class.
+To create an url with a specific locale other than the active one, you can use the `Thinktomorrow\Locale\LocaleUrl` class.
 
 ```php
     
@@ -86,10 +81,7 @@ In order to force a different locale than the active one, you can use the `Think
     
     // Generate localized url from named route (resolves as laravel route() function)
     Thinktomorrow\Locale\LocaleUrl::route('pages.about','en'); // prints out http://example.com/en/about
-    
-    // Generate localized url with hidden locale. e.g. 'fr' is our hidden (default) locale
-    Thinktomorrow\Locale\LocaleUrl::to('pages.about','fr'); // prints out http://example.com/about
-   
+       
 ```
 
 Passing the locale as 'lang' query parameter will force the locale 
@@ -104,10 +96,6 @@ Passing the locale as 'lang' query parameter will force the locale
 ```php
     app('Thinktomorrow\Locale\Locale')->get(); // returns 'en' and is basically an alias for app()->getLocale();
 ```
-
-## Change log
-
-Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recently.
 
 ## Testing
 
