@@ -127,9 +127,9 @@ class LanguageSwitcher extends Controller
         return redirect()->to($previous);
     }
 }
-``
+```
 
-## Testing`
+## Testing
 
 ``` bash
 $ vendor/bin/phpunit
