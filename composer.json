@@ -21,7 +21,7 @@
         "phpunit/phpunit" : "4.*",
         "scrutinizer/ocular": "~1.1",
        "mockery/mockery" : "~0.9",
-        "orchestra/testbench": "3.3.x@dev"
+        "orchestra/testbench": "3.2|3.3.x@dev"
     },
     "autoload": {
         "psr-4": {
