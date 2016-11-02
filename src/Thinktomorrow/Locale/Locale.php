@@ -67,6 +67,9 @@ class Locale
      */
     public function isHidden($locale = null)
     {
+        // If a specific locale string is passed we first validate it represents a valid locale
+        if($locale && !$this->validateLocale($locale)) return false;
+
         $locale = $this->validateLocale($locale) ? $locale : $this->get();
 
         return ($this->hidden_locale == $locale);

@@ -125,4 +125,23 @@ class LocaleUrlTest extends TestCase
         $this->assertEquals('http://example.be/nl/blue/foo/bar?dazzle=awesome&crazy=vibe', LocaleUrl::route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
     }
 
+    /** @test */
+    public function it_can_create_a_named_route_with_multiple_segments_for_hidden_locale()
+    {
+        app()->bind('Thinktomorrow\Locale\Locale', function ($app) {
+            return new Locale($app['request'], [
+                'available_locales' => ['nl', 'fr'],
+                'fallback_locale' => null,
+                'hidden_locale' => 'nl'
+            ]);
+        });
+
+        Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
+
+        app()->setLocale('nl');
+        $this->assertEquals('http://example.be/blue/foo/bar?dazzle=awesome&crazy=vibe', LocaleUrl::route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
+    }
+
+
+
 }
