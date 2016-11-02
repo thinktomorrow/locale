@@ -98,4 +98,31 @@ class LocaleUrlTest extends TestCase
         $this->assertEquals('http://example.be/nl/foo/bar', LocaleUrl::route('foo.show', 'nl'));
     }
 
+    /** @test */
+    public function it_can_create_a_named_route_from_default_locale()
+    {
+        Route::get('foo/bar',['as' => 'foo.show','uses' => function(){}]);
+
+        app()->setLocale('nl');
+        $this->assertEquals('http://example.be/nl/foo/bar', LocaleUrl::route('foo.show'));
+    }
+
+    /** @test */
+    public function it_can_create_a_named_route_with_segment_on_left()
+    {
+        Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
+
+        app()->setLocale('nl');
+        $this->assertEquals('http://example.be/nl/blue/foo/bar', LocaleUrl::route('foo.show',['color' => 'blue']));
+    }
+
+    /** @test */
+    public function it_can_create_a_named_route_with_multiple_segments()
+    {
+        Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
+
+        app()->setLocale('nl');
+        $this->assertEquals('http://example.be/nl/blue/foo/bar?dazzle=awesome&crazy=vibe', LocaleUrl::route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
+    }
+
 }
