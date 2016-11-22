@@ -36,19 +36,18 @@ Not required, but if you want to use a facade you can add in the `config/app.php
 ``` php
 'aliases' => [
     ...
-    'Locale' => 'Thinktomorrow\Locale\LocaleFacade',
-    'LocaleUrl' => 'Thinktomorrow\Locale\LocaleUrlFacade',
+    'Locale' => 'Thinktomorrow\Locale\Facades\LocaleFacade',
+    'LocaleUrl' => 'Thinktomorrow\Locale\Facades\LocaleUrlFacade',
 ];
 ```
 
 ## Usage
 
-To make your routes localized, place them inside a Route::group() with a prefix value that is determined by the Locale class itself. 
-To avoid possible conflicts with your deployments, you should call the `Thinktomorrow\Locale\Locale` class via the `app()` container instead of the facade inside the `routes.php` file.
+To make your routes localized, place them inside a Route::group() with a following prefix:
 
 ``` php
     
-    Route::group(['prefix' => app(Thinktomorrow\Locale\Locale::class)->set()],function(){
+    Route::group(['prefix' => Locale::set()],function(){
         
         // Routes registered within this group will be localized
         
@@ -69,11 +68,16 @@ Creation of all named routes will be localized based on current locale. Quick no
 To create an url with a specific locale other than the active one, you can use the `Thinktomorrow\Locale\LocaleUrl` class.
 
 ``` php
+    
     // Generate localized url from uri (resolves as laravel url() function)
-    Thinktomorrow\Locale\LocaleUrl::to('about','en'); // prints out http://example.com/en/about
+    LocaleUrl::to('about','en'); // http://example.com/en/about
     
     // Generate localized url from named route (resolves as laravel route() function)
-    Thinktomorrow\Locale\LocaleUrl::route('pages.about','en'); // prints out http://example.com/en/about  
+    LocaleUrl::route('pages.about','en'); // http://example.com/en/about  
+    
+    // With multiple route parameters you need to use the placeholder key as set in your locale config
+    LocaleUrl::route('products.show',['locale_slug' => 'en','slug' => 'tablet'])); // http://example/en/products/tablet
+    
 ```
 
 **Note:** Passing the locale as 'lang' query parameter will force the locale 
@@ -84,17 +88,18 @@ To create an url with a specific locale other than the active one, you can use t
 - **hidden_locale**: You can set one of the available locales as 'hidden' which means any request without a locale in its uri, should be localized as this hidden locale.
 For example if the hidden locale is 'nl' and the request uri is /foo/bar, this request is interpreted with the 'nl' locale. 
 Note that this is best used for your main / default locale.
+- **placeholder**: Explicit route placeholder for the locale. Must be used for the LocaleUrl::route()` method when multiple parameters need to be injected.
 
 ## Locale API
 
 #### Set a new locale for current request
 ``` php
-    app('Thinktomorrow\Locale\Locale')->set('en');
+    Locale::set('en');
 ```
 
 #### Get the current locale
 ``` php
-    app('Thinktomorrow\Locale\Locale')->get(); // returns 'en' and is basically an alias for app()->getLocale();
+    Locale::get(); // returns 'en' and is basically an alias for app()->getLocale();
 ```
 
 ## Changing locale
