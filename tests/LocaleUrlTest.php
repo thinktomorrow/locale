@@ -93,9 +93,18 @@ class LocaleUrlTest extends TestCase
     /** @test */
     public function it_can_create_a_named_route_with_locale_segment()
     {
-        Route::get('foo/bar',['as' => 'foo.show','uses' => function(){}]);
+        Route::get('foo/bar/{slug?}',['as' => 'foo.show','uses' => function(){}]);
 
         $this->assertEquals('http://example.be/nl/foo/bar', LocaleUrl::route('foo.show', 'nl'));
+    }
+
+    /** @test */
+    public function it_can_create_a_named_route_with_nonlocale_segment()
+    {
+        app()->setLocale('en');
+        Route::get('foo/bar/{slug}',['as' => 'foo.show','uses' => function(){}]);
+
+        $this->assertEquals('http://example.be/en/foo/bar/cow', LocaleUrl::route('foo.show', 'cow'));
     }
 
     /** @test */

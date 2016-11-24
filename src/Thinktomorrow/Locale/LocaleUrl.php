@@ -97,7 +97,9 @@ class LocaleUrl
         if(!is_array($parameters))
         {
             $locale = $this->locale->getSlug($parameters);
-            $parameters = [];
+
+            // If locale is the only parameter, we make sure the 'real' parameters is flushed
+            if($locale == $parameters) $parameters = [];
         }
         elseif($this->placeholder && isset($parameters[$this->placeholder]))
         {
