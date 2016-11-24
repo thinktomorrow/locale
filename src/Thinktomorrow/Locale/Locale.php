@@ -37,11 +37,12 @@ class Locale
     /**
      * Get the current locale
      *
+     * @param null $locale
      * @return null|string
      */
-    public function get()
+    public function get($locale = null)
     {
-        return app()->getLocale();
+        return $this->validateLocale($locale) ? $locale : app()->getLocale();
     }
 
     /**
@@ -52,7 +53,7 @@ class Locale
      */
     public function getSlug($locale = null)
     {
-        $locale = $this->validateLocale($locale) ? $locale : $this->get();
+        $locale = $this->get($locale);
 
         if ($this->hidden_locale == $locale) return null;
 
@@ -70,7 +71,7 @@ class Locale
         // If a specific locale string is passed we first validate it represents a valid locale
         if($locale && !$this->validateLocale($locale)) return false;
 
-        $locale = $this->validateLocale($locale) ? $locale : $this->get();
+        $locale = $this->get($locale);
 
         return ($this->hidden_locale == $locale);
     }
