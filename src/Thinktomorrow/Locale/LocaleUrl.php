@@ -96,14 +96,14 @@ class LocaleUrl
 
         if(!is_array($parameters))
         {
-            $locale = $this->locale->getSlug($parameters);
+            $locale = $this->locale->get($parameters);
 
             // If locale is the only parameter, we make sure the 'real' parameters is flushed
             if($locale == $parameters) $parameters = [];
         }
-        elseif($this->placeholder && isset($parameters[$this->placeholder]))
+        elseif($this->placeholder && array_key_exists($this->placeholder,$parameters))
         {
-            $locale = $this->locale->getSlug($parameters[$this->placeholder]);
+            $locale = $this->locale->get($parameters[$this->placeholder]);
             unset($parameters[$this->placeholder]);
         }
 

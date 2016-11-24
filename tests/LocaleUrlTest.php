@@ -151,6 +151,30 @@ class LocaleUrlTest extends TestCase
         $this->assertEquals('http://example.be/blue/foo/bar?dazzle=awesome&crazy=vibe', LocaleUrl::route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
     }
 
+    /** @test */
+    public function it_can_create_translated_route_with_prefixed_route()
+    {
+
+        app()->bind('Thinktomorrow\Locale\Locale', function ($app) {
+            return new Locale($app['request'], [
+                'available_locales' => ['nl', 'fr', 'en'],
+                'fallback_locale' => null,
+                'hidden_locale' => 'nl'
+            ]);
+        });
+        app()->setLocale('en');
+
+        Route::group(['prefix' => app(Locale::class)->set('en')], function ()
+        {
+            Route::get('/foo/bar/{slug}',['as' => 'foo.show','uses' => function(){}]);
+        });
+
+        $this->assertEquals('http://example.be/en/foo/bar/blue', LocaleUrl::route('foo.show',['locale_slug' => null,'color' => 'blue']));
+        $this->assertEquals('http://example.be/foo/bar/blue', LocaleUrl::route('foo.show',['locale_slug' => 'nl','color' => 'blue']));
+        $this->assertEquals('http://example.be/fr/foo/bar/blue', LocaleUrl::route('foo.show',['locale_slug' => 'fr','color' => 'blue']));
+        $this->assertEquals('http://example.be/en/foo/bar/blue', LocaleUrl::route('foo.show',['locale_slug' => 'en','color' => 'blue']));
+    }
+
 
 
 }
