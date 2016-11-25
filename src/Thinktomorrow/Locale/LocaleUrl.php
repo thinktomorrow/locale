@@ -38,12 +38,11 @@ class LocaleUrl
      * @param null $secure
      * @return mixed
      */
-    public static function to($url, $locale = null, $extra = [], $secure = null)
+    public function to($url, $locale = null, $extra = [], $secure = null)
     {
-        $self = app(self::class);
-        $url = $self->prependLocaleToUri($url,$locale);
+        $url = $this->prependLocaleToUri($url,$locale);
 
-        return $self->resolveUrl($url, $extra, $secure);
+        return $this->resolveUrl($url, $extra, $secure);
     }
 
     /**
@@ -54,14 +53,13 @@ class LocaleUrl
      * @param bool $absolute
      * @return mixed
      */
-    public static function route($name, $parameters = [], $absolute = true)
+    public function route($name, $parameters = [], $absolute = true)
     {
-        $self = app(self::class);
-        $locale = $self->extractLocaleFromParameter($parameters);
+        $locale = $this->extractLocaleFromParameter($parameters);
 
-        $url = $self->resolveRoute($name,$parameters,$absolute);
+        $url = $this->resolveRoute($name,$parameters,$absolute);
 
-        return self::to($url,$locale);
+        return $this->to($url,$locale);
     }
 
     /**
@@ -72,7 +70,7 @@ class LocaleUrl
      * @param null $locale
      * @return string
      */
-    public function prependLocaleToUri($url, $locale = null)
+    private function prependLocaleToUri($url, $locale = null)
     {
         $locale = $this->locale->getSlug($locale);
         $parsed = parse_url($url);
@@ -90,7 +88,7 @@ class LocaleUrl
      * @param array $parameters
      * @return null|string
      */
-    public function extractLocaleFromParameter(&$parameters = [])
+    private function extractLocaleFromParameter(&$parameters = [])
     {
         $locale = null;
 

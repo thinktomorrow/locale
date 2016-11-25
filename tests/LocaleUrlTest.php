@@ -9,6 +9,8 @@ use Thinktomorrow\Locale\LocaleUrl;
 
 class LocaleUrlTest extends TestCase
 {
+    private $localeUrl;
+
     public function setUp()
     {
         parent::setUp();
@@ -31,6 +33,8 @@ class LocaleUrlTest extends TestCase
                 ['placeholder' => 'locale_slug']
             );
         });
+
+        $this->localeUrl = app(LocaleUrl::class);
     }
 
     /** @test */
@@ -38,8 +42,8 @@ class LocaleUrlTest extends TestCase
     {
         app(Locale::class)->set('fr');
 
-        $this->assertEquals('http://example.be/fr/foo/bar', LocaleUrl::to('http://example.be/foo/bar'));
-        $this->assertEquals('http://example.be/fr/foo/bar', LocaleUrl::to('http://example.be/foo/bar', 'fake'));
+        $this->assertEquals('http://example.be/fr/foo/bar', $this->localeUrl->to('http://example.be/foo/bar'));
+        $this->assertEquals('http://example.be/fr/foo/bar', $this->localeUrl->to('http://example.be/foo/bar', 'fake'));
     }
 
     /** @test */
@@ -58,7 +62,7 @@ class LocaleUrlTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, LocaleUrl::to($original, 'nl'), 'improper conversion from ' . $original . ' to ' . LocaleUrl::to($original, 'nl') . ' - ' . $result . ' was expected.');
+            $this->assertEquals($result, $this->localeUrl->to($original, 'nl'), 'improper conversion from ' . $original . ' to ' . $this->localeUrl->to($original, 'nl') . ' - ' . $result . ' was expected.');
         }
     }
 
@@ -72,6 +76,7 @@ class LocaleUrlTest extends TestCase
                 'hidden_locale' => 'nl'
             ]);
         });
+        $this->localeUrl = app(LocaleUrl::class);
 
         $urls = [
             '/foo/bar' => 'http://example.be/foo/bar',
@@ -86,7 +91,7 @@ class LocaleUrlTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, LocaleUrl::to($original, 'nl'), 'improper conversion from ' . $original . ' to ' . LocaleUrl::to($original, 'nl') . ' - ' . $result . ' was expected.');
+            $this->assertEquals($result, $this->localeUrl->to($original, 'nl'), 'improper conversion from ' . $original . ' to ' . $this->localeUrl->to($original, 'nl') . ' - ' . $result . ' was expected.');
         }
     }
 
@@ -95,7 +100,7 @@ class LocaleUrlTest extends TestCase
     {
         Route::get('foo/bar/{slug?}',['as' => 'foo.show','uses' => function(){}]);
 
-        $this->assertEquals('http://example.be/nl/foo/bar', LocaleUrl::route('foo.show', 'nl'));
+        $this->assertEquals('http://example.be/nl/foo/bar', $this->localeUrl->route('foo.show', 'nl'));
     }
 
     /** @test */
@@ -104,7 +109,7 @@ class LocaleUrlTest extends TestCase
         app()->setLocale('en');
         Route::get('foo/bar/{slug}',['as' => 'foo.show','uses' => function(){}]);
 
-        $this->assertEquals('http://example.be/en/foo/bar/cow', LocaleUrl::route('foo.show', 'cow'));
+        $this->assertEquals('http://example.be/en/foo/bar/cow', $this->localeUrl->route('foo.show', 'cow'));
     }
 
     /** @test */
@@ -113,7 +118,7 @@ class LocaleUrlTest extends TestCase
         Route::get('foo/bar',['as' => 'foo.show','uses' => function(){}]);
 
         app()->setLocale('nl');
-        $this->assertEquals('http://example.be/nl/foo/bar', LocaleUrl::route('foo.show'));
+        $this->assertEquals('http://example.be/nl/foo/bar', $this->localeUrl->route('foo.show'));
     }
 
     /** @test */
@@ -122,7 +127,7 @@ class LocaleUrlTest extends TestCase
         Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
 
         app()->setLocale('nl');
-        $this->assertEquals('http://example.be/nl/blue/foo/bar', LocaleUrl::route('foo.show',['color' => 'blue']));
+        $this->assertEquals('http://example.be/nl/blue/foo/bar', $this->localeUrl->route('foo.show',['color' => 'blue']));
     }
 
     /** @test */
@@ -131,7 +136,7 @@ class LocaleUrlTest extends TestCase
         Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
 
         app()->setLocale('nl');
-        $this->assertEquals('http://example.be/nl/blue/foo/bar?dazzle=awesome&crazy=vibe', LocaleUrl::route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
+        $this->assertEquals('http://example.be/nl/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
     }
 
     /** @test */
@@ -144,11 +149,12 @@ class LocaleUrlTest extends TestCase
                 'hidden_locale' => 'nl'
             ]);
         });
+        $this->localeUrl = app(LocaleUrl::class);
 
         Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
 
         app()->setLocale('nl');
-        $this->assertEquals('http://example.be/blue/foo/bar?dazzle=awesome&crazy=vibe', LocaleUrl::route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
+        $this->assertEquals('http://example.be/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
     }
 
     /** @test */
@@ -162,6 +168,7 @@ class LocaleUrlTest extends TestCase
                 'hidden_locale' => 'nl'
             ]);
         });
+        $this->localeUrl = app(LocaleUrl::class);
         app()->setLocale('en');
 
         Route::group(['prefix' => app(Locale::class)->set('en')], function ()
@@ -169,10 +176,10 @@ class LocaleUrlTest extends TestCase
             Route::get('/foo/bar/{slug}',['as' => 'foo.show','uses' => function(){}]);
         });
 
-        $this->assertEquals('http://example.be/en/foo/bar/blue', LocaleUrl::route('foo.show',['locale_slug' => null,'color' => 'blue']));
-        $this->assertEquals('http://example.be/foo/bar/blue', LocaleUrl::route('foo.show',['locale_slug' => 'nl','color' => 'blue']));
-        $this->assertEquals('http://example.be/fr/foo/bar/blue', LocaleUrl::route('foo.show',['locale_slug' => 'fr','color' => 'blue']));
-        $this->assertEquals('http://example.be/en/foo/bar/blue', LocaleUrl::route('foo.show',['locale_slug' => 'en','color' => 'blue']));
+        $this->assertEquals('http://example.be/en/foo/bar/blue', $this->localeUrl->route('foo.show',['locale_slug' => null,'color' => 'blue']));
+        $this->assertEquals('http://example.be/foo/bar/blue', $this->localeUrl->route('foo.show',['locale_slug' => 'nl','color' => 'blue']));
+        $this->assertEquals('http://example.be/fr/foo/bar/blue', $this->localeUrl->route('foo.show',['locale_slug' => 'fr','color' => 'blue']));
+        $this->assertEquals('http://example.be/en/foo/bar/blue', $this->localeUrl->route('foo.show',['locale_slug' => 'en','color' => 'blue']));
     }
 
 
