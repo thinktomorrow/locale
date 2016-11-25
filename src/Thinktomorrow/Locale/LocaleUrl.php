@@ -99,7 +99,7 @@ class LocaleUrl
             // If locale is the only parameter, we make sure the 'real' parameters is flushed
             if($locale == $parameters) $parameters = [];
         }
-        elseif($this->placeholder && array_key_exists($this->placeholder,$parameters))
+        elseif(!is_null($this->placeholder) && array_key_exists($this->placeholder,$parameters))
         {
             $locale = $this->locale->get($parameters[$this->placeholder]);
             unset($parameters[$this->placeholder]);
