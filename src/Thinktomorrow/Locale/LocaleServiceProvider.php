@@ -1,21 +1,22 @@
 <?php namespace Thinktomorrow\Locale;
 
-use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class LocaleServiceProvider extends ServiceProvider {
 
     public function register()
     {
+        require_once __DIR__.'/helpers.php';
+
         $this->publishes([
             __DIR__.'/config/locale.php' => config_path('thinktomorrow/locale.php')
         ]);
 
-        $this->app->bind(Locale::class,function($app){
+        $this->app->singleton(Locale::class,function($app){
             return new Locale($app['request'],$this->getConfig());
         });
 
-        $this->app->bind(LocaleUrl::class,function($app){
+        $this->app->singleton(LocaleUrl::class,function($app){
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Locale'],
                 $app['Illuminate\Contracts\Routing\UrlGenerator'],

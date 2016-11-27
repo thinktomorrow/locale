@@ -9,32 +9,13 @@ use Thinktomorrow\Locale\LocaleUrl;
 
 class LocaleUrlTest extends TestCase
 {
-    private $localeUrl;
+    protected $localeUrl;
 
     public function setUp()
     {
         parent::setUp();
 
-        app()->bind('Thinktomorrow\Locale\Locale', function ($app) {
-            return new Locale($app['request'], [
-                'available_locales' => ['nl', 'fr'],
-                'fallback_locale' => null,
-                'hidden_locale' => null
-            ]);
-        });
-
-        // Force root url for testing
-        app(UrlGenerator::class)->forceRootUrl('http://example.be');
-
-        app()->bind('Thinktomorrow\Locale\LocaleUrl',function($app){
-            return new LocaleUrl(
-                $app['Thinktomorrow\Locale\Locale'],
-                $app['Illuminate\Contracts\Routing\UrlGenerator'],
-                ['placeholder' => 'locale_slug']
-            );
-        });
-
-        $this->localeUrl = app(LocaleUrl::class);
+        $this->refreshBindings();
     }
 
     /** @test */
@@ -50,34 +31,25 @@ class LocaleUrlTest extends TestCase
     public function it_can_create_an_url_with_locale_segment()
     {
         $urls = [
-            '/foo/bar' => 'http://example.be/nl/foo/bar',
-            'foo/bar' => 'http://example.be/nl/foo/bar',
-            '' => 'http://example.be/nl',
-            'http://example.com' => 'http://example.com/nl',
-            'http://example.com/foo/bar' => 'http://example.com/nl/foo/bar',
-            'http://example.com/foo/bar?s=q' => 'http://example.com/nl/foo/bar?s=q',
-            'http://example.nl/foo/bar' => 'http://example.nl/nl/foo/bar',
-            'https://example.com/nl/foo/bar' => 'https://example.com/nl/foo/bar',
-            'https://example.com/foo/bar#index' => 'https://example.com/nl/foo/bar#index',
+            '/foo/bar' => 'http://example.be/fr/foo/bar',
+            'foo/bar' => 'http://example.be/fr/foo/bar',
+            '' => 'http://example.be/fr',
+            'http://example.com' => 'http://example.com/fr',
+            'http://example.com/foo/bar' => 'http://example.com/fr/foo/bar',
+            'http://example.com/foo/bar?s=q' => 'http://example.com/fr/foo/bar?s=q',
+            'http://example.fr/foo/bar' => 'http://example.fr/fr/foo/bar',
+            'https://example.com/fr/foo/bar' => 'https://example.com/fr/foo/bar',
+            'https://example.com/foo/bar#index' => 'https://example.com/fr/foo/bar#index',
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, $this->localeUrl->to($original, 'nl'), 'improper conversion from ' . $original . ' to ' . $this->localeUrl->to($original, 'nl') . ' - ' . $result . ' was expected.');
+            $this->assertEquals($result, $this->localeUrl->to($original, 'fr'), 'improper conversion from ' . $original . ' to ' . $this->localeUrl->to($original, 'fr') . ' - ' . $result . ' was expected.');
         }
     }
 
     /** @test */
     public function it_can_create_an_url_with_hidden_locale_segment()
     {
-        app()->bind('Thinktomorrow\Locale\Locale', function ($app) {
-            return new Locale($app['request'], [
-                'available_locales' => ['nl', 'fr'],
-                'fallback_locale' => null,
-                'hidden_locale' => 'nl'
-            ]);
-        });
-        $this->localeUrl = app(LocaleUrl::class);
-
         $urls = [
             '/foo/bar' => 'http://example.be/foo/bar',
             'foo/bar' => 'http://example.be/foo/bar',
@@ -100,34 +72,30 @@ class LocaleUrlTest extends TestCase
     {
         Route::get('foo/bar/{slug?}',['as' => 'foo.show','uses' => function(){}]);
 
-        $this->assertEquals('http://example.be/nl/foo/bar', $this->localeUrl->route('foo.show', 'nl'));
+        $this->assertEquals('http://example.be/fr/foo/bar', $this->localeUrl->route('foo.show', 'fr'));
+        $this->assertEquals('http://example.be/foo/bar', $this->localeUrl->route('foo.show', 'nl'));
     }
 
     /** @test */
     public function it_can_create_a_named_route_with_nonlocale_segment()
     {
         app()->setLocale('en');
-        Route::get('foo/bar/{slug}',['as' => 'foo.show','uses' => function(){}]);
+        Route::get('foo/bar/{slug?}',['as' => 'foo.show','uses' => function(){}]);
 
+        $this->assertEquals('http://example.be/en/foo/bar', $this->localeUrl->route('foo.show'));
         $this->assertEquals('http://example.be/en/foo/bar/cow', $this->localeUrl->route('foo.show', 'cow'));
     }
 
     /** @test */
-    public function it_can_create_a_named_route_from_default_locale()
-    {
-        Route::get('foo/bar',['as' => 'foo.show','uses' => function(){}]);
-
-        app()->setLocale('nl');
-        $this->assertEquals('http://example.be/nl/foo/bar', $this->localeUrl->route('foo.show'));
-    }
-
-    /** @test */
-    public function it_can_create_a_named_route_with_segment_on_left()
+    public function it_can_create_a_named_route_with_first_dynamic_segment()
     {
         Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
 
+        app()->setLocale('en');
+        $this->assertEquals('http://example.be/en/blue/foo/bar', $this->localeUrl->route('foo.show',['color' => 'blue']));
+
         app()->setLocale('nl');
-        $this->assertEquals('http://example.be/nl/blue/foo/bar', $this->localeUrl->route('foo.show',['color' => 'blue']));
+        $this->assertEquals('http://example.be/blue/foo/bar', $this->localeUrl->route('foo.show',['color' => 'blue']));
     }
 
     /** @test */
@@ -135,41 +103,25 @@ class LocaleUrlTest extends TestCase
     {
         Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
 
-        app()->setLocale('nl');
-        $this->assertEquals('http://example.be/nl/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
-    }
-
-    /** @test */
-    public function it_can_create_a_named_route_with_multiple_segments_for_hidden_locale()
-    {
-        app()->bind('Thinktomorrow\Locale\Locale', function ($app) {
-            return new Locale($app['request'], [
-                'available_locales' => ['nl', 'fr'],
-                'fallback_locale' => null,
-                'hidden_locale' => 'nl'
-            ]);
-        });
-        $this->localeUrl = app(LocaleUrl::class);
-
-        Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
+        app()->setLocale('en');
+        $this->assertEquals('http://example.be/en/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
 
         app()->setLocale('nl');
         $this->assertEquals('http://example.be/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
     }
 
     /** @test */
+    public function it_can_create_a_named_route_with_multiple_segments_for_hidden_locale()
+    {
+        Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
+
+        $this->assertEquals('http://example.be/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.show',['color' => 'blue','dazzle' => 'awesome','crazy' => 'vibe']));
+    }
+
+    /** @test */
     public function it_can_create_translated_route_with_prefixed_route()
     {
-
-        app()->bind('Thinktomorrow\Locale\Locale', function ($app) {
-            return new Locale($app['request'], [
-                'available_locales' => ['nl', 'fr', 'en'],
-                'fallback_locale' => null,
-                'hidden_locale' => 'nl'
-            ]);
-        });
-        $this->localeUrl = app(LocaleUrl::class);
-        app()->setLocale('en');
+        $this->refreshBindings('en');
 
         Route::group(['prefix' => app(Locale::class)->set('en')], function ()
         {
@@ -180,6 +132,31 @@ class LocaleUrlTest extends TestCase
         $this->assertEquals('http://example.be/foo/bar/blue', $this->localeUrl->route('foo.show',['locale_slug' => 'nl','color' => 'blue']));
         $this->assertEquals('http://example.be/fr/foo/bar/blue', $this->localeUrl->route('foo.show',['locale_slug' => 'fr','color' => 'blue']));
         $this->assertEquals('http://example.be/en/foo/bar/blue', $this->localeUrl->route('foo.show',['locale_slug' => 'en','color' => 'blue']));
+    }
+
+    private function refreshBindings($defaultLocale = 'nl',$hiddenLocale = 'nl')
+    {
+        app()->singleton('Thinktomorrow\Locale\Locale', function ($app) use($hiddenLocale) {
+            return new Locale($app['request'], [
+                'available_locales' => ['nl', 'fr', 'en'],
+                'fallback_locale' => null,
+                'hidden_locale' => $hiddenLocale
+            ]);
+        });
+
+        // Force root url for testing
+        app(UrlGenerator::class)->forceRootUrl('http://example.be');
+
+        app()->singleton('Thinktomorrow\Locale\LocaleUrl',function($app){
+            return new LocaleUrl(
+                $app['Thinktomorrow\Locale\Locale'],
+                $app['Illuminate\Contracts\Routing\UrlGenerator'],
+                ['placeholder' => 'locale_slug']
+            );
+        });
+
+        $this->localeUrl = app(LocaleUrl::class);
+        app()->setLocale($defaultLocale);
     }
 
 
