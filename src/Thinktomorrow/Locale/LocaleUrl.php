@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Thinktomorrow\Locale\Services\UrlParser;
 
 class LocaleUrl
 {
@@ -10,6 +11,11 @@ class LocaleUrl
      * @var Locale
      */
     private $locale;
+
+    /**
+     * @var UrlParser
+     */
+    private $parser;
 
     /**
      * @var Illuminate\Contracts\Routing\UrlGenerator
@@ -21,9 +27,10 @@ class LocaleUrl
      */
     private $placeholder;
 
-    public function __construct(Locale $locale, UrlGenerator $generator, $config = [])
+    public function __construct(Locale $locale, UrlParser $parser, UrlGenerator $generator, $config = [])
     {
         $this->locale = $locale;
+        $this->parser = $parser;
         $this->generator = $generator;
 
         $this->placeholder = isset($config['placeholder']) ? $config['placeholder'] : null;
@@ -40,7 +47,9 @@ class LocaleUrl
      */
     public function to($url, $locale = null, $extra = [], $secure = null)
     {
-        $url = $this->prependLocaleToUri($url,$locale);
+        $url = $this->parser->set($url)
+                            ->localize($locale)
+                            ->get();
 
         return $this->resolveUrl($url, $extra, $secure);
     }
@@ -55,31 +64,11 @@ class LocaleUrl
      */
     public function route($name, $parameters = [], $absolute = true)
     {
-        $locale = $this->extractLocaleFromParameter($parameters);
+        $locale = $this->extractLocaleFromParameters($parameters);
 
         $url = $this->resolveRoute($name,$parameters,$absolute);
 
         return $this->to($url,$locale);
-    }
-
-    /**
-     * Place locale segment in front of url path
-     * e.g. /foo/bar is transformed into /en/foo/bar
-     *
-     * @param $url
-     * @param null $locale
-     * @return string
-     */
-    private function prependLocaleToUri($url, $locale = null)
-    {
-        $locale = $this->locale->getSlug($locale);
-        $parsed = parse_url($url);
-
-        $path = $this->cleanPathFromExistingLocale($parsed);
-
-        $parsed['path'] = str_replace('//','/','/'.$locale.$path);
-
-        return $this->reassembleParsedUrl($parsed);
     }
 
     /**
@@ -88,7 +77,7 @@ class LocaleUrl
      * @param array $parameters
      * @return null|string
      */
-    private function extractLocaleFromParameter(&$parameters = [])
+    private function extractLocaleFromParameters(&$parameters = [])
     {
         $locale = null;
 
@@ -106,25 +95,6 @@ class LocaleUrl
         }
 
         return $locale;
-    }
-
-    /**
-     * Construct a full url with the parsed url elements
-     * resulted from a parse_url() function call
-     *
-     * @param array $parsed
-     * @return string
-     */
-    private function reassembleParsedUrl(array $parsed)
-    {
-        return
-            ((isset($parsed['scheme'])) ? $parsed['scheme'] . '://' : '')
-            .((isset($parsed['user'])) ? $parsed['user'] . ((isset($parsed['pass'])) ? ':' . $parsed['pass'] : '') .'@' : '')
-            .((isset($parsed['host'])) ? $parsed['host'] : '')
-            .((isset($parsed['port'])) ? ':' . $parsed['port'] : '')
-            .((isset($parsed['path'])) ? $parsed['path'] : '')
-            .((isset($parsed['query'])) ? '?' . $parsed['query'] : '')
-            .((isset($parsed['fragment'])) ? '#' . $parsed['fragment'] : '');
     }
 
     /**
@@ -152,24 +122,4 @@ class LocaleUrl
     {
         return $this->generator->route($name, $parameters, $absolute);
     }
-
-    /**
-     * @param $parsed
-     * @return array
-     */
-    private function cleanPathFromExistingLocale($parsed)
-    {
-        if (!isset($parsed['path'])) return null;
-
-        $path_segments = explode('/', trim($parsed['path'], '/'));
-
-        if (count($path_segments) < 1) return null;
-
-        if ($path_segments[0] == $this->locale->getSlug($path_segments[0]) || $this->locale->isHidden($path_segments[0])) {
-            unset($path_segments[0]);
-        }
-
-        return '/' . implode('/', $path_segments);
-    }
-
 }
