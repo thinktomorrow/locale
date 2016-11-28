@@ -33,7 +33,7 @@ class LocaleUrl
         $this->parser = $parser;
         $this->generator = $generator;
 
-        $this->placeholder = isset($config['placeholder']) ? $config['placeholder'] : null;
+        $this->placeholder = isset($config['placeholder']) ? $config['placeholder'] : 'locale_slug';
     }
 
     /**
@@ -58,12 +58,19 @@ class LocaleUrl
      * Generate a localized route
      *
      * @param $name
+     * @param null $locale
      * @param array $parameters
      * @param bool $absolute
      * @return mixed
      */
-    public function route($name, $parameters = [], $absolute = true)
+    public function route($name, $locale = null, $parameters = [], $absolute = true)
     {
+        // Locale should be passed as second parameter but in case it is passed as array
+        // alongside other parameters, we will try to extract it
+        if(!is_array($locale)) $locale = [$this->placeholder => $locale];
+
+        $parameters = array_merge($locale,$parameters);
+
         $locale = $this->extractLocaleFromParameters($parameters);
 
         $url = $this->resolveRoute($name,$parameters,$absolute);
@@ -87,12 +94,25 @@ class LocaleUrl
 
             // If locale is the only parameter, we make sure the 'real' parameters is flushed
             if($locale == $parameters) $parameters = [];
+
+            return $locale;
         }
-        elseif(!is_null($this->placeholder) && array_key_exists($this->placeholder,$parameters))
+
+        if(!array_key_exists($this->placeholder,$parameters))
         {
-            $locale = $this->locale->get($parameters[$this->placeholder]);
-            unset($parameters[$this->placeholder]);
+            return $this->locale->get();
         }
+
+        $locale = $this->locale->get($parameters[$this->placeholder]);
+
+        // If locale parameter is not a 'real' parameters, we ignore the passed locale and use the active one
+        // The 'wrong' parameter will be used without key
+        if($locale != $parameters[$this->placeholder])
+        {
+            $parameters[] = $parameters[$this->placeholder];
+        }
+
+        unset($parameters[$this->placeholder]);
 
         return $locale;
     }

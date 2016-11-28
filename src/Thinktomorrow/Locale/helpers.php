@@ -21,12 +21,13 @@ if(!function_exists('localeroute'))
 {
     /**
      * @param $name
+     * @param null $locale
      * @param array $parameters
      * @param bool $absolute
      * @return
      */
-    function localeroute($name, $parameters = [], $absolute = true)
+    function localeroute($name, $locale = null, $parameters = [], $absolute = true)
     {
-        return app(LocaleUrl::class)->route($name, $parameters, $absolute);
+        return app(LocaleUrl::class)->route($name, $locale, $parameters, $absolute);
     }
 }

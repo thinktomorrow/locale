@@ -7,8 +7,9 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A Laravel package for lightweight route localization. Locale is responsible for translating the application routes and
-registering the application locale based on the request uri. 
+A Laravel package for lightweight route localization. Locale registers the application locale based on the request uri.
+It's also responsible for translating the application routes.
+. 
 E.g. `/nl/foo` will set locale to `nl`. 
 
 ## Install
@@ -31,7 +32,10 @@ Finally create a configuration file to `/config/thinktomorrow/locale.php`
     php artisan vendor:publish --provider="Thinktomorrow\Locale\LocaleServiceProvider"
 ```
 
-Not required, but if you want to use a facade you can add in the `config/app.php` file as well:
+## Facades and helper functions
+
+For your convenience the Locale and LocaleUrl classes both have Facades. This can clean up your code a bit if you rely on heavy use of the package.
+If you want to use them you can add the following code to the aliases array in the `config/app.php` file:
 
 ``` php
 'aliases' => [
@@ -40,6 +44,20 @@ Not required, but if you want to use a facade you can add in the `config/app.php
     'LocaleUrl' => 'Thinktomorrow\Locale\Facades\LocaleUrlFacade',
 ];
 ```
+
+The two public methods of the LocaleUrl class `LocaleUrl::to()` and `LocaleUrl::route()` can both be 
+accessed via a respective helper function.
+
+``` php
+
+    // A shortcut for calling LocaleUrl::route();
+    $url = localeroute($name, $locale = null, $parameters = [], $absolute = true);
+    
+    // A shortcut for calling LocaleUrl::to()
+    $url = localeurl($url, $locale = null, $extra = [], $secure = null);
+
+```
+
 
 ## Usage
 
@@ -75,8 +93,8 @@ To create an url with a specific locale other than the active one, you can use t
     // Generate localized url from named route (resolves as laravel route() function)
     LocaleUrl::route('pages.about','en'); // http://example.com/en/about  
     
-    // With multiple route parameters you need to use the placeholder key as set in your locale config
-    LocaleUrl::route('products.show',['locale_slug' => 'en','slug' => 'tablet'])); // http://example/en/products/tablet
+    // Add additional parameters as third parameter
+    LocaleUrl::route('products.show','en',['slug' => 'tablet'])); // http://example/en/products/tablet
     
 ```
 
@@ -94,45 +112,28 @@ Note that this is best used for your main / default locale.
 
 #### Set a new locale for current request
 ``` php
-    Locale::set('en');
+    Locale::set('en'); // Sets a new application locale and returns the locale slug
 ```
 
 #### Get the current locale
 ``` php
-    Locale::get(); // returns 'en' and is basically an alias for app()->getLocale();
+    Locale::get(); // returns the current locale e.g. 'en';
+    
+    // You can pass it a locale that will only be returned if it's a valid locale
+    Locale::get('fr'); // returns 'fr' is fr is an accepted locale value
+    Locale::get('foobar'); // ignores the invalid locale and returns the default locale
 ```
 
-## Changing locale
-This is an example on how you allow an user to change the locale. In this case the route `/lang?locale=en` will
-set the new locale to `en` and returns to the user's current page in the new locale.
-
+#### Get the locale slug to be used for url injection
 ``` php
-
-// /app/Http/routes.php:
-Route::get('lang',['as' => 'lang.switch','uses' => LanguageSwitcher::class.'@store']);
-
-// /app/Http/Controllers/LanguageSwitcher.php:
-namespace App\Http\Controllers;
-
-use URL, Illuminate\Http\Request;
-use Locale, LocaleUrl;
-
-class LanguageSwitcher extends Controller
-{
-    public function store(Request $request)
-    {
-        $locale = $request->get('locale');
-        
-        // Set new locale
-        Locale::set($locale);
-        
-        // Get current visited page and return to it in the new locale
-        $previous = LocaleUrl::to(URL::previous(),Locale::get());
-        
-        return redirect()->to($previous);
-    }
-}
+    Locale::getSlug(); // returns 'en' or null if the current locale is set to be hidden
 ```
+
+#### Check if current locale is hidden
+``` php
+    Locale::isHidden(); // checks current or passed locale and returns boolean
+```
+
 
 ## Testing
 

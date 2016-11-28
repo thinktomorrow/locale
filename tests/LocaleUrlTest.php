@@ -93,9 +93,19 @@ class LocaleUrlTest extends TestCase
 
         app()->setLocale('en');
         $this->assertEquals('http://example.be/en/blue/foo/bar', $this->localeUrl->route('foo.show',['color' => 'blue']));
+        $this->assertEquals('http://example.be/fr/blue/foo/bar', $this->localeUrl->route('foo.show','fr',['color' => 'blue']));
 
         app()->setLocale('nl');
         $this->assertEquals('http://example.be/blue/foo/bar', $this->localeUrl->route('foo.show',['color' => 'blue']));
+        $this->assertEquals('http://example.be/blue/foo/bar', $this->localeUrl->route('foo.show','nl',['color' => 'blue']));
+    }
+
+    /** @test */
+    public function on_duplicate_locale_the_last_one_is_used()
+    {
+        Route::get('{color}/foo/bar',['as' => 'foo.show','uses' => function(){}]);
+
+        $this->assertEquals('http://example.be/fr/blue/foo/bar', $this->localeUrl->route('foo.show','en',['locale_slug' => 'fr','color' => 'blue']));
     }
 
     /** @test */

@@ -120,7 +120,7 @@ class Locale
 
         // At this point is means the url does not contain a specific locale so
         // it is assumed the hidden locale is in effect
-        if ($locale = $this->getHiddenLocale()) return $locale;
+        if ($locale = $this->hidden_locale) return $locale;
 
         return false;
     }
@@ -130,11 +130,6 @@ class Locale
         $segment = $this->request->segment(1);
 
         return ($this->validateLocale($segment)) ? $segment : false;
-    }
-
-    private function getHiddenLocale()
-    {
-        return $this->hidden_locale;
     }
 
     /**
