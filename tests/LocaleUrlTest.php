@@ -150,7 +150,7 @@ class LocaleUrlTest extends TestCase
         app()->singleton('Thinktomorrow\Locale\LocaleUrl',function($app){
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Locale'],
-                $app['Thinktomorrow\Locale\Services\UrlParser'],
+                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
                 $app['Illuminate\Contracts\Routing\UrlGenerator'],
                 ['placeholder' => 'locale_slug']
             );

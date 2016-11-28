@@ -49,7 +49,6 @@ class LocaleTest extends TestCase
 
         $request->shouldReceive('cookie')->twice()->withArgs(['locale'])->andReturn('foobar');
         $request->shouldReceive('get')->once();
-        $request->shouldReceive('getHost')->twice();
         $request->shouldReceive('segment')->once();
 
         $locale = new Locale($request,[
@@ -70,7 +69,6 @@ class LocaleTest extends TestCase
 
         $request->shouldReceive('cookie')->once()->withArgs(['locale'])->andReturn(false);
         $request->shouldReceive('get')->once();
-        $request->shouldReceive('getHost')->times(2);
         $request->shouldReceive('segment')->once()->andReturn('foobar');
 
         $locale = new Locale($request,[
@@ -91,7 +89,6 @@ class LocaleTest extends TestCase
 
         $request->shouldReceive('cookie')->once()->withArgs(['locale'])->andReturn(false);
         $request->shouldReceive('get')->once();
-        $request->shouldReceive('getHost')->times(2);
         $request->shouldReceive('segment')->once()->andReturn(null);
 
         $locale = new Locale($request,[
@@ -112,7 +109,6 @@ class LocaleTest extends TestCase
 
         $request->shouldReceive('cookie')->twice()->withArgs(['locale'])->andReturn('fr');
         $request->shouldReceive('get')->twice()->andReturn('foobar');
-        $request->shouldReceive('getHost')->times(2);
         $request->shouldReceive('segment')->once()->andReturn('fr');
 
         $locale = new Locale($request,[

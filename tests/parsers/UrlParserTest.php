@@ -2,8 +2,7 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use Thinktomorrow\Locale\Locale;
-use Thinktomorrow\Locale\Services\UrlParser;
+use Thinktomorrow\Locale\Parsers\UrlParser;
 
 class UrlParserTest extends TestCase
 {
@@ -68,7 +67,12 @@ class UrlParserTest extends TestCase
         $this->parser->set('http:///example.com');
     }
 
+    /** @test */
+    public function assert_that_an_url_is_set()
+    {
+        $this->setExpectedException(\LogicException::class);
 
-
+        $this->parser->localize('en');
+    }
 
 }

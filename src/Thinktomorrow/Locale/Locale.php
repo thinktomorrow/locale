@@ -116,8 +116,6 @@ class Locale
      */
     private function getLocaleFromUrl()
     {
-        if ($locale = $this->getTldLocale()) return $locale;
-        if ($locale = $this->getSubdomainLocale()) return $locale;
         if ($locale = $this->getLocaleSegment()) return $locale;
 
         // At this point is means the url does not contain a specific locale so
@@ -132,28 +130,6 @@ class Locale
         $segment = $this->request->segment(1);
 
         return ($this->validateLocale($segment)) ? $segment : false;
-    }
-
-    private function getTldLocale()
-    {
-        $host = explode('.', $this->request->getHost());
-
-        $tld = last($host);
-
-        return ($this->validateLocale($tld)) ? $tld : false;
-    }
-
-    private function getSubdomainLocale()
-    {
-        $host = explode('.', $this->request->getHost());
-
-        if (count($host) > 2) {
-            $subdomain = $host[count($host) - 2];
-
-            return ($this->validateLocale($subdomain)) ? $subdomain : false;
-        }
-
-        return false;
     }
 
     private function getHiddenLocale()

@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Services;
+namespace Thinktomorrow\Locale\Parsers;
 
 use Thinktomorrow\Locale\Locale;
 
@@ -33,6 +33,7 @@ class UrlParser
         }
 
         // If a schemeless url is passed, parse_url will ignore this and strip the first tags
+        // so we keep a reminder to explicitly reassemble the 'anonymous scheme' manually
         $this->schemeless = (0 === strpos($url,'//') && isset($this->parsed['host']));
 
         return $this;

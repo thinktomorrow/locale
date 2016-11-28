@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
-use Thinktomorrow\Locale\Services\UrlParser;
+use Thinktomorrow\Locale\Parsers\UrlParser;
 
 class LocaleUrl
 {
