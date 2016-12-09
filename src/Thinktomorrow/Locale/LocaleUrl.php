@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Parsers\UrlParser;
 
 class LocaleUrl
@@ -15,23 +16,23 @@ class LocaleUrl
     /**
      * @var UrlParser
      */
-    private $parser;
-
-    /**
-     * @var Illuminate\Contracts\Routing\UrlGenerator
-     */
-    private $generator;
+    private $urlparser;
 
     /**
      * @var null|string
      */
     private $placeholder;
 
-    public function __construct(Locale $locale, UrlParser $parser, UrlGenerator $generator, $config = [])
+    /**
+     * @var RouteParser
+     */
+    private $routeparser;
+
+    public function __construct(Locale $locale, UrlParser $urlparser, RouteParser $routeparser, $config = [])
     {
         $this->locale = $locale;
-        $this->parser = $parser;
-        $this->generator = $generator;
+        $this->urlparser = $urlparser;
+        $this->routeparser = $routeparser;
 
         $this->placeholder = isset($config['placeholder']) ? $config['placeholder'] : 'locale_slug';
     }
@@ -41,17 +42,17 @@ class LocaleUrl
      *
      * @param $url
      * @param null $locale
-     * @param array $extra
+     * @param array $parameters
      * @param null $secure
      * @return mixed
      */
-    public function to($url, $locale = null, $extra = [], $secure = null)
+    public function to($url, $locale = null, $parameters = [], $secure = null)
     {
-        $url = $this->parser->set($url)
+        return $this->urlparser->set($url)
                             ->localize($locale)
+                            ->parameters($parameters)
+                            ->secure($secure)
                             ->get();
-
-        return $this->resolveUrl($url, $extra, $secure);
     }
 
     /**
@@ -69,13 +70,15 @@ class LocaleUrl
         // alongside other parameters, we will try to extract it
         if(!is_array($locale)) $locale = [$this->placeholder => $locale];
 
-        $parameters = array_merge($locale,$parameters);
+        $parameters = array_merge($locale,(array)$parameters);
 
         $locale = $this->extractLocaleFromParameters($parameters);
 
-        $url = $this->resolveRoute($name,$parameters,$absolute);
-
-        return $this->to($url,$locale);
+        return $this->routeparser->set($name)
+                            ->localize($locale)
+                            ->parameters($parameters)
+                            ->absolute($absolute)
+                            ->get();
     }
 
     /**
@@ -115,31 +118,5 @@ class LocaleUrl
         unset($parameters[$this->placeholder]);
 
         return $locale;
-    }
-
-    /**
-     * Generate url via illuminate
-     *
-     * @param $url
-     * @param array $extra
-     * @param null $secure
-     * @return string
-     */
-    private function resolveUrl($url, $extra = [], $secure = null)
-    {
-        return $this->generator->to($url, $extra, $secure);
-    }
-
-    /**
-     * Generate route via illuminate
-     *
-     * @param $name
-     * @param array $parameters
-     * @param bool $absolute
-     * @return string
-     */
-    private function resolveRoute($name, $parameters = [], $absolute = true)
-    {
-        return $this->generator->route($name, $parameters, $absolute);
     }
 }

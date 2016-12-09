@@ -4,7 +4,7 @@ namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Support\Facades\Route;
 
-class HelpersTest extends LocaleUrlTest
+class ZHelpersTest extends LocaleUrlTest
 {
     /** @test */
     public function localeurl_is_a_wrapper()
@@ -19,11 +19,11 @@ class HelpersTest extends LocaleUrlTest
     public function localeroute_is_a_wrapper()
     {
         app()->setLocale('en');
-        Route::get('foo/bar/{slug?}',['as' => 'foo.show','uses' => function(){}]);
+        Route::get('foo/bar/{slug?}',['as' => 'foo.custom','uses' => function(){}]);
 
-        $this->assertEquals('http://example.be/en/foo/bar', localeroute('foo.show'));
-        $this->assertEquals('http://example.be/fr/foo/bar', localeroute('foo.show','fr'));
-        $this->assertEquals('http://example.be/en/foo/bar/cow', localeroute('foo.show', 'cow'));
+        $this->assertEquals('http://example.be/en/foo/bar', localeroute('foo.custom'));
+        $this->assertEquals('http://example.be/fr/foo/bar', localeroute('foo.custom','fr'));
+        $this->assertEquals('http://example.be/en/foo/bar/cow', localeroute('foo.custom', 'cow'));
     }
 
 }

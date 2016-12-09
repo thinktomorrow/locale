@@ -1,6 +1,7 @@
 <?php namespace Thinktomorrow\Locale;
 
 use Illuminate\Support\ServiceProvider;
+use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Parsers\UrlParser;
 
 class LocaleServiceProvider extends ServiceProvider {
@@ -18,14 +19,24 @@ class LocaleServiceProvider extends ServiceProvider {
         });
 
         $this->app->singleton(UrlParser::class,function($app){
-            return new UrlParser($app['Thinktomorrow\Locale\Locale']);
+            return new UrlParser(
+                $app['Thinktomorrow\Locale\Locale'],
+                $app['Illuminate\Contracts\Routing\UrlGenerator']
+            );
+        });
+
+        $this->app->singleton(RouteParser::class,function($app){
+            return new RouteParser(
+                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
+                $app['translator']
+            );
         });
 
         $this->app->singleton(LocaleUrl::class,function($app){
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Locale'],
                 $app['Thinktomorrow\Locale\Parsers\UrlParser'],
-                $app['Illuminate\Contracts\Routing\UrlGenerator'],
+                $app['Thinktomorrow\Locale\Parsers\RouteParser'],
                 $this->getConfig()
             );
         });

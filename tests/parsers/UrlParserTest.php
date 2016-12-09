@@ -2,6 +2,7 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
+use Illuminate\Routing\UrlGenerator;
 use Thinktomorrow\Locale\Parsers\UrlParser;
 
 class UrlParserTest extends TestCase
@@ -12,6 +13,9 @@ class UrlParserTest extends TestCase
     {
         parent::setUp();
 
+        // Force root url for testing
+        app(UrlGenerator::class)->forceRootUrl('http://example.com');
+
         $this->parser = app()->make(UrlParser::class);
     }
 
@@ -19,17 +23,17 @@ class UrlParserTest extends TestCase
     public function assert_urls_are_kept_untouched()
     {
         $urls = [
-            'http://example.be/fr/foo/bar',
-            'http://example.be/fr/foo/bar',
-            'http://example.be/fr',
+            'http://example.com/fr/foo/bar',
+            'http://example.com/fr/foo/bar',
+            'http://example.com/fr',
             'http://example.com/fr/foo/bar',
             'http://example.com/fr/foo/bar?s=q',
             'http://example.fr/fr/foo/bar',
             'https://example.com/fr/foo/bar',
             'https://example.com/fr/foo/bar#index',
             '//example.com/fr/foo/bar',
-            '/fr/foo/bar',
-            'fr/foo/bar',
+            'http://example.com/fr/foo/bar',
+            'http://example.com/fr/foo/bar',
         ];
 
         foreach ($urls as $url) {
@@ -43,9 +47,9 @@ class UrlParserTest extends TestCase
         app()->setLocale('fr');
 
         $urls = [
-            '/foo/bar' => '/fr/foo/bar',
-            'foo/bar' => '/fr/foo/bar',
-            '' => '/fr/',
+            '/foo/bar' => 'http://example.com/fr/foo/bar',
+            'foo/bar' => 'http://example.com/fr/foo/bar',
+            '' => 'http://example.com/fr',
             'http://example.com' => 'http://example.com/fr',
             'http://example.com/foo/bar' => 'http://example.com/fr/foo/bar',
             'http://example.com/foo/bar?s=q' => 'http://example.com/fr/foo/bar?s=q',
@@ -72,7 +76,7 @@ class UrlParserTest extends TestCase
     {
         $this->setExpectedException(\LogicException::class);
 
-        $this->parser->localize('en');
+        $this->parser->localize('en')->get();
     }
 
 }

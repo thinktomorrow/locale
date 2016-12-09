@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Facades\LocaleFacade;
 use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
 
-class FacadesTest extends LocaleUrlTest
+class ZFacadesTest extends LocaleUrlTest
 {
     /** @test */
     public function locale_facade()
