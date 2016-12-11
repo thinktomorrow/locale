@@ -23,8 +23,8 @@ class ZFacadesTest extends LocaleUrlTest
         app()->setLocale('en');
         Route::get('foo/bar/{slug?}',['as' => 'foo.show','uses' => function(){}]);
 
-        $this->assertEquals('http://example.be/en/foo/bar', LocaleUrlFacade::route('foo.show'));
-        $this->assertEquals('http://example.be/en',LocaleUrlFacade::to('/'));
+        $this->assertEquals('http://example.com/en/foo/bar', LocaleUrlFacade::route('foo.show'));
+        $this->assertEquals('http://example.com/en',LocaleUrlFacade::to('/'));
     }
 
 }

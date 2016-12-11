@@ -39,10 +39,4 @@ interface Parser
      * @return $this
      */
     public function secure($secure = true);
-
-    /**
-     * @param bool $absolute
-     * @return $this
-     */
-    public function absolute($absolute = true);
 }

@@ -2,7 +2,10 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
+use Illuminate\Routing\UrlGenerator;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
+use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\LocaleUrl;
 
 class TestCase extends OrchestraTestCase
 {
@@ -24,5 +27,31 @@ class TestCase extends OrchestraTestCase
     private function getStubDirectory($dir = null)
     {
         return __DIR__.'/stubs/' . $dir;
+    }
+
+    protected function refreshBindings($defaultLocale = 'nl',$hiddenLocale = 'nl')
+    {
+        app()->singleton('Thinktomorrow\Locale\Locale', function ($app) use($hiddenLocale) {
+            return new Locale($app['request'], [
+                'available_locales' => ['nl', 'fr', 'en'],
+                'fallback_locale' => null,
+                'hidden_locale' => $hiddenLocale
+            ]);
+        });
+
+        // Force root url for testing
+        app(UrlGenerator::class)->forceRootUrl('http://example.com');
+
+        app()->singleton('Thinktomorrow\Locale\LocaleUrl',function($app){
+            return new LocaleUrl(
+                $app['Thinktomorrow\Locale\Locale'],
+                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
+                $app['Thinktomorrow\Locale\Parsers\RouteParser'],
+                ['placeholder' => 'locale_slug']
+            );
+        });
+
+        $this->localeUrl = app(LocaleUrl::class);
+        app()->setLocale($defaultLocale);
     }
 }

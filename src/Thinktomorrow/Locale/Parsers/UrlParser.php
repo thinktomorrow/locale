@@ -31,11 +31,6 @@ class UrlParser implements Parser
     private $secure = false;
 
     /**
-     * @var bool
-     */
-    private $absolute = true;
-
-    /**
      * @var array
      */
     private $parameters = [];
@@ -57,6 +52,12 @@ class UrlParser implements Parser
         $this->generator = $generator;
     }
 
+    /**
+     * Set the original url/uri
+     *
+     * @param $url
+     * @return $this
+     */
     public function set($url)
     {
         $this->parsed = parse_url($url);
@@ -73,21 +74,43 @@ class UrlParser implements Parser
         return $this;
     }
 
+    /**
+     * Get the localized url
+     *
+     * @return string
+     */
     public function get()
     {
         $this->assertUrlExists();
 
         // Only localize the url if a locale is passed.
-        if(false !== $this->localeslug) $this->localizePath($this->localeslug);
+        if(false !== $this->localeslug)
+        {
+            $this->localizePath($this->localeslug);
+        }
 
-        $url = $this->reassemble($this->parsed);
+        $url = $this->generator->to($this->reassemble($this->parsed),$this->parameters,$this->secure);
 
-        return $this->generator->to($url,$this->parameters,$this->secure);
+        // Secure url is not enforced by the urlgenerator when a valid url is passed
+        // So we enforce it after url generation
+        if($this->secure && 0 === strpos($url,'http://'))
+        {
+            $url = str_replace('http://','https://',$url);
+        }
+
+        return $url;
     }
 
-    public function resolveRoute($routekey,$parameters = [])
+    /**
+     * Resolve the route via the Illuminate UrlGenerator
+     *
+     * @param $routekey
+     * @param array $parameters
+     * @return string
+     */
+    public function resolveRoute($routekey, $parameters = [])
     {
-        return $this->generator->route($routekey,$parameters,$this->absolute);
+        return $this->generator->route($routekey,$parameters,true);
     }
 
     /**
@@ -127,16 +150,10 @@ class UrlParser implements Parser
     }
 
     /**
-     * @param bool $absolute
-     * @return $this
+     * Inject the locale slug in the uri
+     *
+     * @param null $locale
      */
-    public function absolute($absolute = true)
-    {
-        $this->absolute = !!$absolute;
-
-        return $this;
-    }
-
     private function localizePath($locale = null)
     {
         $this->parsed['path'] = str_replace('//','/',
@@ -171,8 +188,10 @@ class UrlParser implements Parser
      */
     private function reassemble(array $parsed)
     {
+        $scheme = (isset($parsed['scheme'])) ? $parsed['scheme'] . '://' : ($this->schemeless ? '//' : '');
+
         return
-            ((isset($parsed['scheme'])) ? $parsed['scheme'] . '://' : ($this->schemeless ? '//' : ''))
+            $scheme
             .((isset($parsed['user'])) ? $parsed['user'] . ((isset($parsed['pass'])) ? ':' . $parsed['pass'] : '') .'@' : '')
             .((isset($parsed['host'])) ? $parsed['host'] : '')
             .((isset($parsed['port'])) ? ':' . $parsed['port'] : '')

@@ -56,15 +56,16 @@ class LocaleUrl
     }
 
     /**
-     * Generate a localized route
+     * Generate a localized route.
+     * Note that unlike the Illuminate route() no parameter for 'absolute' path is available
+     * since urls will always be rendered as absolute ones.
      *
      * @param $name
      * @param null $locale
      * @param array $parameters
-     * @param bool $absolute
      * @return mixed
      */
-    public function route($name, $locale = null, $parameters = [], $absolute = true)
+    public function route($name, $locale = null, $parameters = [])
     {
         // Locale should be passed as second parameter but in case it is passed as array
         // alongside other parameters, we will try to extract it
@@ -77,7 +78,6 @@ class LocaleUrl
         return $this->routeparser->set($name)
                             ->localize($locale)
                             ->parameters($parameters)
-                            ->absolute($absolute)
                             ->get();
     }
 
@@ -87,19 +87,9 @@ class LocaleUrl
      * @param array $parameters
      * @return null|string
      */
-    private function extractLocaleFromParameters(&$parameters = [])
+    private function extractLocaleFromParameters(array &$parameters = [])
     {
         $locale = null;
-
-        if(!is_array($parameters))
-        {
-            $locale = $this->locale->get($parameters);
-
-            // If locale is the only parameter, we make sure the 'real' parameters is flushed
-            if($locale == $parameters) $parameters = [];
-
-            return $locale;
-        }
 
         if(!array_key_exists($this->placeholder,$parameters))
         {
@@ -108,7 +98,7 @@ class LocaleUrl
 
         $locale = $this->locale->get($parameters[$this->placeholder]);
 
-        // If locale parameter is not a 'real' parameters, we ignore the passed locale and use the active one
+        // If locale parameter is not a 'real' parameter, we ignore this value and use the current locale instead
         // The 'wrong' parameter will be used without key
         if($locale != $parameters[$this->placeholder])
         {

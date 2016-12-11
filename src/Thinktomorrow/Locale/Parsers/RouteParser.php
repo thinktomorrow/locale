@@ -2,6 +2,7 @@
 
 namespace Thinktomorrow\Locale\Parsers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Translation\Translator;
 
@@ -43,7 +44,7 @@ class RouteParser implements Parser
     /**
      * Retrieve the generated / altered url
      * If no translated routekey is found, it means the route itself does not need to be
-     * translated and we allow the native url generator to deal with this route generation
+     * translated and we allow the native url generator to deal with the route generation
      *
      * @return mixed
      */
@@ -51,18 +52,11 @@ class RouteParser implements Parser
     {
         $routekey = $this->translator->get('routes.'.$this->name,[],$this->localeslug);
 
-        if($routekey === 'routes.'.$this->name)
-        {
-            $uri = $this->parser->resolveRoute($this->name,$this->parameters);
-        }
-        else
-        {
-            $uri = $this->replaceParameters($routekey,$this->parameters);
-        }
+        $uri = ($routekey === 'routes.'.$this->name)
+                ? $this->parser->resolveRoute($this->name,$this->parameters)
+                : $this->replaceParameters($routekey,$this->parameters);
 
-        $this->parser->set($uri);
-
-        return $this->parser->get();
+        return $this->parser->set($uri)->get();
     }
 
     /**
@@ -98,17 +92,6 @@ class RouteParser implements Parser
     public function secure($secure = true)
     {
         $this->parser->secure($secure);
-
-        return $this;
-    }
-
-    /**
-     * @param bool $absolute
-     * @return $this
-     */
-    public function absolute($absolute = true)
-    {
-        $this->parser->absolute($absolute);
 
         return $this;
     }
