@@ -18,7 +18,7 @@ class TestCase extends OrchestraTestCase
     {
         $app['path.lang'] = $this->getStubDirectory('lang');
         $app['config']->set('app.locale','nl');
-        $app['config']->set('app.fallback_locale','en');
+        $app['config']->set('app.fallback_locale','nl');
 
         // Dimsav package dependency requires us to set the fallback locale via this config
         // It should if config not set be using the default laravel fallback imo
