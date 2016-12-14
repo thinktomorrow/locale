@@ -20,21 +20,21 @@ class RouteParserTest extends TestCase
     }
 
     /** @test */
-    public function to_localize_route()
+    public function to_localize_translatable_route()
     {
         $this->assertEquals('http://example.com/foz/baz/cow', $this->parser->set('foo.show')->parameters(['slug' => 'cow'])->localize('nl')->get());
         $this->assertEquals('http://example.com/en/foo/bar/cow', $this->parser->set('foo.show')->parameters(['slug' => 'cow'])->localize('en')->get());
     }
 
     /** @test */
-    public function to_localize_route_not_in_translations_takes_default_translation()
+    public function to_take_default_when_given_route_not_found_as_translatable()
     {
-        // Uses fallback locale for translation
+        // Uses fallback locale (nl) for translation of routekey
         $this->assertEquals('http://example.com/fr/foz/baz/cow', $this->parser->set('foo.show')->parameters(['slug' => 'cow'])->localize('fr')->get());
     }
 
     /** @test */
-    public function to_localize_route_not_in_any_translations()
+    public function to_halt_execution_when_route_isnt_translatable()
     {
         $this->setExpectedException(InvalidArgumentException::class);
         $this->assertEquals('http://example.com/fr/foo.unknown', $this->parser->set('foo.unknown')->localize('fr')->get());
