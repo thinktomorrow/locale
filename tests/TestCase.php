@@ -17,32 +17,33 @@ class TestCase extends OrchestraTestCase
     protected function getEnvironmentSetUp($app)
     {
         $app['path.lang'] = $this->getStubDirectory('lang');
-        $app['config']->set('app.locale','nl');
-        $app['config']->set('app.fallback_locale','nl');
+        $app['config']->set('app.locale', 'nl');
+        $app['config']->set('app.fallback_locale', 'nl');
 
         // Dimsav package dependency requires us to set the fallback locale via this config
         // It should if config not set be using the default laravel fallback imo
-        $app['config']->set('translatable.fallback_locale','en');
-    }
-    private function getStubDirectory($dir = null)
-    {
-        return __DIR__.'/stubs/' . $dir;
+        $app['config']->set('translatable.fallback_locale', 'en');
     }
 
-    protected function refreshBindings($defaultLocale = 'nl',$hiddenLocale = 'nl')
+    private function getStubDirectory($dir = null)
     {
-        app()->singleton('Thinktomorrow\Locale\Locale', function ($app) use($hiddenLocale) {
+        return __DIR__.'/stubs/'.$dir;
+    }
+
+    protected function refreshBindings($defaultLocale = 'nl', $hiddenLocale = 'nl')
+    {
+        app()->singleton('Thinktomorrow\Locale\Locale', function ($app) use ($hiddenLocale) {
             return new Locale($app['request'], [
                 'available_locales' => ['nl', 'fr', 'en'],
-                'fallback_locale' => null,
-                'hidden_locale' => $hiddenLocale
+                'fallback_locale'   => null,
+                'hidden_locale'     => $hiddenLocale,
             ]);
         });
 
         // Force root url for testing
         app(UrlGenerator::class)->forceRootUrl('http://example.com');
 
-        app()->singleton('Thinktomorrow\Locale\LocaleUrl',function($app){
+        app()->singleton('Thinktomorrow\Locale\LocaleUrl', function ($app) {
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Locale'],
                 $app['Thinktomorrow\Locale\Parsers\UrlParser'],

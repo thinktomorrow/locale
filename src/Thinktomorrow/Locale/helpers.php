@@ -2,13 +2,13 @@
 
 use Thinktomorrow\Locale\LocaleUrl;
 
-if(!function_exists('localeurl'))
-{
+if (!function_exists('localeurl')) {
     /**
      * @param $url
-     * @param null $locale
+     * @param null  $locale
      * @param array $extra
-     * @param null $secure
+     * @param null  $secure
+     *
      * @return mixed
      */
     function localeurl($url, $locale = null, $extra = [], $secure = null)
@@ -17,13 +17,13 @@ if(!function_exists('localeurl'))
     }
 }
 
-if(!function_exists('localeroute'))
-{
+if (!function_exists('localeroute')) {
     /**
      * @param $name
-     * @param null $locale
+     * @param null  $locale
      * @param array $parameters
-     * @param bool $absolute
+     * @param bool  $absolute
+     *
      * @return
      */
     function localeroute($name, $locale = null, $parameters = [], $absolute = true)
