@@ -2,7 +2,6 @@
 
 namespace Thinktomorrow\Locale;
 
-use Illuminate\Contracts\Routing\UrlGenerator;
 use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Parsers\UrlParser;
 
@@ -38,12 +37,13 @@ class LocaleUrl
     }
 
     /**
-     * Generate a localized url
+     * Generate a localized url.
      *
      * @param $url
-     * @param null $locale
+     * @param null  $locale
      * @param array $parameters
-     * @param null $secure
+     * @param null  $secure
+     *
      * @return mixed
      */
     public function to($url, $locale = null, $parameters = [], $secure = null)
@@ -61,17 +61,20 @@ class LocaleUrl
      * since urls will always be rendered as absolute ones.
      *
      * @param $name
-     * @param null $locale
+     * @param null  $locale
      * @param array $parameters
+     *
      * @return mixed
      */
     public function route($name, $locale = null, $parameters = [])
     {
         // Locale should be passed as second parameter but in case it is passed as array
         // alongside other parameters, we will try to extract it
-        if(!is_array($locale)) $locale = [$this->placeholder => $locale];
+        if (!is_array($locale)) {
+            $locale = [$this->placeholder => $locale];
+        }
 
-        $parameters = array_merge($locale,(array)$parameters);
+        $parameters = array_merge($locale, (array) $parameters);
 
         $locale = $this->extractLocaleFromParameters($parameters);
 
@@ -82,17 +85,17 @@ class LocaleUrl
     }
 
     /**
-     * Isolate locale value from parameters
+     * Isolate locale value from parameters.
      *
      * @param array $parameters
+     *
      * @return null|string
      */
     private function extractLocaleFromParameters(array &$parameters = [])
     {
         $locale = null;
 
-        if(!array_key_exists($this->placeholder,$parameters))
-        {
+        if (!array_key_exists($this->placeholder, $parameters)) {
             return $this->locale->get();
         }
 
@@ -100,8 +103,7 @@ class LocaleUrl
 
         // If locale parameter is not a 'real' parameter, we ignore this value and use the current locale instead
         // The 'wrong' parameter will be used without key
-        if($locale != $parameters[$this->placeholder])
-        {
+        if ($locale != $parameters[$this->placeholder]) {
             $parameters[] = $parameters[$this->placeholder];
         }
 

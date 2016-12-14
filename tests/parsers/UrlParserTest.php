@@ -2,7 +2,6 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use Illuminate\Routing\UrlGenerator;
 use Thinktomorrow\Locale\Parsers\UrlParser;
 
 class UrlParserTest extends TestCase
@@ -23,11 +22,11 @@ class UrlParserTest extends TestCase
     {
         $urls = [
             '/foo/bar' => 'http://example.com/foo/bar',
-            '' => 'http://example.com',
+            ''         => 'http://example.com',
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, $this->parser->set($original)->get(), 'improper conversion from ' . $original . ' to ' . $this->parser->set($original)->get() . ' - ' . $result . ' was expected.');
+            $this->assertEquals($result, $this->parser->set($original)->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->get().' - '.$result.' was expected.');
         }
     }
 
@@ -46,7 +45,7 @@ class UrlParserTest extends TestCase
         ];
 
         foreach ($urls as $url) {
-            $this->assertEquals($url, $this->parser->set($url)->get(), 'improper conversion from ' . $url . ' to ' . $this->parser->set($url)->get() . ' - ' . $url . ' was expected.');
+            $this->assertEquals($url, $this->parser->set($url)->get(), 'improper conversion from '.$url.' to '.$this->parser->set($url)->get().' - '.$url.' was expected.');
         }
     }
 
@@ -54,19 +53,19 @@ class UrlParserTest extends TestCase
     public function with_localization_parameter_url_is_injected_with_localeslug()
     {
         $urls = [
-            '/foo/bar' => 'http://example.com/fr/foo/bar',
-            'foo/bar' => 'http://example.com/fr/foo/bar',
-            '' => 'http://example.com/fr',
-            'http://example.com' => 'http://example.com/fr',
-            'http://example.com/foo/bar' => 'http://example.com/fr/foo/bar',
-            'http://example.com/foo/bar?s=q' => 'http://example.com/fr/foo/bar?s=q',
-            'http://example.fr/foo/bar' => 'http://example.fr/fr/foo/bar',
-            'https://example.com/fr/foo/bar' => 'https://example.com/fr/foo/bar',
+            '/foo/bar'                          => 'http://example.com/fr/foo/bar',
+            'foo/bar'                           => 'http://example.com/fr/foo/bar',
+            ''                                  => 'http://example.com/fr',
+            'http://example.com'                => 'http://example.com/fr',
+            'http://example.com/foo/bar'        => 'http://example.com/fr/foo/bar',
+            'http://example.com/foo/bar?s=q'    => 'http://example.com/fr/foo/bar?s=q',
+            'http://example.fr/foo/bar'         => 'http://example.fr/fr/foo/bar',
+            'https://example.com/fr/foo/bar'    => 'https://example.com/fr/foo/bar',
             'https://example.com/foo/bar#index' => 'https://example.com/fr/foo/bar#index',
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, $this->parser->set($original)->localize('fr')->get(), 'improper conversion from ' . $original . ' to ' . $this->parser->set($original)->localize('fr')->get() . ' - ' . $result . ' was expected.');
+            $this->assertEquals($result, $this->parser->set($original)->localize('fr')->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->localize('fr')->get().' - '.$result.' was expected.');
         }
     }
 
@@ -74,16 +73,15 @@ class UrlParserTest extends TestCase
     public function to_make_url_secure()
     {
         $urls = [
-            '/foo/bar' => 'https://example.com/fr/foo/bar',
-            'foo/bar' => 'https://example.com/fr/foo/bar',
-            '' => 'https://example.com/fr',
+            '/foo/bar'                      => 'https://example.com/fr/foo/bar',
+            'foo/bar'                       => 'https://example.com/fr/foo/bar',
+            ''                              => 'https://example.com/fr',
             'http://example.com/fr/foo/bar' => 'https://example.com/fr/foo/bar',
         ];
 
-        foreach ($urls as $original => $result)
-        {
+        foreach ($urls as $original => $result) {
             $parsed = $this->parser->set($original)->localize('fr')->secure()->get();
-            $this->assertEquals($result, $parsed, 'improper conversion from ' . $original . ' to ' . $parsed . ' - ' . $result . ' was expected.');
+            $this->assertEquals($result, $parsed, 'improper conversion from '.$original.' to '.$parsed.' - '.$result.' was expected.');
         }
     }
 
@@ -102,5 +100,4 @@ class UrlParserTest extends TestCase
 
         $this->parser->localize('en')->get();
     }
-
 }

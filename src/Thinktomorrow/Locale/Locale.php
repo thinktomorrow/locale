@@ -15,16 +15,17 @@ class Locale
     {
         $this->request = $request;
 
-        $this->available_locales = (array)$config['available_locales'];
+        $this->available_locales = (array) $config['available_locales'];
         $this->hidden_locale = isset($config['hidden_locale']) ? $config['hidden_locale'] : null;
         $this->fallback_locale = (isset($config['fallback_locale']) && $config['fallback_locale']) ? $config['fallback_locale'] : config('app.fallback_locale');
     }
 
     /**
      * Setup the locale for current request and
-     * get the locale slug for the route
+     * get the locale slug for the route.
      *
      * @param null $locale
+     *
      * @return null|string
      */
     public function set($locale = null)
@@ -35,9 +36,10 @@ class Locale
     }
 
     /**
-     * Get the current locale
+     * Get the current locale.
      *
      * @param null $locale
+     *
      * @return null|string
      */
     public function get($locale = null)
@@ -49,35 +51,41 @@ class Locale
      * Retrieve the url slug for current or passed locale.
      *
      * @param null $locale
+     *
      * @return null|string
      */
     public function getSlug($locale = null)
     {
         $locale = $this->get($locale);
 
-        if ($this->hidden_locale == $locale) return null;
+        if ($this->hidden_locale == $locale) {
+            return;
+        }
 
         return $locale;
     }
 
     /**
-     * Check if current or passed locale is set as hidden
+     * Check if current or passed locale is set as hidden.
      *
      * @param null $locale
+     *
      * @return bool
      */
     public function isHidden($locale = null)
     {
         // If a specific locale string is passed we first validate it represents a valid locale
-        if($locale && !$this->validateLocale($locale)) return false;
+        if ($locale && !$this->validateLocale($locale)) {
+            return false;
+        }
 
         $locale = $this->get($locale);
 
-        return ($this->hidden_locale == $locale);
+        return $this->hidden_locale == $locale;
     }
 
     /**
-     * Set locale according to following priority:
+     * Set locale according to following priority:.
      *
      * 0) If locale is passed as parameter, this locale will be forced
      * 1) If locale is in request as query parameter e.g. ?lang=fr,
@@ -86,6 +94,7 @@ class Locale
      * 4) Otherwise: set locale to our fallback language
      *
      * @param null $locale
+     *
      * @return array|mixed|null|string
      */
     private function store($locale = null)
@@ -116,11 +125,15 @@ class Locale
      */
     private function getLocaleFromUrl()
     {
-        if ($locale = $this->getLocaleSegment()) return $locale;
+        if ($locale = $this->getLocaleSegment()) {
+            return $locale;
+        }
 
         // At this point is means the url does not contain a specific locale so
         // it is assumed the hidden locale is in effect
-        if ($locale = $this->hidden_locale) return $locale;
+        if ($locale = $this->hidden_locale) {
+            return $locale;
+        }
 
         return false;
     }
@@ -134,13 +147,15 @@ class Locale
 
     /**
      * @param null $locale
+     *
      * @return bool
      */
     private function validateLocale($locale = null)
     {
-        if (!$locale) return false;
+        if (!$locale) {
+            return false;
+        }
 
         return in_array($locale, $this->available_locales);
     }
-
 }
