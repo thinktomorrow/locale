@@ -43,9 +43,9 @@ class RouteParserTest extends TestCase
     /** @test */
     public function to_make_route_secure()
     {
-        Route::get('{color}/foo/bar',['as' => 'foo.custom','uses' => function(){}]);
+        Route::get('{color}/foo/bar', ['as' => 'foo.custom', 'uses' => function () {
+        }]);
 
         $this->assertEquals('https://example.com/blue/foo/bar', $this->parser->set('foo.custom')->parameters(['color' => 'blue'])->secure()->get());
     }
-
 }

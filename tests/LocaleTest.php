@@ -8,30 +8,30 @@ class LocaleTest extends TestCase
 {
     private $locale;
 
-   public function setUp()
-   {
-       parent::setUp();
+    public function setUp()
+    {
+        parent::setUp();
 
-       $this->locale = new Locale(app()->make('request'),[
-           'available_locales' => ['nl','fr'],
-           'fallback_locale' => 'nl',
-           'hidden_locale' => null,
+        $this->locale = new Locale(app()->make('request'), [
+           'available_locales' => ['nl', 'fr'],
+           'fallback_locale'   => 'nl',
+           'hidden_locale'     => null,
        ]);
-   }
+    }
 
     /** @test */
     public function it_can_be_called()
     {
         $locale = app()->make(Locale::class);
 
-        $this->assertInstanceOf(Locale::class,$locale);
+        $this->assertInstanceOf(Locale::class, $locale);
     }
 
     /** @test */
     public function it_gets_available_locale()
     {
         $this->locale->set('fr');
-        $this->assertEquals('fr',$this->locale->get('fr'));
+        $this->assertEquals('fr', $this->locale->get('fr'));
     }
 
     /** @test */
@@ -39,7 +39,7 @@ class LocaleTest extends TestCase
     {
         $this->locale->set();
 
-        $this->assertEquals('nl',$this->locale->get('foo'));
+        $this->assertEquals('nl', $this->locale->get('foo'));
     }
 
     /** @test */
@@ -51,15 +51,15 @@ class LocaleTest extends TestCase
         $request->shouldReceive('get')->once();
         $request->shouldReceive('segment')->once();
 
-        $locale = new Locale($request,[
-            'available_locales' => ['nl','fr','foobar'],
-            'fallback_locale' => 'nl',
-            'hidden_locale' => null,
+        $locale = new Locale($request, [
+            'available_locales' => ['nl', 'fr', 'foobar'],
+            'fallback_locale'   => 'nl',
+            'hidden_locale'     => null,
         ]);
 
         $locale->set();
 
-        $this->assertEquals('foobar',$locale->get());
+        $this->assertEquals('foobar', $locale->get());
     }
 
     /** @test */
@@ -71,15 +71,15 @@ class LocaleTest extends TestCase
         $request->shouldReceive('get')->once();
         $request->shouldReceive('segment')->once()->andReturn('foobar');
 
-        $locale = new Locale($request,[
-            'available_locales' => ['nl','fr','foobar'],
-            'fallback_locale' => 'nl',
-            'hidden_locale' => 'fr',
+        $locale = new Locale($request, [
+            'available_locales' => ['nl', 'fr', 'foobar'],
+            'fallback_locale'   => 'nl',
+            'hidden_locale'     => 'fr',
         ]);
 
         $locale->set();
 
-        $this->assertEquals('foobar',$locale->get());
+        $this->assertEquals('foobar', $locale->get());
     }
 
     /** @test */
@@ -91,15 +91,15 @@ class LocaleTest extends TestCase
         $request->shouldReceive('get')->once();
         $request->shouldReceive('segment')->once()->andReturn(null);
 
-        $locale = new Locale($request,[
-            'available_locales' => ['nl','fr','foobar'],
-            'fallback_locale' => 'nl',
-            'hidden_locale' => 'fr',
+        $locale = new Locale($request, [
+            'available_locales' => ['nl', 'fr', 'foobar'],
+            'fallback_locale'   => 'nl',
+            'hidden_locale'     => 'fr',
         ]);
 
         $locale->set();
 
-        $this->assertEquals('fr',$locale->get());
+        $this->assertEquals('fr', $locale->get());
     }
 
     /** @test */
@@ -111,15 +111,15 @@ class LocaleTest extends TestCase
         $request->shouldReceive('get')->twice()->andReturn('foobar');
         $request->shouldReceive('segment')->once()->andReturn('fr');
 
-        $locale = new Locale($request,[
-            'available_locales' => ['nl','fr','foobar'],
-            'fallback_locale' => 'nl',
-            'hidden_locale' => 'fr',
+        $locale = new Locale($request, [
+            'available_locales' => ['nl', 'fr', 'foobar'],
+            'fallback_locale'   => 'nl',
+            'hidden_locale'     => 'fr',
         ]);
 
         $locale->set();
 
-        $this->assertEquals('foobar',$locale->get());
+        $this->assertEquals('foobar', $locale->get());
     }
 
     /** @test */
@@ -132,17 +132,14 @@ class LocaleTest extends TestCase
         $request->shouldReceive('getHost')->never();
         $request->shouldReceive('segment')->never();
 
-        $locale = new Locale($request,[
-            'available_locales' => ['nl','fr','foobar','fooz'],
-            'fallback_locale' => 'nl',
-            'hidden_locale' => 'fr',
+        $locale = new Locale($request, [
+            'available_locales' => ['nl', 'fr', 'foobar', 'fooz'],
+            'fallback_locale'   => 'nl',
+            'hidden_locale'     => 'fr',
         ]);
 
         $locale->set('fooz');
 
-        $this->assertEquals('fooz',$locale->get());
+        $this->assertEquals('fooz', $locale->get());
     }
-
-
-
 }

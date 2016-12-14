@@ -2,7 +2,7 @@
 
 return [
 
-    /**
+    /*
      * Available locales for the application
      *
      * These should reflect the locale folders
@@ -10,7 +10,7 @@ return [
      */
     'available_locales'     => ['en'],
 
-    /**
+    /*
      * Hidden locale
      *
      * Provide the default locale for non-localized url endpoints. This displays the content
@@ -20,7 +20,7 @@ return [
      */
     'hidden_locale'       => null,
 
-    /**
+    /*
      * Fallback locale
      *
      * Use this locale when no locale has been set.
@@ -31,7 +31,7 @@ return [
      */
     'fallback_locale'       => null,
 
-    /**
+    /*
      * Route uri placeholder
      *
      * When this parameter key is passed, it will inject a
