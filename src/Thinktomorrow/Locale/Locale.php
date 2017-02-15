@@ -10,6 +10,7 @@ class Locale
     private $available_locales;
     private $hidden_locale;
     private $fallback_locale;
+    private $query_key;
 
     public function __construct(Request $request, $config)
     {
@@ -18,6 +19,7 @@ class Locale
         $this->available_locales = (array) $config['available_locales'];
         $this->hidden_locale = isset($config['hidden_locale']) ? $config['hidden_locale'] : null;
         $this->fallback_locale = (isset($config['fallback_locale']) && $config['fallback_locale']) ? $config['fallback_locale'] : config('app.fallback_locale');
+        $this->query_key = isset($config['query_key']) ? $config['query_key'] : null;
     }
 
     /**
@@ -110,8 +112,8 @@ class Locale
                 $locale = $locale_from_url;
             }
 
-            if ($this->validateLocale($this->request->get('lang'))) {
-                $locale = $this->request->get('lang');
+            if ($this->query_key && ($queryLocale = $this->request->get($this->query_key)) && $this->validateLocale($queryLocale)) {
+                $locale = $queryLocale;
             }
         }
 

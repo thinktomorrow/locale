@@ -16,6 +16,7 @@ class LocaleTest extends TestCase
            'available_locales' => ['nl', 'fr'],
            'fallback_locale'   => 'nl',
            'hidden_locale'     => null,
+            'query_key'        => null,
        ]);
     }
 
@@ -48,13 +49,14 @@ class LocaleTest extends TestCase
         $request = \Mockery::mock('Illuminate\Http\Request');
 
         $request->shouldReceive('cookie')->twice()->withArgs(['locale'])->andReturn('foobar');
-        $request->shouldReceive('get')->once();
+        $request->shouldReceive('get')->withArgs(['locale'])->times(1)->andReturn(null);
         $request->shouldReceive('segment')->once();
 
         $locale = new Locale($request, [
             'available_locales' => ['nl', 'fr', 'foobar'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => null,
+            'query_key'         => 'locale',
         ]);
 
         $locale->set();
@@ -68,13 +70,14 @@ class LocaleTest extends TestCase
         $request = \Mockery::mock('Illuminate\Http\Request');
 
         $request->shouldReceive('cookie')->once()->withArgs(['locale'])->andReturn(false);
-        $request->shouldReceive('get')->once();
+        $request->shouldReceive('get')->withArgs(['locale'])->times(1)->andReturn(null);
         $request->shouldReceive('segment')->once()->andReturn('foobar');
 
         $locale = new Locale($request, [
             'available_locales' => ['nl', 'fr', 'foobar'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => 'fr',
+            'query_key'         => 'locale',
         ]);
 
         $locale->set();
@@ -88,13 +91,14 @@ class LocaleTest extends TestCase
         $request = \Mockery::mock('Illuminate\Http\Request');
 
         $request->shouldReceive('cookie')->once()->withArgs(['locale'])->andReturn(false);
-        $request->shouldReceive('get')->once();
+        $request->shouldReceive('get')->withArgs(['locale'])->times(1)->andReturn(null);
         $request->shouldReceive('segment')->once()->andReturn(null);
 
         $locale = new Locale($request, [
             'available_locales' => ['nl', 'fr', 'foobar'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => 'fr',
+            'query_key'         => 'locale',
         ]);
 
         $locale->set();
@@ -108,13 +112,14 @@ class LocaleTest extends TestCase
         $request = \Mockery::mock('Illuminate\Http\Request');
 
         $request->shouldReceive('cookie')->twice()->withArgs(['locale'])->andReturn('fr');
-        $request->shouldReceive('get')->twice()->andReturn('foobar');
+        $request->shouldReceive('get')->withArgs(['locale'])->times(1)->andReturn('foobar');
         $request->shouldReceive('segment')->once()->andReturn('fr');
 
         $locale = new Locale($request, [
             'available_locales' => ['nl', 'fr', 'foobar'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => 'fr',
+            'query_key'         => 'locale',
         ]);
 
         $locale->set();
@@ -136,6 +141,7 @@ class LocaleTest extends TestCase
             'available_locales' => ['nl', 'fr', 'foobar', 'fooz'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => 'fr',
+            'query_key'         => 'locale',
         ]);
 
         $locale->set('fooz');
