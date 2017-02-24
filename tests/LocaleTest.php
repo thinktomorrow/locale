@@ -29,6 +29,15 @@ class LocaleTest extends TestCase
     }
 
     /** @test */
+    public function it_can_define_custom_available_locales()
+    {
+        $this->locale->setAvailables(['foo']);
+
+        $this->assertEquals('foo', $this->locale->get('foo'));
+        $this->assertEquals('nl', $this->locale->get('fr')); // Non available locale will default to fallback locale
+    }
+
+    /** @test */
     public function it_gets_available_locale()
     {
         $this->locale->set('fr');

@@ -23,6 +23,20 @@ class Locale
     }
 
     /**
+     * Define the list of available locales.
+     * This way the developer can set his own curated list of locales.
+     *
+     * @param array $locales
+     * @return $this
+     */
+    public function setAvailables(array $locales)
+    {
+        $this->available_locales = $locales;
+
+        return $this;
+    }
+
+    /**
      * Setup the locale for current request and
      * get the locale slug for the route.
      *
