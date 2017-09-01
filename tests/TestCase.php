@@ -2,6 +2,7 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Routing\UrlGenerator;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Thinktomorrow\Locale\Locale;
@@ -54,5 +55,18 @@ class TestCase extends OrchestraTestCase
 
         $this->localeUrl = app(LocaleUrl::class);
         app()->setLocale($defaultLocale);
+    }
+
+    /**
+     * Set the currently logged in user for the application.
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
+     * @param  string $driver
+     *
+     * @return void
+     */
+    public function be(Authenticatable $user, $driver = null)
+    {
+        // TODO: Implement be() method.
     }
 }

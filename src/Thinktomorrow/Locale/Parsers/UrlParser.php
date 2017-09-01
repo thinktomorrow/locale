@@ -59,6 +59,7 @@ class UrlParser implements Parser
      * @param $url
      *
      * @return $this
+     * @throws \InvalidArgumentException
      */
     public function set($url)
     {
@@ -179,7 +180,7 @@ class UrlParser implements Parser
             return;
         }
 
-        if ($path_segments[0] == $this->locale->getSlug($path_segments[0]) || $this->locale->isHidden($path_segments[0])) {
+        if ($this->locale->isHidden($path_segments[0]) || $path_segments[0] === $this->locale->getSlug($path_segments[0])) {
             unset($path_segments[0]);
         }
 

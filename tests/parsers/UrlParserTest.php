@@ -69,6 +69,19 @@ class UrlParserTest extends TestCase
         }
     }
 
+    /**
+    * @test
+    */
+    public function it_does_not_fail_on_parsing_double_slashed(){
+        $urls = [
+            '//'    => 'http://example.com/fr',
+        ];
+
+        $this->markTestIncomplete(
+            'This test has not been implemented yet.'
+        );
+    }
+
     /** @test */
     public function to_make_url_secure()
     {
@@ -88,7 +101,7 @@ class UrlParserTest extends TestCase
     /** @test */
     public function an_invalid_url_is_not_accepted()
     {
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->parser->set('http:///example.com');
     }
@@ -96,7 +109,7 @@ class UrlParserTest extends TestCase
     /** @test */
     public function assert_that_an_url_is_set()
     {
-        $this->setExpectedException(\LogicException::class);
+        $this->expectException(\LogicException::class);
 
         $this->parser->localize('en')->get();
     }

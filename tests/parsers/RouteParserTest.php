@@ -2,6 +2,7 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Route;
 use InvalidArgumentException;
 use Thinktomorrow\Locale\Parsers\RouteParser;
@@ -36,7 +37,7 @@ class RouteParserTest extends TestCase
     /** @test */
     public function to_halt_execution_when_route_isnt_translatable()
     {
-        $this->setExpectedException(InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->assertEquals('http://example.com/fr/foo.unknown', $this->parser->set('foo.unknown')->localize('fr')->get());
     }
 
@@ -48,4 +49,5 @@ class RouteParserTest extends TestCase
 
         $this->assertEquals('https://example.com/blue/foo/bar', $this->parser->set('foo.custom')->parameters(['color' => 'blue'])->secure()->get());
     }
+
 }
