@@ -12,6 +12,17 @@ It's also responsible for translating the application routes.
 . 
 E.g. `/nl/foo` will set locale to `nl`. 
 
+## TODO BEN
+- set changelog for changes to 2.0 release. This will include domain support as well as a refactored codebase
+- try to use as little as possible of framework
+- avoid app()->setLocale or app()->getLocale() calls
+- avoid injection of request? what do we really need?
+- LocaleValidator as separate utility class
+- rename Locale class for being too generic and prone to conflicts?: maybe Referrer, Scan, Probe,...
+- clear up the parsers
+- clean up the tests and try to go for coverage.
+- improve and complete the documentation
+
 ## Install
 
 Via Composer

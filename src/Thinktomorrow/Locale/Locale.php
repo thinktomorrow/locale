@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class Locale
 {
@@ -126,11 +127,15 @@ class Locale
      */
     private function store($locale = null)
     {
-        if (!$locale or !in_array($locale, $this->available_locales)) {
+        if (!$locale || !in_array($locale, $this->available_locales)) {
             $locale = $this->fallback_locale;
 
             if ($this->validateLocale($this->request->cookie('locale'))) {
                 $locale = $this->request->cookie('locale');
+            }
+
+            if ($locale_from_root = $this->getLocaleFromRoot()) {
+                $locale = $locale_from_root;
             }
 
             if ($locale_from_url = $this->getLocaleFromUrl()) {
@@ -163,6 +168,45 @@ class Locale
         }
 
         return false;
+    }
+
+    private function getLocaleFromRoot()
+    {
+        $root = $this->request->root();
+
+        foreach($this->available_locales as $domain => $locales)
+        {
+            // Determine if key is set as domain root
+            if( ! is_string($domain) ) continue;
+            if( ! Str::endsWith($root, $domain)) continue;
+
+            // TODO: we should be able to have a subarray per domain
+            return is_array($locales)
+                ? $this->getLocaleFromRootSegment($locales)
+                : $locales;
+        }
+
+        return false;
+    }
+
+    private function getLocaleFromRootSegment(array $locales)
+    {
+        $current_segment = $this->request->segment(1);
+
+        foreach($locales as $segment => $locale)
+        {
+            if($segment == $current_segment) return $locale;
+        }
+
+        // It means no segment is found so we assume the default locale for this root.
+        foreach($locales as $segment => $locale)
+        {
+            if($segment == '/') return $locale;
+        }
+
+        // TODO: this validation (integrity of the available_locales) should be done on instantiation of this class
+        throw new \RuntimeException('Invalid setup of locales');
+
     }
 
     private function getLocaleSegment()
