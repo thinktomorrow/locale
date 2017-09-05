@@ -64,6 +64,14 @@ class Locale
     }
 
     /**
+     * @return null|string
+     */
+    public static function getDefault() :? string
+    {
+        return config('app.locale');
+    }
+
+    /**
      * Retrieve the url slug for current or passed locale.
      *
      * @param null $locale
