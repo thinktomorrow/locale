@@ -64,9 +64,12 @@ class Locale
     }
 
     /**
+     * Get default locale which is useful for providing locale fallback
+     * TODO: change fallback locale so that it uses the app.locale instead
+     *
      * @return null|string
      */
-    public static function getDefault() :? string
+    public static function getDefault(): string
     {
         return config('app.locale');
     }
