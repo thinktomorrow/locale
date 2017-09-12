@@ -8,7 +8,7 @@ use Thinktomorrow\Locale\Parsers\UrlParser;
 class LocaleUrl
 {
     /**
-     * @var Locale
+     * @var Detect
      */
     private $locale;
 
@@ -27,7 +27,7 @@ class LocaleUrl
      */
     private $routeparser;
 
-    public function __construct(Locale $locale, UrlParser $urlparser, RouteParser $routeparser, $config = [])
+    public function __construct(Detect $locale, UrlParser $urlparser, RouteParser $routeparser, $config = [])
     {
         $this->locale = $locale;
         $this->urlparser = $urlparser;

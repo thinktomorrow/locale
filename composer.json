@@ -25,7 +25,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Thinktomorrow\\Locale\\": "src/Thinktomorrow/Locale"
+            "Thinktomorrow\\Locale\\": "src/"
         },
       "classmap":[]
     },

@@ -3,12 +3,12 @@
 namespace Thinktomorrow\Locale\Parsers;
 
 use Illuminate\Routing\UrlGenerator;
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Detect;
 
 class UrlParser implements Parser
 {
     /**
-     * @var Locale
+     * @var Detect
      */
     private $locale;
 
@@ -47,7 +47,7 @@ class UrlParser implements Parser
      */
     private $generator;
 
-    public function __construct(Locale $locale, UrlGenerator $generator)
+    public function __construct(Detect $locale, UrlGenerator $generator)
     {
         $this->locale = $locale;
         $this->generator = $generator;
@@ -161,7 +161,7 @@ class UrlParser implements Parser
     private function localizePath($locale = null)
     {
         $this->parsed['path'] = str_replace('//', '/',
-            '/'.$this->locale->getSlug($locale).$this->delocalizePath()
+            '/'.$this->locale->segment($locale).$this->delocalizePath()
         );
     }
 
@@ -180,7 +180,7 @@ class UrlParser implements Parser
             return;
         }
 
-        if ($this->locale->isHidden($path_segments[0]) || $path_segments[0] === $this->locale->getSlug($path_segments[0])) {
+        if ($this->locale->isHidden($path_segments[0]) || $path_segments[0] === $this->locale->segment($path_segments[0])) {
             unset($path_segments[0]);
         }
 

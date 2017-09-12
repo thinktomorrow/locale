@@ -2,7 +2,7 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Detect;
 
 class LocaleTest extends TestCase
 {
@@ -12,7 +12,7 @@ class LocaleTest extends TestCase
     {
         parent::setUp();
 
-        $this->locale = new Locale(app()->make('request'), [
+        $this->locale = new Detect(app()->make('request'), [
            'available_locales' => ['nl', 'fr'],
            'fallback_locale'   => 'nl',
            'hidden_locale'     => null,
@@ -23,9 +23,9 @@ class LocaleTest extends TestCase
     /** @test */
     public function it_can_be_called()
     {
-        $locale = app()->make(Locale::class);
+        $locale = app()->make(Detect::class);
 
-        $this->assertInstanceOf(Locale::class, $locale);
+        $this->assertInstanceOf(Detect::class, $locale);
     }
 
     /**
@@ -34,10 +34,10 @@ class LocaleTest extends TestCase
     public function it_can_get_the_default_locale_from_config(){
         config(['app.locale' => 'nl']);
 
-        $this->assertEquals('nl', Locale::getDefault());
+        $this->assertEquals('nl', Detect::getDefault());
         config(['app.locale' => 'fr']);
 
-        $this->assertEquals('fr', Locale::getDefault());
+        $this->assertEquals('fr', Detect::getDefault());
 
     }
 
@@ -74,7 +74,7 @@ class LocaleTest extends TestCase
         $request->shouldReceive('get')->withArgs(['locale'])->times(1)->andReturn(null);
         $request->shouldReceive('segment')->once();
 
-        $locale = new Locale($request, [
+        $locale = new Detect($request, [
             'available_locales' => ['nl', 'fr', 'foobar'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => null,
@@ -95,7 +95,7 @@ class LocaleTest extends TestCase
         $request->shouldReceive('get')->withArgs(['locale'])->times(1)->andReturn(null);
         $request->shouldReceive('segment')->once()->andReturn('foobar');
 
-        $locale = new Locale($request, [
+        $locale = new Detect($request, [
             'available_locales' => ['nl', 'fr', 'foobar'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => 'fr',
@@ -116,7 +116,7 @@ class LocaleTest extends TestCase
         $request->shouldReceive('get')->withArgs(['locale'])->times(1)->andReturn(null);
         $request->shouldReceive('segment')->once()->andReturn(null);
 
-        $locale = new Locale($request, [
+        $locale = new Detect($request, [
             'available_locales' => ['nl', 'fr', 'foobar'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => 'fr',
@@ -137,7 +137,7 @@ class LocaleTest extends TestCase
         $request->shouldReceive('get')->withArgs(['locale'])->times(1)->andReturn('foobar');
         $request->shouldReceive('segment')->once()->andReturn('fr');
 
-        $locale = new Locale($request, [
+        $locale = new Detect($request, [
             'available_locales' => ['nl', 'fr', 'foobar'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => 'fr',
@@ -159,7 +159,7 @@ class LocaleTest extends TestCase
         $request->shouldReceive('getHost')->never();
         $request->shouldReceive('segment')->never();
 
-        $locale = new Locale($request, [
+        $locale = new Detect($request, [
             'available_locales' => ['nl', 'fr', 'foobar', 'fooz'],
             'fallback_locale'   => 'nl',
             'hidden_locale'     => 'fr',

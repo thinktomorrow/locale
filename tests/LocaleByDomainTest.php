@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Http\Request;
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Detect;
 
 class LocaleByDomainTest extends TestCase
 {
@@ -55,7 +55,7 @@ class LocaleByDomainTest extends TestCase
 
     private function createLocale()
     {
-        return new Locale(app()->make('request'), [
+        return new Detect(app()->make('request'), [
             'available_locales' => [
                 'fr.example.com' => 'fr', // NOTE: put the specific ones on top
                 'example.com' => 'nl',

@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Support\Facades\Route;
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\LocaleUrl;
 
 class LocaleUrlTest extends TestCase
@@ -20,7 +20,7 @@ class LocaleUrlTest extends TestCase
     /** @test */
     public function it_defaults_an_unknown_locale_to_current_locale()
     {
-        app(Locale::class)->set('fr');
+        app(Detect::class)->set('fr');
 
         $this->assertEquals('http://example.com/fr/foo/bar', $this->localeUrl->to('http://example.com/foo/bar'));
         $this->assertEquals('http://example.com/fr/foo/bar', $this->localeUrl->to('http://example.com/foo/bar', 'fake'));
@@ -149,7 +149,7 @@ class LocaleUrlTest extends TestCase
     {
         $this->refreshBindings('en');
 
-        Route::group(['prefix' => app(Locale::class)->set('en')], function () {
+        Route::group(['prefix' => app(Detect::class)->set('en')], function () {
             Route::get('/foo/bar/{slug}', ['as' => 'foo.custom', 'uses' => function () {
             }]);
         });

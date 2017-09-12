@@ -5,7 +5,7 @@ namespace Thinktomorrow\Locale\Tests;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Routing\UrlGenerator;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\LocaleUrl;
 
 class TestCase extends OrchestraTestCase
@@ -33,8 +33,8 @@ class TestCase extends OrchestraTestCase
 
     protected function refreshBindings($defaultLocale = 'nl', $hiddenLocale = 'nl')
     {
-        app()->singleton('Thinktomorrow\Locale\Locale', function ($app) use ($hiddenLocale) {
-            return new Locale($app['request'], [
+        app()->singleton('Thinktomorrow\Locale\Detect', function ($app) use ($hiddenLocale) {
+            return new Detect($app['request'], [
                 'available_locales' => ['nl', 'fr', 'en'],
                 'fallback_locale'   => null,
                 'hidden_locale'     => $hiddenLocale,
@@ -46,7 +46,7 @@ class TestCase extends OrchestraTestCase
 
         app()->singleton('Thinktomorrow\Locale\LocaleUrl', function ($app) {
             return new LocaleUrl(
-                $app['Thinktomorrow\Locale\Locale'],
+                $app['Thinktomorrow\Locale\Detect'],
                 $app['Thinktomorrow\Locale\Parsers\UrlParser'],
                 $app['Thinktomorrow\Locale\Parsers\RouteParser'],
                 ['placeholder' => 'locale_slug']
