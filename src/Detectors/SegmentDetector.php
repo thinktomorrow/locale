@@ -3,7 +3,8 @@
 namespace Thinktomorrow\Locale\Detectors;
 
 use Illuminate\Http\Request;
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Services\Locale;
+use Thinktomorrow\Locale\Services\Config;
 use Thinktomorrow\Locale\Services\Scope;
 
 class SegmentDetector implements Detector
@@ -18,7 +19,7 @@ class SegmentDetector implements Detector
         $this->request = $request;
     }
 
-    public function get(Scope $scope): ?Locale
+    public function get(Scope $scope, Config $config): ?Locale
     {
         $segment = $this->request->segment(1);
 

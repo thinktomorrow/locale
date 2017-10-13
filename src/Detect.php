@@ -3,10 +3,13 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Http\Request;
+use Thinktomorrow\Locale\Detectors\FallbackDetector;
 use Thinktomorrow\Locale\Detectors\HiddenSegmentDetector;
 use Thinktomorrow\Locale\Detectors\QueryDetector;
 use Thinktomorrow\Locale\Detectors\SegmentDetector;
 use Thinktomorrow\Locale\Services\Config;
+use Thinktomorrow\Locale\Services\Locale;
+use Thinktomorrow\Locale\Services\Root;
 use Thinktomorrow\Locale\Services\Scope;
 use Thinktomorrow\Locale\Services\ScopeHub;
 
@@ -22,6 +25,11 @@ final class Detect
      * @var Config
      */
     private $config;
+
+    /**
+     * @var Locale
+     */
+    private $locale;
 
     /**
      * Current scope of locales
@@ -48,13 +56,11 @@ final class Detect
      * // 3) Default: get locale from cookie
      * 4) Otherwise: set locale to our fallback language
      *
-     * @return string
+     * @return self
      */
-    public function get(): string
+    public function detect(): self
     {
         $locale = null;
-
-        if(!$this->scope) $this->detectScope();
 
         $detectors = [
             FallbackDetector::class,
@@ -65,22 +71,37 @@ final class Detect
 
         foreach($detectors as $detector)
         {
-            $locale = app($detector)->get($this->scope, $this->config) ?? $locale;
+            $locale = app($detector)->get($this->getScope(), $this->config) ?? $locale;
         }
 
+        $this->locale = $locale;
         app()->setLocale($locale->get());
 
-        return $locale->get();
+        return $this;
     }
 
-    public function forceScope(Scope $scope)
+    public function getLocale(): Locale
     {
-        $this->scope = $scope;
+        return $this->locale;
+    }
+
+    public function getScope(): Scope
+    {
+        if( ! $this->scope ) $this->detectScope();
+
+        return $this->scope;
+    }
+
+    public function forceScope(Scope $scope = null)
+    {
+        if($scope) $this->scope = $scope;
+
+        return $this;
     }
 
     private function detectScope()
     {
-        $this->scope = ScopeHub::fromArray($this->config)
-                                ->findByHost($this->request->getHost());
+        $this->scope = ScopeHub::fromConfig($this->config, Root::fromString($this->request->root()))
+                                ->findByRoot($this->request->getHost());
     }
 }

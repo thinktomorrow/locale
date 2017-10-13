@@ -19,9 +19,9 @@ class ConfigTest extends TestCase
     /** @test */
     function it_can_get_all_config_values_but_sanitized()
     {
-        $config = Config::from(['locales' => ['default' => 'nl']]);
+        $config = Config::from(['locales' => ['*' => 'nl']]);
 
-        $this->assertEquals(['locales' => ['default' => ['/' => 'nl']]], $config->all());
+        $this->assertEquals(['locales' => ['*' => ['/' => 'nl']]], $config->all());
     }
 
     /**
@@ -42,7 +42,7 @@ class ConfigTest extends TestCase
             [['nl' => '']],
             [['nl', 'fr']],
             [['foobar']],
-            [['default' => ['en','fr']]], // missing hidden /
+            [['*' => ['en','fr']]], // missing hidden /
         ];
     }
 
@@ -60,33 +60,67 @@ class ConfigTest extends TestCase
         return [
             [
                 [
-                    'default' => 'nl',
+                    '*' => 'nl',
                 ],
                 [
-                    'default' => ['/' => 'nl'],
+                    '*' => ['/' => 'nl'],
                 ],
             ],
             [
                 [
                     'example.com' => ['/en' => 'en-gb'],
-                    'default'     => 'nl',
+                    '*'     => 'nl',
                 ],
                 [
                     'example.com' => ['en' => 'en-gb'],
-                    'default'     => ['/' => 'nl'],
+                    '*'     => ['/' => 'nl'],
                 ],
             ],
             [
                 [
                     '*.fr'    => 'fr',
-                    'default' => 'nl',
+                    '*' => 'nl',
                 ],
                 [
                     '*.fr'    => ['/' => 'fr'],
-                    'default' => ['/' => 'nl'],
+                    '*' => ['/' => 'nl'],
                 ],
             ],
         ];
+    }
+
+    /** @test */
+    function it_can_export_to_array()
+    {
+        $config = Config::from(['locales' => ['*' => 'nl'], 'foobar' => 'nl']);
+
+        $this->assertEquals(['locales' => ['*' => ['/' => 'nl']], 'foobar' => 'nl'], $config->toArray());
+    }
+
+    /** @test */
+    function it_can_set_value_by_key()
+    {
+        $config = Config::from(['locales' => ['*' => 'nl']]);
+        $config[2] = 'foobar';
+        $this->assertEquals('foobar',$config[2]);
+    }
+
+    /** @test */
+    function it_can_unset_a_value()
+    {
+        $this->expectException(\InvalidArgumentException::class, 'No config value found');
+
+        $config = Config::from(['locales' => ['*' => 'nl'], 'foobar' => 'nl']);
+        unset($config['locales']);
+        $config->get('locales');
+    }
+
+    /** @test */
+    function it_can_check_if_key_exists()
+    {
+        $config = Config::from(['locales' => ['*' => 'nl']]);
+        $this->assertTrue(isset($config['locales']));
+        $this->assertFalse(isset($config['foobar']));
     }
 
 }

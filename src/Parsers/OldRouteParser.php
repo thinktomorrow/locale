@@ -2,94 +2,102 @@
 
 namespace Thinktomorrow\Locale\Parsers;
 
-use Illuminate\Contracts\Translation\Translator;
-use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Thinktomorrow\Locale\Services\Root;
-use Thinktomorrow\Locale\Services\Url;
+use Illuminate\Translation\Translator;
 
-class RouteParser implements Parser
+class RouteParserOld implements Parser
 {
-    /** @var string */
-    private $routename;
-
-    /** @var string */
-    private $locale;
-
-    /** @var string */
-    private $localeSegment = null;
-
-    /** @var array */
-    private $available_locales = [];
-
-    /** @var bool */
-    private $secure = false;
-
-    /** @var array */
-    private $parameters = [];
-
-    /** @var Translator */
-    private $translator;
     /**
      * @var UrlParser
      */
     private $parser;
 
-    public function __construct(UrlParser $parser , Translator $translator)
+    /**
+     * @var Translator
+     */
+    private $translator;
+
+    private $name;
+    private $parameters = [];
+    private $localeslug;
+
+    public function __construct(UrlParser $parser, Translator $translator)
     {
         $this->parser = $parser;
         $this->translator = $translator;
     }
 
-    public function get(): string
+    /**
+     * Set the routename.
+     *
+     * @param $name
+     *
+     * @return mixed
+     */
+    public function set(string $name)
     {
-        $routekey = $this->translator->get('routes.'.$this->routename, [], $this->locale);
-
-        $url = ($routekey === 'routes.'.$this->routename)
-            ? $this->resolveRoute($this->routename, $this->parameters)
-            : $this->replaceParameters($routekey, $this->parameters);
-
-        return $this->parser->set($url)->secure($this->secure)->locale($this->localeSegment, $this->available_locales)->get();
-    }
-
-    public function set(string $routename): self
-    {
-        $this->routename = $routename;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function locale(string $localeSegment = null, array $available_locales): self
+    /**
+     * Retrieve the generated / altered url
+     * If no translated routekey is found, it means the route itself does not need to be
+     * translated and we allow the native url generator to deal with the route generation.
+     *
+     * @return mixed
+     */
+    public function get()
     {
-        $this->localeSegment = $localeSegment;
-        $this->available_locales = $available_locales;
+        $routekey = $this->translator->get('routes.'.$this->name, [], $this->localeslug);
 
-        // Our route translator requires the corresponding locale
-        $this->locale = (!$localeSegment || $localeSegment == '/')
-            ? $available_locales['/']
-            : $available_locales[$localeSegment];
+        $uri = ($routekey === 'routes.'.$this->name)
+                ? $this->parser->resolveRoute($this->name, $this->parameters)
+                : $this->replaceParameters($routekey, $this->parameters);
+
+        return $this->parser->set($uri)->get();
+    }
+
+    /**
+     * Place locale segment in front of url path
+     * e.g. /foo/bar is transformed into /en/foo/bar.
+     *
+     * @param string|null $localeSegment
+     * @param array $available_locales
+     * @return string
+     */
+    public function locale(string $localeSegment = null, array $available_locales)
+    {
+        $this->localeslug = $localeSegment;
+        $this->parser->locale($localeSegment);
 
         return $this;
     }
 
-    public function parameters(array $parameters = []): self
+    /**
+     * @param array $parameters
+     *
+     * @return $this
+     */
+    public function parameters(array $parameters = [])
     {
         $this->parameters = $parameters;
 
         return $this;
     }
 
-    public function secure($secure = true): self
+    /**
+     * @param bool $secure
+     *
+     * @return $this
+     */
+    public function secure($secure = true)
     {
-        $this->secure = (bool) $secure;
+        $this->parser->secure($secure);
 
         return $this;
-    }
-
-    public function resolveRoute($routekey, $parameters = [])
-    {
-        return $this->parser->resolveRoute($routekey, $parameters, true);
     }
 
     /**

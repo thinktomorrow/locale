@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale;
+namespace Thinktomorrow\Locale\Services;
 
 final class Locale
 {

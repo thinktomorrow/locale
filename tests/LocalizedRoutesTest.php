@@ -19,6 +19,8 @@ class LocalizedRoutesTest extends TestCase
     /** @test */
     public function to_translate_routename()
     {
+        $this->markTestIncomplete();
+
         Route::get(trans('routes.foo.show'), ['as' => 'foo.show', 'uses' => function () {
         }]);
 
@@ -28,6 +30,8 @@ class LocalizedRoutesTest extends TestCase
     /** @test */
     public function to_translate_routename_with_optional_param()
     {
+        $this->markTestIncomplete();
+
         Route::get(trans('routes.foo.index'), ['as' => 'foo.index', 'uses' => function () {
         }]);
 
@@ -37,6 +41,8 @@ class LocalizedRoutesTest extends TestCase
     /** @test */
     public function to_translate_routename_with_multiple_param()
     {
+        $this->markTestIncomplete();
+
         // foo/{slug}/{subcat?}/{tag}/end
         Route::get(trans('routes.foo.multiple'), ['as' => 'foo.multiple', 'uses' => function () {
         }]);

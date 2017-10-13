@@ -4,15 +4,25 @@ namespace Thinktomorrow\Locale\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Services\Locale;
+use Thinktomorrow\Locale\Services\Root;
 use Thinktomorrow\Locale\Services\Scope;
 
 class ScopeTest extends TestCase
 {
+    private $scope;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->scope = new Scope(['foo' => 'nl', '/' => 'fr'], Root::fromString('foobar'));
+    }
+
     /** @test */
     function it_can_be_instantiated()
     {
-        $this->assertInstanceOf(Scope::class, new Scope(['nl' => 'nl', '/' => 'fr']));
+        $this->assertInstanceOf(Scope::class, new Scope(['nl' => 'nl', '/' => 'fr'], Root::fromString('foobar')));
     }
 
     /** @test */
@@ -20,42 +30,55 @@ class ScopeTest extends TestCase
     {
         $this->expectException(InvalidScope::class);
 
-        new Scope(['nl' => 'nl']);
+        new Scope(['nl' => 'nl'], Root::fromString('foobar'));
     }
 
     /** @test */
     function it_can_get_locale_by_key()
     {
-        $this->assertEquals(Locale::from('nl'), (new Scope(['nl' => 'nl', '/' => 'fr']))->get('nl'));
-        $this->assertEquals(Locale::from('fr'), (new Scope(['nl' => 'nl', '/' => 'fr']))->get('/'));
+        $this->assertEquals(Locale::from('nl'), $this->scope->get('foo'));
+        $this->assertEquals(Locale::from('fr'), $this->scope->get('/'));
+    }
+
+    /** @test */
+    function it_can_get_segment_key_by_locale()
+    {
+        $this->assertEquals('foo', $this->scope->segment('nl'));
+        $this->assertEquals('/', $this->scope->segment('fr'));
+        $this->assertNull($this->scope->segment('mohowseg'));
     }
 
     /** @test */
     function not_found_key_returns_null()
     {
-        $this->assertNull((new Scope(['nl' => 'nl', '/' => 'fr']))->get('foobar'));
+        $this->assertNull($this->scope->get('foobar'));
     }
 
     /** @test */
     function it_can_get_all_locales_in_scope()
     {
         $locales = ['nl' => 'nl', '/' => 'fr'];
-        $this->assertEquals($locales,(new Scope($locales))->all());
+        $this->assertEquals($locales,(new Scope($locales, Root::fromString('foobar')))->all());
     }
 
     /** @test */
     function it_can_get_default_locale()
     {
-        $this->assertEquals(Locale::from('fr'), (new Scope(['nl' => 'nl', '/' => 'fr']))->default());
+        $this->assertEquals(Locale::from('fr'), $this->scope->default());
     }
 
     /** @test */
-    function validate_if_Locale_is_within_scope()
+    function it_can_get_root()
     {
-        $scope = (new Scope(['nl' => 'nl', '/' => 'fr']));
+        $root = Root::fromString('foobar');
+        $this->assertEquals($root, $this->scope->root());
+    }
 
-        $this->assertFalse($scope->validate(Locale::from('en')));
-        $this->assertTrue($scope->validate(Locale::from('nl')));
-        $this->assertTrue($scope->validate(Locale::from('fr')));
+    /** @test */
+    function validate_if_locale_is_within_scope()
+    {
+        $this->assertFalse($this->scope->validate(Locale::from('en')));
+        $this->assertTrue($this->scope->validate(Locale::from('nl')));
+        $this->assertTrue($this->scope->validate(Locale::from('fr')));
     }
 }

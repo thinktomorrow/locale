@@ -6,7 +6,7 @@ return [
      * Available locale scopes for the application
      *
      * Matches are done from top to bottom so declare the more specific hosts above general ones.
-     * The only mandatory scope is '*' which are the default locales and apply to all requests.
+     * The only mandatory scope entry is '*' which are the default locales and apply to all requests.
      */
     'locales' => [
         'fr.example.com'   => [
@@ -23,12 +23,23 @@ return [
             '/' => 'fr-BE',
         ],
         'monenfantestleplusadorable.fr' => 'fr',
+
         '*' => [
             'en' => 'en-GB',
             'us' => 'en-US',
             'fr' => 'fr',
             '/'  => 'nl',
         ],
+    ],
+
+    /**
+     * Define your canonical domains here.
+     * Specify unique domains for each locale to avoid crawler duplicate content warnings.
+     * By default the current scope is used to determine the canonical domain. Here
+     * you can specify a domain for a certain locale if the same locale is present in multiple domains.
+     */
+    'canonicals' => [
+        // e.g. 'nl' => 'http://example.nl',
     ],
 
     /*
@@ -47,5 +58,10 @@ return [
      * e.g. LocaleUrl::route('pages.home',['locale' => 'en']);
      */
     'route_key' => 'locale',
+
+    /**
+     * language filename where the route names are stored
+     */
+    'routes_filename' => 'routes',
 
 ];

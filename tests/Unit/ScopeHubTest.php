@@ -2,8 +2,9 @@
 
 namespace Thinktomorrow\Locale\Tests\Unit;
 
+use Illuminate\Contracts\Routing\UrlGenerator;
 use PHPUnit\Framework\TestCase;
-use Thinktomorrow\Locale\Services\Config;
+use Thinktomorrow\Locale\Services\Root;
 use Thinktomorrow\Locale\Services\Scope;
 use Thinktomorrow\Locale\Services\ScopeHub;
 use Thinktomorrow\Locale\Exceptions\InvalidConfig;
@@ -15,7 +16,7 @@ class ScopeHubTest extends TestCase
     {
         $this->expectException(InvalidConfig::class);
 
-        ScopeHub::fromArray([]);
+        ScopeHub::fromArray([], Root::fromString('foobar'));
     }
 
     /**
@@ -26,7 +27,7 @@ class ScopeHubTest extends TestCase
     {
         $this->expectException(InvalidConfig::class);
 
-        ScopeHub::fromArray(['locales' => $locales]);
+        ScopeHub::fromArray(['locales' => $locales], Root::fromString('foobar'));
     }
 
     function invalidLocalesDataProvider()
@@ -41,45 +42,58 @@ class ScopeHubTest extends TestCase
 
     /**
      * @test
-     * @dataProvider provideScopes
+     * @dataProvider provideRootScopes
      */
-    function it_can_match_groups($host, $locales)
+    function it_matches_the_proper_root_and_locales($root, $expectedRoot, $locales)
     {
-        $this->assertEquals(new Scope($locales), ScopeHub::fromArray([
+        $this->assertEquals(new Scope($locales, Root::fromString($expectedRoot)), ScopeHub::fromArray([
             'locales' => [
-                'de.example.com' => 'de',
-                'example.com'    => 'en',
-                'fr.*'           => 'fr',
-                'default'        => 'nl',
+                'de.example.com'      => 'de',
+                'de.example.com:8000' => 'foo',
+                'example.com'         => 'en',
+                'fr.*'                => 'fr',
+                '*'                   => 'nl',
             ],
-        ])->findByHost($host));
+        ], Root::fromString('foobar'))->findByRoot($root));
     }
 
-    function provideScopes()
+    function provideRootScopes()
     {
         return [
-            // Regular
-            ['http://foo.example.com', ['/' => 'nl']],
-            ['foo.example.com', ['/' => 'nl']],
-            ['de.example.com', ['/' => 'de']],
-            ['sfr.example.com', ['/' => 'nl']],
-            ['http://de.example.com:8000', ['/' => 'de']],
-            ['https://example.com', ['/' => 'en']],
+            // Full matches
+            ['http://example.com', 'http://example.com', ['/' => 'en']],
+            ['de.example.com', 'de.example.com', ['/' => 'de']],
+            ['http://de.example.com:8000', 'http://de.example.com:8000', ['/' => 'foo']],
 
-            // Regex
-            ['fr.foobar.com', ['/' => 'fr']],
-            ['https://fr.foobar.com', ['/' => 'fr']],
-            ['fr.foobar.com', ['/' => 'fr']],
+            // Pattern matching
+            ['https://fr.foobar.com', 'https://fr.foobar.com', ['/' => 'fr']],
+            ['fr.foobar.com', 'fr.foobar.com', ['/' => 'fr']],
+
+            // No matches or default
+            ['sfr.example.com', 'foobar', ['/' => 'nl']],
+            ['foobar.com', 'foobar', ['/' => 'nl']],
         ];
+    }
+
+    /** @test */
+    function if_no_current_root_is_found_root_is_set_as_null()
+    {
+        $this->assertEquals(new Scope(['/' => 'nl'], Root::fromString('')), ScopeHub::fromArray([
+            'locales' => [
+                'example.com' => ['/en' => 'en-gb'],
+                '*'           => 'nl',
+            ],
+        ], Root::fromString(''))->findByRoot(''));
     }
 
     /**
      * @test
      * @dataProvider expectedScopeDataProvider
      */
-    function it_returns_locales_to_scoped_group($scope, $original, $locales)
+    function it_returns_locales_to_scoped_group($root, $original, $locales)
     {
-        $this->assertEquals(new Scope($locales), ScopeHub::fromArray(['locales' => $original])->findByHost($scope));
+        $this->assertEquals(new Scope($locales, Root::fromString($root)),
+            ScopeHub::fromArray(['locales' => $original], Root::fromString($root))->findByRoot($root));
     }
 
     function expectedScopeDataProvider()
@@ -88,7 +102,7 @@ class ScopeHubTest extends TestCase
             [
                 'foobar.com',
                 [
-                    'default' => 'nl',
+                    '*' => 'nl',
                 ],
                 [
                     '/' => 'nl',
@@ -98,7 +112,7 @@ class ScopeHubTest extends TestCase
                 'example.com',
                 [
                     'example.com' => ['/en' => 'en-gb'],
-                    'default'     => 'nl',
+                    '*'           => 'nl',
                 ],
                 [
                     'en' => 'en-gb',
@@ -106,13 +120,23 @@ class ScopeHubTest extends TestCase
                 ],
             ],
             [
-                '*.fr', // TODO this should be regex matching
+                '*.fr',
                 [
-                    '*.fr'    => 'fr',
-                    'default' => 'nl',
+                    '*.fr' => 'fr',
+                    '*'    => 'nl',
                 ],
                 [
                     '/' => 'fr',
+                ],
+            ],
+            [
+                'nothing', // return the default because nothing matches
+                [
+                    'example.com' => ['/en' => 'en-gb'],
+                    '*'           => 'nl',
+                ],
+                [
+                    '/' => 'nl',
                 ],
             ],
         ];

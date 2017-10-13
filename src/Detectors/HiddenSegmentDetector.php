@@ -3,7 +3,8 @@
 namespace Thinktomorrow\Locale\Detectors;
 
 use Illuminate\Http\Request;
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Services\Locale;
+use Thinktomorrow\Locale\Services\Config;
 use Thinktomorrow\Locale\Services\Scope;
 
 class HiddenSegmentDetector implements Detector
@@ -18,7 +19,7 @@ class HiddenSegmentDetector implements Detector
         $this->request = $request;
     }
 
-    public function get(Scope $scope, array $options): ?Locale
+    public function get(Scope $scope, Config $config): ?Locale
     {
         // If a locale segment is found, it means locale is not hidden so we won't bother going further.
         if ($this->segment($scope)) return null;

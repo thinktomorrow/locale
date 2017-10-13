@@ -2,13 +2,14 @@
 
 namespace Thinktomorrow\Locale\Detectors;
 
-use Thinktomorrow\Locale\Locale;
+use Thinktomorrow\Locale\Services\Locale;
+use Thinktomorrow\Locale\Services\Config;
 use Thinktomorrow\Locale\Services\Scope;
 
 class FallbackDetector implements Detector
 {
-    public function get(Scope $scope, array $options): ?Locale
+    public function get(Scope $scope, Config $config): ?Locale
     {
-        return $scope->default();
+        return Locale::from(app()->getLocale());
     }
 }

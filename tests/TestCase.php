@@ -7,9 +7,12 @@ use Illuminate\Routing\UrlGenerator;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\LocaleUrl;
+use Thinktomorrow\Locale\Services\Config;
 
 class TestCase extends OrchestraTestCase
 {
+    protected $localeUrl;
+
     protected function getPackageProviders($app)
     {
         return [\Thinktomorrow\Locale\LocaleServiceProvider::class];
@@ -31,29 +34,40 @@ class TestCase extends OrchestraTestCase
         return __DIR__.'/stubs/'.$dir;
     }
 
-    protected function refreshBindings($defaultLocale = 'nl', $hiddenLocale = 'nl')
+    protected function refreshBindings($defaultLocale = 'nl')
     {
-        app()->singleton('Thinktomorrow\Locale\Detect', function ($app) use ($hiddenLocale) {
-            return new Detect($app['request'], [
-                'available_locales' => ['nl', 'fr', 'en'],
-                'fallback_locale'   => null,
-                'hidden_locale'     => $hiddenLocale,
-            ]);
+        $config = Config::from([
+            'locales' => [
+                'example.com' => [
+                    'de' => 'DE_de',
+                    'fr' => 'BE_fr',
+                    '/' => 'FR_fr',
+                ],
+                '*' => [
+                    'nl' => 'BE-nl',
+                    'en' => 'en-gb',
+                    '/' => $defaultLocale,
+                ]
+            ],
+            'canonicals' => [],
+            'placeholder' => 'locale_slug',
+        ]);
+
+        app()->singleton('Thinktomorrow\Locale\Detect', function ($app) use ($config){
+            return new Detect($app['request'], $config );
         });
 
-        // Force root url for testing
-        app(UrlGenerator::class)->forceRootUrl('http://example.com');
-
-        app()->singleton('Thinktomorrow\Locale\LocaleUrl', function ($app) {
+        app()->singleton('Thinktomorrow\Locale\LocaleUrl', function ($app) use($config) {
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Detect'],
                 $app['Thinktomorrow\Locale\Parsers\UrlParser'],
                 $app['Thinktomorrow\Locale\Parsers\RouteParser'],
-                ['placeholder' => 'locale_slug']
+                $config
             );
         });
 
         $this->localeUrl = app(LocaleUrl::class);
+
         app()->setLocale($defaultLocale);
     }
 

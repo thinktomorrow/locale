@@ -1,8 +1,10 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests;
+namespace Thinktomorrow\Locale\Tests\Unit;
 
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Thinktomorrow\Locale\Parsers\UrlParser;
+use Thinktomorrow\Locale\Tests\TestCase;
 
 class UrlParserTest extends TestCase
 {
@@ -12,14 +14,16 @@ class UrlParserTest extends TestCase
     {
         parent::setUp();
 
-        $this->refreshBindings();
-
-        $this->parser = app()->make(UrlParser::class);
+        // Force root url for testing
+        app(UrlGenerator::class)->forceRootUrl('http://example.com');
+        $this->parser = new UrlParser(app(UrlGenerator::class));
     }
 
     /** @test */
-    public function uri_is_always_converted_to_full_url()
+    public function url_path_is_by_default_prepended_with_current_host()
     {
+        $this->parser = new UrlParser(app(UrlGenerator::class));
+
         $urls = [
             '/foo/bar' => 'http://example.com/foo/bar',
             ''         => 'http://example.com',
@@ -65,21 +69,17 @@ class UrlParserTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, $this->parser->set($original)->localize('fr')->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->localize('fr')->get().' - '.$result.' was expected.');
+            $this->assertEquals($result, $this->parser->set($original)->locale('fr',['fr' => 'fr'])->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->locale('fr',['fr' => 'fr'])->get().' - '.$result.' was expected.');
         }
     }
 
     /**
     * @test
     */
-    public function it_does_not_fail_on_parsing_double_slashed(){
-        $urls = [
-            '//'    => 'http://example.com/fr',
-        ];
-
-        $this->markTestIncomplete(
-            'This test has not been implemented yet.'
-        );
+    public function it_does_not_fail_on_parsing_double_slashed()
+    {
+        $this->assertEquals('//foobar.com/fr', $this->parser->set('//foobar.com//')->locale('fr',['fr' => 'BE-fr'])->get());
+        $this->assertEquals('http://example.com/fr', $this->parser->set('//')->locale('fr',['fr' => 'BE-fr'])->get());
     }
 
     /** @test */
@@ -93,7 +93,7 @@ class UrlParserTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $parsed = $this->parser->set($original)->localize('fr')->secure()->get();
+            $parsed = $this->parser->set($original)->locale('fr',['fr' => 'BE-fr'])->secure()->get();
             $this->assertEquals($result, $parsed, 'improper conversion from '.$original.' to '.$parsed.' - '.$result.' was expected.');
         }
     }
@@ -107,10 +107,8 @@ class UrlParserTest extends TestCase
     }
 
     /** @test */
-    public function assert_that_an_url_is_set()
+    public function give_default_root_if_an_url_is_not_set()
     {
-        $this->expectException(\LogicException::class);
-
-        $this->parser->localize('en')->get();
+        $this->assertEquals('http://example.com/en',$this->parser->locale('en',['en' => 'en'])->get());
     }
 }

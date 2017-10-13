@@ -75,7 +75,7 @@ class Config implements \ArrayAccess
     private function convertSingleEntryToDefault(array $locales): array
     {
         foreach ($locales as $group => $segments) {
-            // If single locale is passed, it's automatically the default for this group
+            // If single locale is passed, it's considered the default for this group
             if (!is_array($segments)) {
                 $locales[$group] = $segments = ['/' => $segments];
             }
@@ -95,11 +95,11 @@ class Config implements \ArrayAccess
 
         $locales = $config['locales'];
 
-        if (!isset($locales['default'])) {
-            throw new InvalidConfig('Group [default] is missing for locales structure.');
+        if (!isset($locales['*'])) {
+            throw new InvalidConfig('Group [default] is missing for locales structure. At least add the default "*" scope.');
         }
 
-        if (is_array($locales['default']) && !isset($locales['default']['/'])) {
+        if (is_array($locales['*']) && !isset($locales['*']['/'])) {
             throw new InvalidConfig('Group [default] is missing the default locale. e.g. ["/" => "en"]');
         }
 

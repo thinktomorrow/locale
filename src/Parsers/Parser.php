@@ -2,17 +2,11 @@
 
 namespace Thinktomorrow\Locale\Parsers;
 
+use Thinktomorrow\Locale\Services\Locale;
+use Thinktomorrow\Locale\Services\Scope;
+
 interface Parser
 {
-    /**
-     * Set the base url or routename.
-     *
-     * @param $url
-     *
-     * @return mixed
-     */
-    public function set($url);
-
     /**
      * Retrieve the generated / altered url.
      *
@@ -21,14 +15,22 @@ interface Parser
     public function get();
 
     /**
+     * Set the base url or routename.
+     *
+     * @param string $url
+     * @return self
+     */
+    public function set(string $url);
+
+    /**
      * Place locale segment in front of url path
      * e.g. /foo/bar is transformed into /en/foo/bar.
      *
-     * @param null $locale
-     *
-     * @return string
+     * @param string|null $localeSegment
+     * @param array $available_locales
+     * @return Parser
      */
-    public function localize($locale = null);
+    public function locale(string $localeSegment = null, array $available_locales);
 
     /**
      * @param array $parameters

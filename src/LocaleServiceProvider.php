@@ -5,6 +5,7 @@ namespace Thinktomorrow\Locale;
 use Illuminate\Support\ServiceProvider;
 use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Parsers\UrlParser;
+use Thinktomorrow\Locale\Services\Config;
 
 class LocaleServiceProvider extends ServiceProvider
 {
@@ -17,12 +18,11 @@ class LocaleServiceProvider extends ServiceProvider
         ]);
 
         $this->app->singleton(Detect::class, function ($app) {
-            return new Detect($app['request'], $this->getConfig());
+            return new Detect($app['request'], Config::from($this->getConfigValues()));
         });
 
         $this->app->singleton(UrlParser::class, function ($app) {
             return new UrlParser(
-                $app['Thinktomorrow\Locale\Detect'],
                 $app['Illuminate\Contracts\Routing\UrlGenerator']
             );
         });
@@ -37,9 +37,15 @@ class LocaleServiceProvider extends ServiceProvider
         $this->app->singleton(LocaleUrl::class, function ($app) {
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Detect'],
-                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
-                $app['Thinktomorrow\Locale\Parsers\RouteParser'],
-                $this->getConfig()
+                new UrlParser(
+                    $app['Illuminate\Contracts\Routing\UrlGenerator']
+                ),
+                new RouteParser(
+                    new UrlParser(
+                        $app['Illuminate\Contracts\Routing\UrlGenerator']
+                    ),
+                    $app['translator']),
+                $app['Thinktomorrow\Locale\Parsers\RouteParser']
             );
         });
 
@@ -47,7 +53,7 @@ class LocaleServiceProvider extends ServiceProvider
         $this->app->alias(LocaleUrl::class, 'tt-locale-url');
     }
 
-    private function getConfig()
+    private function getConfigValues()
     {
         if (file_exists(config_path('thinktomorrow/locale.php'))) {
             return require config_path('thinktomorrow/locale.php');

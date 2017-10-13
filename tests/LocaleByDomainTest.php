@@ -4,6 +4,7 @@ namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Http\Request;
 use Thinktomorrow\Locale\Detect;
+use Thinktomorrow\Locale\Services\Config;
 
 class LocaleByDomainTest extends TestCase
 {
@@ -47,16 +48,17 @@ class LocaleByDomainTest extends TestCase
     private function localeFor($url): string
     {
         $this->call('GET', $url);
-        $locale = $this->createLocale();
-        $locale->set();
+        $detect = $this->createLocale();
+        $detect->detect();
 
-        return $locale->get();
+        // TODO: or should this be $detect->getScope()->active() instead?
+        return app()->getLocale();
     }
 
     private function createLocale()
     {
-        return new Detect(app()->make('request'), [
-            'available_locales' => [
+        return new Detect(app()->make('request'),Config::from([
+            'locales' => [
                 'fr.example.com' => 'fr', // NOTE: put the specific ones on top
                 'example.com' => 'nl',
                 'foobar.com' => [
@@ -67,10 +69,13 @@ class LocaleByDomainTest extends TestCase
                     'en' => 'en-gb',
                     '/' => 'de',
                 ],
+                '*' => [
+                    '/' => 'nl'
+                ],
             ],
             'fallback_locale'   => 'en',
             'hidden_locale'     => null,
             'query_key'        => null,
-        ]);
+        ]));
     }
 }

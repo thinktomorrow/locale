@@ -4,13 +4,14 @@ namespace Thinktomorrow\Locale;
 
 use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Parsers\UrlParser;
+use Thinktomorrow\Locale\Services\Config;
 
 class LocaleUrl
 {
     /**
-     * @var Detect
+     * @var Scope
      */
-    private $locale;
+    private $scope;
 
     /**
      * @var UrlParser
@@ -27,13 +28,13 @@ class LocaleUrl
      */
     private $routeparser;
 
-    public function __construct(Detect $locale, UrlParser $urlparser, RouteParser $routeparser, $config = [])
+    public function __construct(Detect $detect, UrlParser $urlparser, RouteParser $routeparser, Config $config)
     {
-        $this->locale = $locale;
+        $this->scope = $detect->getScope(); // TODO check if this still returns proper results when loading before routes
         $this->urlparser = $urlparser;
         $this->routeparser = $routeparser;
 
-        $this->placeholder = isset($config['placeholder']) ? $config['placeholder'] : 'locale_slug';
+        $this->placeholder = $config->get('placeholder');
     }
 
     /**
@@ -48,10 +49,14 @@ class LocaleUrl
      */
     public function to($url, $locale = null, $parameters = [], $secure = null)
     {
+        if(is_bool($secure)) $this->urlparser->secure($secure);
+
+        /**
+         * Convert locale to segment
+         */
         return $this->urlparser->set($url)
-                            ->localize($locale)
+                            ->locale($this->scope->segment($locale), $this->scope->all())
                             ->parameters($parameters)
-                            ->secure($secure)
                             ->get();
     }
 
@@ -68,18 +73,28 @@ class LocaleUrl
      */
     public function route($name, $locale = null, $parameters = [])
     {
-        // Locale should be passed as second parameter but in case it is passed as array
-        // alongside other parameters, we will try to extract it
-        if (!is_array($locale)) {
-            $locale = [$this->placeholder => $locale];
+       if (!is_array($locale)){
+
+            // You should provide the actual locale but in case the segment value is passed
+            // we allow for this as well and normalize it to the expected locale value.
+            if(! $this->scope->validate($locale) && $this->scope->validateSegment($locale))
+            {
+                $locale = $this->scope->get($locale);
+            }
+
+           // Locale should be passed as second parameter but in case it is passed as array
+           // alongside other parameters, we will try to extract it
+           if($this->scope->validate($locale))
+            {
+                $locale = [$this->placeholder => $this->scope->segment($locale)];
+            }
         }
 
-        $parameters = array_merge($locale, (array) $parameters);
-
-        $locale = $this->extractLocaleFromParameters($parameters);
+        $parameters = array_merge((array)$locale, (array) $parameters);
+        $localeSegment = $this->extractLocaleSegmentFromParameters($parameters);
 
         return $this->routeparser->set($name)
-                            ->localize($locale)
+                            ->locale($localeSegment, $this->scope->all())
                             ->parameters($parameters)
                             ->get();
     }
@@ -91,24 +106,29 @@ class LocaleUrl
      *
      * @return null|string
      */
-    private function extractLocaleFromParameters(array &$parameters = [])
+    private function extractLocaleSegmentFromParameters(array &$parameters = [])
     {
-        $locale = null;
+        $localeSegment = null;
 
-        if (!array_key_exists($this->placeholder, $parameters)) {
-            return $this->locale->get();
+        // If none given, we should be returning the current active locale segment
+        // If value is explicitly null, we assume the current locale is expected
+        if (!array_key_exists($this->placeholder, $parameters) || is_null($parameters[$this->placeholder])) {
+            return $this->scope->activeSegment();
         }
 
-        $locale = $this->locale->get($parameters[$this->placeholder]);
+        if($this->scope->validateSegment($parameters[$this->placeholder]))
+        {
+            $localeSegment = $parameters[$this->placeholder];
+        }
 
-        // If locale parameter is not a 'real' parameter, we ignore this value and use the current locale instead
-        // The 'wrong' parameter will be used without key
-        if ($locale != $parameters[$this->placeholder]) {
+        // If locale segment parameter is not a 'real' parameter, we ignore this value and use the current locale instead
+        // The 'wrong' parameter will be passed along but without key
+        if ($localeSegment != $parameters[$this->placeholder]) {
             $parameters[] = $parameters[$this->placeholder];
         }
 
         unset($parameters[$this->placeholder]);
 
-        return $locale;
+        return $localeSegment;
     }
 }
