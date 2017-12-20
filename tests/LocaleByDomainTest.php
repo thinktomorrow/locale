@@ -4,7 +4,7 @@ namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Http\Request;
 use Thinktomorrow\Locale\Detect;
-use Thinktomorrow\Locale\Services\Config;
+use Thinktomorrow\Locale\Values\Config;
 
 class LocaleByDomainTest extends TestCase
 {

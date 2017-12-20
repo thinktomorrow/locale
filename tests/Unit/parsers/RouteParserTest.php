@@ -5,7 +5,7 @@ namespace Thinktomorrow\Locale\Tests\Unit;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Support\Facades\Route;
 use InvalidArgumentException;
-use Thinktomorrow\Locale\Parsers\RouteParser;
+use Thinktomorrow\Locale\Parsers\RouteParserContract;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class RouteParserTest extends TestCase
@@ -19,7 +19,7 @@ class RouteParserTest extends TestCase
         $this->get('http://example.com');
         $this->refreshBindings();
 
-        $this->parser = app()->make(RouteParser::class);
+        $this->parser = app()->make(RouteParserContract::class);
     }
 
     /** @test */

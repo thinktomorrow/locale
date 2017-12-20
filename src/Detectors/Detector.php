@@ -2,9 +2,9 @@
 
 namespace Thinktomorrow\Locale\Detectors;
 
-use Thinktomorrow\Locale\Services\Locale;
-use Thinktomorrow\Locale\Services\Config;
-use Thinktomorrow\Locale\Services\Scope;
+use Thinktomorrow\Locale\Values\Locale;
+use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Scopes\Scope;
 
 interface Detector
 {

@@ -4,9 +4,9 @@ namespace Thinktomorrow\Locale\Tests\Unit;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
 use PHPUnit\Framework\TestCase;
-use Thinktomorrow\Locale\Services\Root;
-use Thinktomorrow\Locale\Services\Scope;
-use Thinktomorrow\Locale\Services\ScopeHub;
+use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Locale\Scopes\Scope;
+use Thinktomorrow\Locale\Scopes\ScopeCollection;
 use Thinktomorrow\Locale\Exceptions\InvalidConfig;
 
 class ScopeHubTest extends TestCase
@@ -16,7 +16,7 @@ class ScopeHubTest extends TestCase
     {
         $this->expectException(InvalidConfig::class);
 
-        ScopeHub::fromArray([], Root::fromString('foobar'));
+        ScopeCollection::fromArray([], Root::fromString('foobar'));
     }
 
     /**
@@ -27,7 +27,7 @@ class ScopeHubTest extends TestCase
     {
         $this->expectException(InvalidConfig::class);
 
-        ScopeHub::fromArray(['locales' => $locales], Root::fromString('foobar'));
+        ScopeCollection::fromArray(['locales' => $locales], Root::fromString('foobar'));
     }
 
     function invalidLocalesDataProvider()
@@ -46,7 +46,7 @@ class ScopeHubTest extends TestCase
      */
     function it_matches_the_proper_root_and_locales($root, $expectedRoot, $locales)
     {
-        $this->assertEquals(new Scope($locales, Root::fromString($expectedRoot)), ScopeHub::fromArray([
+        $this->assertEquals(new Scope($locales, Root::fromString($expectedRoot)), ScopeCollection::fromArray([
             'locales' => [
                 'de.example.com'      => 'de',
                 'de.example.com:8000' => 'foo',
@@ -78,7 +78,7 @@ class ScopeHubTest extends TestCase
     /** @test */
     function if_no_current_root_is_found_root_is_set_as_null()
     {
-        $this->assertEquals(new Scope(['/' => 'nl'], Root::fromString('')), ScopeHub::fromArray([
+        $this->assertEquals(new Scope(['/' => 'nl'], Root::fromString('')), ScopeCollection::fromArray([
             'locales' => [
                 'example.com' => ['/en' => 'en-gb'],
                 '*'           => 'nl',
@@ -93,7 +93,7 @@ class ScopeHubTest extends TestCase
     function it_returns_locales_to_scoped_group($root, $original, $locales)
     {
         $this->assertEquals(new Scope($locales, Root::fromString($root)),
-            ScopeHub::fromArray(['locales' => $original], Root::fromString($root))->findByRoot($root));
+            ScopeCollection::fromArray(['locales' => $original], Root::fromString($root))->findByRoot($root));
     }
 
     function expectedScopeDataProvider()

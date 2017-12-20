@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Thinktomorrow\Locale\Services\Root;
+use Thinktomorrow\Locale\Values\Root;
 
 class RootTest extends TestCase
 {

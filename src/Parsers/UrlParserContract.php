@@ -3,10 +3,10 @@
 namespace Thinktomorrow\Locale\Parsers;
 
 use Illuminate\Routing\UrlGenerator;
-use Thinktomorrow\Locale\Services\Root;
-use Thinktomorrow\Locale\Services\Url;
+use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Locale\Values\Url;
 
-class UrlParser implements Parser
+class UrlParserContract implements ParserContract
 {
     /** @var Url */
     private $url;
@@ -47,8 +47,14 @@ class UrlParser implements Parser
 
     public function set(string $url): self
     {
-        // TODO Prepend current root if given url is a relative path
         $this->url = Url::fromString($url);
+
+        return $this;
+    }
+
+    public function forceRoot(Root $root)
+    {
+        $this->url->forceRoot($root);
 
         return $this;
     }
@@ -82,7 +88,7 @@ class UrlParser implements Parser
 
     /**
      * Resolve the route via the Illuminate UrlGenerator.
-     * TODO: this should be part of the RouteParser no?
+
      * @param $routekey
      * @param array $parameters
      *

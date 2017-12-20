@@ -7,11 +7,11 @@ use Thinktomorrow\Locale\Detectors\FallbackDetector;
 use Thinktomorrow\Locale\Detectors\HiddenSegmentDetector;
 use Thinktomorrow\Locale\Detectors\QueryDetector;
 use Thinktomorrow\Locale\Detectors\SegmentDetector;
-use Thinktomorrow\Locale\Services\Config;
-use Thinktomorrow\Locale\Services\Locale;
-use Thinktomorrow\Locale\Services\Root;
-use Thinktomorrow\Locale\Services\Scope;
-use Thinktomorrow\Locale\Services\ScopeHub;
+use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Values\Locale;
+use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Locale\Scopes\Scope;
+use Thinktomorrow\Locale\Scopes\ScopeCollection;
 
 final class Detect
 {
@@ -92,6 +92,14 @@ final class Detect
         return $this->scope;
     }
 
+    /**
+     * This is handy for settting allowed scope via other source than config file.
+     * TODO: we should allow to set config from other source such as db as well so
+     * this can be configurable from a cms.
+     *
+     * @param Scope|null $scope
+     * @return $this
+     */
     public function forceScope(Scope $scope = null)
     {
         if($scope) $this->scope = $scope;
@@ -101,7 +109,6 @@ final class Detect
 
     private function detectScope()
     {
-        $this->scope = ScopeHub::fromConfig($this->config, Root::fromString($this->request->root()))
-                                ->findByRoot($this->request->getHost());
+        $this->scope = ScopeCollection::fromConfig($this->config)->findByRoot($this->request->getHost());
     }
 }

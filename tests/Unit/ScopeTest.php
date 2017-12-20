@@ -4,9 +4,9 @@ namespace Thinktomorrow\Locale\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
-use Thinktomorrow\Locale\Services\Locale;
-use Thinktomorrow\Locale\Services\Root;
-use Thinktomorrow\Locale\Services\Scope;
+use Thinktomorrow\Locale\Values\Locale;
+use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Locale\Scopes\Scope;
 
 class ScopeTest extends TestCase
 {
@@ -65,13 +65,6 @@ class ScopeTest extends TestCase
     function it_can_get_default_locale()
     {
         $this->assertEquals(Locale::from('fr'), $this->scope->default());
-    }
-
-    /** @test */
-    function it_can_get_root()
-    {
-        $root = Root::fromString('foobar');
-        $this->assertEquals($root, $this->scope->root());
     }
 
     /** @test */

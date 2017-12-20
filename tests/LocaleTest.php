@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale\Tests;
 
 use Thinktomorrow\Locale\Detect;
-use Thinktomorrow\Locale\Services\Config;
+use Thinktomorrow\Locale\Values\Config;
 
 class LocaleTest extends TestCase
 {

@@ -1,61 +1,52 @@
 <?php
 
-namespace Thinktomorrow\Locale\Services;
+namespace Thinktomorrow\Locale\Scopes;
 
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
+use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Values\Root;
 
-final class ScopeHub
+final class ScopeCollection
 {
     /**
      * @var Config
      */
     private $config;
 
-    /**
-     * @var Root
-     */
-    private $root;
-
-    private function __construct(Config $config, Root $root)
+    private function __construct(Config $config)
     {
         $this->config = $config;
-
-        // Default root
-        $this->root = $root;
     }
 
-    public static function fromArray(array $config, Root $root)
+    public static function fromArray(array $config)
     {
-        return new static(Config::from($config), $root);
+        return new static(Config::from($config));
     }
 
-    public static function fromConfig(Config $config, Root $root)
+    public static function fromConfig(Config $config)
     {
-        return new static($config, $root);
+        return new static($config);
     }
 
-    public function findByRoot(string $root): Scope
+    public function findByRoot(string $root, $asCanonical = false): Scope
     {
-        $root = Root::fromString($root);
-
-        $scopeKey = $this->findKey($root->get());
-
-        /**
-         * If root is found and doesn't result in the default scope
-         * We can safely assume this is the intended scoped root
-         */
-        if($scopeKey != '*' && $root->valid()) $this->root = $root;
-
-        return $this->findByKey($scopeKey);
+        return $this->findByKey(
+            $this->findKey($root),
+            ($asCanonical) ? Root::fromString($root) : null
+        );
     }
 
-    public function findByCanonical(Locale $locale): ?Scope
+    /**
+     * @param string $locale
+     * @return null|CanonicalScope
+     */
+    public function findCanonical(string $locale): ?CanonicalScope
     {
         $canonicals = $this->config->get('canonicals');
 
-        if(!isset($canonicals[$locale->get()])) return null;
+        if(!isset($canonicals[$locale])) return null;
 
-        return $this->findByRoot($canonicals[$locale->get()]);
+        return $this->findByRoot($canonicals[$locale], true);
     }
 
     private function findKey(string $value): string
@@ -87,7 +78,7 @@ final class ScopeHub
     }
 
     // We limit the available locales to the current domain space, including the default ones
-    private function findByKey(string $scopeKey): Scope
+    private function findByKey(string $scopeKey, Root $canonical = null): Scope
     {
         if(!$scopeKey || !isset($this->config['locales'][$scopeKey]))
         {
@@ -97,6 +88,6 @@ final class ScopeHub
         $locales = $this->config->get('locales');
         $locales = array_merge($locales['*'], $locales[$scopeKey]);
 
-        return new Scope($locales, $this->root);
+        return $canonical ? (new CanonicalScope($locales))->setRoot($canonical) : new Scope($locales);
     }
 }

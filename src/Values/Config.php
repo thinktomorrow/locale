@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Services;
+namespace Thinktomorrow\Locale\Values;
 
 use Thinktomorrow\Locale\Exceptions\InvalidConfig;
 

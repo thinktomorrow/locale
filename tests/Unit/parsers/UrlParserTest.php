@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale\Tests\Unit;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
-use Thinktomorrow\Locale\Parsers\UrlParser;
+use Thinktomorrow\Locale\Parsers\UrlParserContract;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class UrlParserTest extends TestCase
@@ -16,13 +16,13 @@ class UrlParserTest extends TestCase
 
         // Force root url for testing
         app(UrlGenerator::class)->forceRootUrl('http://example.com');
-        $this->parser = new UrlParser(app(UrlGenerator::class));
+        $this->parser = new UrlParserContract(app(UrlGenerator::class));
     }
 
     /** @test */
     public function url_path_is_by_default_prepended_with_current_host()
     {
-        $this->parser = new UrlParser(app(UrlGenerator::class));
+        $this->parser = new UrlParserContract(app(UrlGenerator::class));
 
         $urls = [
             '/foo/bar' => 'http://example.com/foo/bar',

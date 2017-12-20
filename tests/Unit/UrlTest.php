@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Thinktomorrow\Locale\Services\Url;
+use Thinktomorrow\Locale\Values\Url;
 
 class UrlTest extends TestCase
 {

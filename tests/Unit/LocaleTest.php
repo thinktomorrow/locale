@@ -4,7 +4,7 @@ namespace Thinktomorrow\Locale\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Thinktomorrow\Locale\Exceptions\InvalidLocale;
-use Thinktomorrow\Locale\Services\Locale;
+use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleTest extends TestCase
 {

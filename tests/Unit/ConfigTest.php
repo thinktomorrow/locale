@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Thinktomorrow\Locale\Services\Config;
+use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Locale\Exceptions\InvalidConfig;
 
 class ConfigTest extends TestCase

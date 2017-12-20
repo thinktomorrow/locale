@@ -7,14 +7,15 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-A Laravel package for lightweight route localization. Locale registers the application locale based on the request uri.
-It's also responsible for translating the application routes.
-. 
-E.g. `/nl/foo` will set locale to `nl`. 
-
-## TODO BEN
+## TODO version 2.0
+- reduce code logic in tests, avoid duplicates, create helpers
+- clearly distinct between unit and feature tests
+- make all tests do one specific task, keep 'spelling check tests' in unit test, not in feature.
+- localeCanonical() function needs implementation
+- write extensive documentation
+- handle all lingering TODO comments
 - set changelog for changes to 2.0 release. This will include domain support as well as a refactored codebase
-- try to use as little as possible of framework
+- try to use as little as possible of framework or at one place specifically
 - avoid app()->setLocale or app()->getLocale() calls
 - avoid injection of request? what do we really need?
 - LocaleValidator as separate utility class
@@ -22,6 +23,12 @@ E.g. `/nl/foo` will set locale to `nl`.
 - clear up the parsers
 - clean up the tests and try to go for coverage.
 - improve and complete the documentation
+
+
+A Laravel package for lightweight route localization. Locale registers the application locale based on the request uri.
+It's also responsible for translating the application routes.
+. 
+E.g. `/nl/foo` will set locale to `nl`. 
 
 ## Install
 

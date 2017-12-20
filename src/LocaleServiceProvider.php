@@ -3,9 +3,9 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Support\ServiceProvider;
-use Thinktomorrow\Locale\Parsers\RouteParser;
-use Thinktomorrow\Locale\Parsers\UrlParser;
-use Thinktomorrow\Locale\Services\Config;
+use Thinktomorrow\Locale\Parsers\RouteParserContract;
+use Thinktomorrow\Locale\Parsers\UrlParserContract;
+use Thinktomorrow\Locale\Values\Config;
 
 class LocaleServiceProvider extends ServiceProvider
 {
@@ -21,15 +21,15 @@ class LocaleServiceProvider extends ServiceProvider
             return new Detect($app['request'], Config::from($this->getConfigValues()));
         });
 
-        $this->app->singleton(UrlParser::class, function ($app) {
-            return new UrlParser(
+        $this->app->singleton(UrlParserContract::class, function ($app) {
+            return new UrlParserContract(
                 $app['Illuminate\Contracts\Routing\UrlGenerator']
             );
         });
 
-        $this->app->singleton(RouteParser::class, function ($app) {
-            return new RouteParser(
-                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
+        $this->app->singleton(RouteParserContract::class, function ($app) {
+            return new RouteParserContract(
+                $app['Thinktomorrow\Locale\Parsers\UrlParserContract'],
                 $app['translator']
             );
         });
@@ -37,15 +37,15 @@ class LocaleServiceProvider extends ServiceProvider
         $this->app->singleton(LocaleUrl::class, function ($app) {
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Detect'],
-                new UrlParser(
+                new UrlParserContract(
                     $app['Illuminate\Contracts\Routing\UrlGenerator']
                 ),
-                new RouteParser(
-                    new UrlParser(
+                new RouteParserContract(
+                    new UrlParserContract(
                         $app['Illuminate\Contracts\Routing\UrlGenerator']
                     ),
                     $app['translator']),
-                $app['Thinktomorrow\Locale\Parsers\RouteParser']
+                $app['Thinktomorrow\Locale\Parsers\RouteParserContract']
             );
         });
 

@@ -3,13 +3,11 @@
 namespace Thinktomorrow\Locale\Parsers;
 
 use Illuminate\Contracts\Translation\Translator;
-use Illuminate\Routing\UrlGenerator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Thinktomorrow\Locale\Services\Root;
-use Thinktomorrow\Locale\Services\Url;
+use Thinktomorrow\Locale\Values\Root;
 
-class RouteParser implements Parser
+class RouteParserContract implements ParserContract
 {
     /** @var string */
     private $routename;
@@ -24,20 +22,25 @@ class RouteParser implements Parser
     private $available_locales = [];
 
     /** @var bool */
-    private $secure = false;
+    private $secure = null;
 
     /** @var array */
     private $parameters = [];
 
+    /** @var Root */
+    private $forcedRoot;
+
     /** @var Translator */
     private $translator;
+
     /**
-     * @var UrlParser
+     * @var UrlParserContract
      */
     private $parser;
 
-    public function __construct(UrlParser $parser , Translator $translator)
+    public function __construct(UrlParserContract $parser , Translator $translator)
     {
+        // TODO should be a RouteParser returning Route... so more as a factory
         $this->parser = $parser;
         $this->translator = $translator;
     }
@@ -50,12 +53,44 @@ class RouteParser implements Parser
             ? $this->resolveRoute($this->routename, $this->parameters)
             : $this->replaceParameters($routekey, $this->parameters);
 
-        return $this->parser->set($url)->secure($this->secure)->locale($this->localeSegment, $this->available_locales)->get();
+        $parser = $this->parser->set($url)->secure($this->secure)->locale($this->localeSegment, $this->available_locales);
+
+        if($this->forcedRoot) $parser->forceRoot($this->forcedRoot);
+
+        return $parser->get();
     }
 
-    public function set(string $routename): self
+    public function set(string $routename, array $parameters = [], $secure = null)
     {
+        $this->reset();
+
         $this->routename = $routename;
+        $this->parameters = $parameters;
+        $this->secure = $secure;
+
+        return $this;
+    }
+
+    private function reset()
+    {
+        $this->routename = null;
+        $this->forcedRoot = null;
+        $this->secure = null;
+        $this->parameters = [];
+        $this->locale = null;
+        $this->localeSegment = null;
+    }
+
+//    public function set(string $routename): self
+//    {
+//        $this->routename = $routename;
+//
+//        return $this;
+//    }
+
+    public function forceRoot(Root $root)
+    {
+        $this->forcedRoot = $root;
 
         return $this;
     }
@@ -73,19 +108,19 @@ class RouteParser implements Parser
         return $this;
     }
 
-    public function parameters(array $parameters = []): self
-    {
-        $this->parameters = $parameters;
-
-        return $this;
-    }
-
-    public function secure($secure = true): self
-    {
-        $this->secure = (bool) $secure;
-
-        return $this;
-    }
+//    public function parameters(array $parameters = []): self
+//    {
+//        $this->parameters = $parameters;
+//
+//        return $this;
+//    }
+//
+//    public function secure($secure = true): self
+//    {
+//        $this->secure = (bool) $secure;
+//
+//        return $this;
+//    }
 
     public function resolveRoute($routekey, $parameters = [])
     {

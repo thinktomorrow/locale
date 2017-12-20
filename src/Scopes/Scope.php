@@ -1,8 +1,9 @@
 <?php
 
-namespace Thinktomorrow\Locale\Services;
+namespace Thinktomorrow\Locale\Scopes;
 
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
+use Thinktomorrow\Locale\Values\Locale;
 
 class Scope
 {
@@ -12,11 +13,6 @@ class Scope
     private $locales;
 
     /**
-     * @var string
-     */
-    private $root;
-
-    /**
      * The default locale. In the request path
      * it's the hidden segment, e.g. /
      *
@@ -24,17 +20,16 @@ class Scope
      */
     private $default;
 
-    public function __construct(array $locales, Root $root)
+    public function __construct(array $locales)
     {
         if(!isset($locales['/'])) throw new InvalidScope('Default locale is required for scope.');
 
         $this->locales = $locales;
         $this->default = Locale::from($this->locales['/']);
-        $this->root = $root;
     }
 
     /**
-     * Get the locale by key (segment)
+     * Get the locale by segment identifier
      *
      * @param $key
      * @return null|Locale
@@ -55,9 +50,14 @@ class Scope
         return ($key = array_search($locale, $this->locales)) ? $key : null;
     }
 
+    public function active(): string
+    {
+        return app()->getLocale();
+    }
+
     public function activeSegment(): ?string
     {
-        return $this->segment(app()->getLocale());
+        return $this->segment($this->active());
     }
 
     public function all(): array
@@ -82,10 +82,5 @@ class Scope
     public function default(): Locale
     {
         return $this->default;
-    }
-
-    public function root(): Root
-    {
-        return $this->root;
     }
 }

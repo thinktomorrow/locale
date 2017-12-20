@@ -7,7 +7,7 @@ use Illuminate\Routing\UrlGenerator;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\LocaleUrl;
-use Thinktomorrow\Locale\Services\Config;
+use Thinktomorrow\Locale\Values\Config;
 
 class TestCase extends OrchestraTestCase
 {
@@ -43,13 +43,20 @@ class TestCase extends OrchestraTestCase
                     'fr' => 'BE_fr',
                     '/' => 'FR_fr',
                 ],
+                '*.foobar.com' => [
+                    'be-fr' => 'BE_fr',
+                    '/' => 'FR_fr',
+                ],
                 '*' => [
                     'nl' => 'BE-nl',
                     'en' => 'en-gb',
                     '/' => $defaultLocale,
                 ]
             ],
-            'canonicals' => [],
+            'canonicals' => [
+                'FR_fr' => 'fr.foobar.com',
+                'BE-nl' => 'https://www.foobar.com'
+            ],
             'placeholder' => 'locale_slug',
         ]);
 
@@ -60,8 +67,8 @@ class TestCase extends OrchestraTestCase
         app()->singleton('Thinktomorrow\Locale\LocaleUrl', function ($app) use($config) {
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Detect'],
-                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
-                $app['Thinktomorrow\Locale\Parsers\RouteParser'],
+                $app['Thinktomorrow\Locale\Parsers\UrlParserContract'],
+                $app['Thinktomorrow\Locale\Parsers\RouteParserContract'],
                 $config
             );
         });

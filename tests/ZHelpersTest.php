@@ -21,7 +21,7 @@ class ZHelpersTest extends TestCase
     public function localeroute_is_a_wrapper()
     {
         $this->markTestIncomplete();
-        
+
         app()->setLocale('en');
         Route::get('foo/bar/{slug?}', ['as' => 'foo.custom', 'uses' => function () {
         }]);

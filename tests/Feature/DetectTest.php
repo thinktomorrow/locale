@@ -3,9 +3,9 @@
 namespace Thinktomorrow\Locale\Tests\Feature;
 
 use Thinktomorrow\Locale\Detect;
-use Thinktomorrow\Locale\Services\Config;
-use Thinktomorrow\Locale\Services\Root;
-use Thinktomorrow\Locale\Services\Scope;
+use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Locale\Scopes\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class DetectTest extends TestCase
@@ -127,14 +127,6 @@ class DetectTest extends TestCase
 
         app(Detect::class)->forceScope(new Scope(['aa' => 'ee','/' => 'ff'], Root::fromString('fake')))->detect();
         $this->assertEquals('ee',app()->getLocale());
-    }
-
-    /** @test */
-    function it_uses_the_current_request_root_as_scope_identifier()
-    {
-        $detect = $this->detect('http://staging.example.be/awesome/link');
-
-        $this->assertEquals(Root::fromString('staging.example.be'), $detect->getScope()->root());
     }
 
     private function detect($uri = null, $originalLocale = null, $forceScope = null)
