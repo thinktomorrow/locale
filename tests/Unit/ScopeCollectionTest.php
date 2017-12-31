@@ -159,7 +159,10 @@ class ScopeCollectionTest extends TestCase
             (new Scope(['/' => 'nl']))->setCustomRoot(Root::fromString('https://foobar.nl')),
             ScopeCollection::fromArray($this->canonicalConfig())->findCanonical('nl')
         );
+    }
 
+    function it_find_canonical_scope_by_pattern()
+    {
         $this->assertEquals(
             (new Scope(['us' => 'en-us', '/' => 'en-gb']))->setCustomRoot(Root::fromString('uk.foobar.com')->secure()),
             ScopeCollection::fromArray($this->canonicalConfig())->findCanonical('en-gb')
@@ -171,9 +174,7 @@ class ScopeCollectionTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     function if_canonical_locale_does_not_exist_in_config_it_returns_null()
     {
         $this->assertNull(
@@ -181,8 +182,26 @@ class ScopeCollectionTest extends TestCase
         );
     }
 
-    private function canonicalConfig()
+    /** @test */
+    function it_defaults_to_default_scope_if_matching_canonical_host_isnt_a_valid_locale_key()
     {
+        $config = $this->canonicalConfig(['nl' => 'supervet', 'en-gb' => 'awesome']);
+
+        $this->assertEquals((new Scope(['/' => 'en-gb']))->setCustomRoot(Root::fromString('supervet')), ScopeCollection::fromArray($config)->findCanonical('nl'));
+        $this->assertEquals((new Scope(['/' => 'en-gb']))->setCustomRoot(Root::fromString('awesome')), ScopeCollection::fromArray($config)->findCanonical('en-gb'));
+    }
+
+    private function canonicalConfig(array $canonicals = null)
+    {
+        if(!$canonicals)
+        {
+            $canonicals = [
+                'nl' => 'https://foobar.nl',
+                'en-gb' => 'https://uk.foobar.com',
+                'en-us' => 'https://us.foobar.com',
+            ];
+        }
+
         return [
             'locales' => [
                 'https://foobar.nl' => 'nl',
@@ -192,11 +211,7 @@ class ScopeCollectionTest extends TestCase
                 ],
                 '*' => 'en-gb',
             ],
-            'canonicals' => [
-                'nl' => 'https://foobar.nl',
-                'en-gb' => 'https://uk.foobar.com',
-                'en-us' => 'https://us.foobar.com',
-            ],
+            'canonicals' => $canonicals,
         ];
     }
 
