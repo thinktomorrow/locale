@@ -2,6 +2,8 @@
 
 namespace Thinktomorrow\Locale\Values;
 
+use Thinktomorrow\Locale\Exceptions\InvalidUrl;
+
 class Root
 {
     private $valid = false;
@@ -47,6 +49,7 @@ class Root
     public function secure(): Root
     {
         $this->secure = true;
+        $this->scheme = 'https';
 
         return $this;
     }
@@ -64,7 +67,7 @@ class Root
         $parsed = parse_url($host);
 
         if (false === $parsed) {
-            throw new \InvalidArgumentException('Failed to parse url. Invalid url ['.$host.'] passed as parameter.');
+            throw new InvalidUrl('Failed to parse url. Invalid url ['.$host.'] passed as parameter.');
         }
 
         // If a schemeless url is passed, parse_url will ignore this and strip the first tags
@@ -72,8 +75,11 @@ class Root
         $this->schemeless = !isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
 
         $this->scheme = $parsed['scheme'] ?? null;
+        if($this->scheme == 'https') $this->secure();
+
         $this->host = $this->parseHost($parsed);
         $this->port = $parsed['port'] ?? null;
+
     }
 
     public function __toString(): string

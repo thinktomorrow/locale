@@ -6,7 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
 use Thinktomorrow\Locale\Values\Locale;
 use Thinktomorrow\Locale\Values\Root;
-use Thinktomorrow\Locale\Scopes\Scope;
+use Thinktomorrow\Locale\Scope;
 
 class ScopeTest extends TestCase
 {
@@ -36,8 +36,8 @@ class ScopeTest extends TestCase
     /** @test */
     function it_can_get_locale_by_key()
     {
-        $this->assertEquals(Locale::from('nl'), $this->scope->get('foo'));
-        $this->assertEquals(Locale::from('fr'), $this->scope->get('/'));
+        $this->assertEquals(Locale::from('nl'), $this->scope->findLocale('foo'));
+        $this->assertEquals(Locale::from('fr'), $this->scope->findLocale('/'));
     }
 
     /** @test */
@@ -51,27 +51,27 @@ class ScopeTest extends TestCase
     /** @test */
     function not_found_key_returns_null()
     {
-        $this->assertNull($this->scope->get('foobar'));
+        $this->assertNull($this->scope->findLocale('foobar'));
     }
 
     /** @test */
     function it_can_get_all_locales_in_scope()
     {
         $locales = ['nl' => 'nl', '/' => 'fr'];
-        $this->assertEquals($locales,(new Scope($locales, Root::fromString('foobar')))->all());
+        $this->assertEquals($locales,(new Scope($locales, Root::fromString('foobar')))->locales());
     }
 
     /** @test */
     function it_can_get_default_locale()
     {
-        $this->assertEquals(Locale::from('fr'), $this->scope->default());
+        $this->assertEquals(Locale::from('fr'), $this->scope->defaultLocale());
     }
 
     /** @test */
     function validate_if_locale_is_within_scope()
     {
-        $this->assertFalse($this->scope->validate(Locale::from('en')));
-        $this->assertTrue($this->scope->validate(Locale::from('nl')));
-        $this->assertTrue($this->scope->validate(Locale::from('fr')));
+        $this->assertFalse($this->scope->validateLocale(Locale::from('en')));
+        $this->assertTrue($this->scope->validateLocale(Locale::from('nl')));
+        $this->assertTrue($this->scope->validateLocale(Locale::from('fr')));
     }
 }

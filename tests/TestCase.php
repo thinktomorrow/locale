@@ -2,10 +2,10 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Routing\UrlGenerator;
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use Thinktomorrow\Locale\Detect;
+use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\LocaleServiceProvider;
 use Thinktomorrow\Locale\LocaleUrl;
 use Thinktomorrow\Locale\Values\Config;
 
@@ -15,7 +15,7 @@ class TestCase extends OrchestraTestCase
 
     protected function getPackageProviders($app)
     {
-        return [\Thinktomorrow\Locale\LocaleServiceProvider::class];
+        return [LocaleServiceProvider::class];
     }
 
     protected function getEnvironmentSetUp($app)
@@ -34,8 +34,14 @@ class TestCase extends OrchestraTestCase
         return __DIR__.'/stubs/'.$dir;
     }
 
-    protected function refreshBindings($defaultLocale = 'nl')
+    protected function refreshBindings($defaultLocale = 'nl', $domain = null)
     {
+        if($domain)
+        {
+            // Force root url for testing
+            app(UrlGenerator::class)->forceRootUrl($domain);
+        }
+
         $config = Config::from([
             'locales' => [
                 'example.com' => [
@@ -55,20 +61,21 @@ class TestCase extends OrchestraTestCase
             ],
             'canonicals' => [
                 'FR_fr' => 'fr.foobar.com',
-                'BE-nl' => 'https://www.foobar.com'
+                'BE-nl' => 'https://www.foobar.com',
+                'be-de' => 'https://german-foobar.com',
             ],
             'placeholder' => 'locale_slug',
         ]);
 
-        app()->singleton('Thinktomorrow\Locale\Detect', function ($app) use ($config){
-            return new Detect($app['request'], $config );
+        app()->singleton('Thinktomorrow\Locale\DetectLocaleAndScope', function ($app) use ($config){
+            return new DetectLocaleAndScope($app['request'], $config );
         });
 
         app()->singleton('Thinktomorrow\Locale\LocaleUrl', function ($app) use($config) {
             return new LocaleUrl(
-                $app['Thinktomorrow\Locale\Detect'],
-                $app['Thinktomorrow\Locale\Parsers\UrlParserContract'],
-                $app['Thinktomorrow\Locale\Parsers\RouteParserContract'],
+                $app['Thinktomorrow\Locale\DetectLocaleAndScope'],
+                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
+                $app['Thinktomorrow\Locale\Parsers\RouteParser'],
                 $config
             );
         });
@@ -76,18 +83,5 @@ class TestCase extends OrchestraTestCase
         $this->localeUrl = app(LocaleUrl::class);
 
         app()->setLocale($defaultLocale);
-    }
-
-    /**
-     * Set the currently logged in user for the application.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
-     * @param  string $driver
-     *
-     * @return void
-     */
-    public function be(Authenticatable $user, $driver = null)
-    {
-        // TODO: Implement be() method.
     }
 }

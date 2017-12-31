@@ -18,11 +18,12 @@
 - try to use as little as possible of framework or at one place specifically
 - avoid app()->setLocale or app()->getLocale() calls
 - avoid injection of request? what do we really need?
-- LocaleValidator as separate utility class
+- LocaleValidator as separate utility class?
 - rename Locale class for being too generic and prone to conflicts?: maybe Referrer, Scan, Probe,...
 - clear up the parsers
 - clean up the tests and try to go for coverage.
 - improve and complete the documentation
+- routes filename is not everywhere dynamic yet
 
 
 A Laravel package for lightweight route localization. Locale registers the application locale based on the request uri.

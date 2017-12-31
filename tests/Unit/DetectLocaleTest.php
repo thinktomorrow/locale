@@ -1,12 +1,12 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests;
+namespace Thinktomorrow\Locale\Tests\Unit;
 
-use Illuminate\Http\Request;
-use Thinktomorrow\Locale\Detect;
+use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Values\Config;
 
-class LocaleByDomainTest extends TestCase
+class DetectLocaleTest extends TestCase
 {
     public function setUp()
     {
@@ -32,7 +32,7 @@ class LocaleByDomainTest extends TestCase
     }
 
     /** @test */
-    function for__domain_with_different_locales_it_gets_the_default_locale_if_no_locale_segment_is_present()
+    function for_domain_with_different_locales_it_gets_the_default_locale_if_no_locale_segment_is_present()
     {
         $this->assertEquals('dk', $this->localeFor('https://foobar.com/amazing/search'));
         $this->assertEquals('de', $this->localeFor('https://foobar.co.uk/amazing/search'));
@@ -49,15 +49,14 @@ class LocaleByDomainTest extends TestCase
     {
         $this->call('GET', $url);
         $detect = $this->createLocale();
-        $detect->detect();
+        $detect->detectLocale();
 
-        // TODO: or should this be $detect->getScope()->active() instead?
         return app()->getLocale();
     }
 
     private function createLocale()
     {
-        return new Detect(app()->make('request'),Config::from([
+        return new DetectLocaleAndScope(app()->make('request'),Config::from([
             'locales' => [
                 'fr.example.com' => 'fr', // NOTE: put the specific ones on top
                 'example.com' => 'nl',

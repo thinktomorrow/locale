@@ -1,11 +1,11 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Feature;
+namespace Thinktomorrow\Locale\Tests\Unit;
 
-use Thinktomorrow\Locale\Detect;
+use Thinktomorrow\Locale\DetectLocaleAndScope;
 use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Locale\Values\Root;
-use Thinktomorrow\Locale\Scopes\Scope;
+use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class DetectTest extends TestCase
@@ -13,7 +13,7 @@ class DetectTest extends TestCase
     /** @test */
     function it_can_be_instantiated()
     {
-        $this->assertInstanceOf(Detect::class, $this->app->make(Detect::class));
+        $this->assertInstanceOf(DetectLocaleAndScope::class, $this->app->make(DetectLocaleAndScope::class));
     }
 
     /** @test */
@@ -97,15 +97,15 @@ class DetectTest extends TestCase
     /** @test */
     function scope_can_be_overridden_with_new_binding()
     {
-        $this->app->singleton(Detect::class, function ($app) {
-            return (new Detect($app['request'], Config::from(['locales' => [
+        $this->app->singleton(DetectLocaleAndScope::class, function ($app) {
+            return (new DetectLocaleAndScope($app['request'], Config::from(['locales' => [
                 'lu.example.com' => 'lu',
                 '*' => 'foobar',
-            ]])))->forceScope(new Scope(['aa' => 'bb','/' => 'cc'], Root::fromString('fake')));
+            ]])))->setScope(new Scope(['aa' => 'bb', '/' => 'cc'], Root::fromString('fake')));
         });
 
         $this->get('http://foobar.com/aa');
-        app(Detect::class)->detect();
+        app(DetectLocaleAndScope::class)->detectLocale();
 
         $this->assertEquals('bb',app()->getLocale());
     }
@@ -113,19 +113,19 @@ class DetectTest extends TestCase
     /** @test */
     function scope_can_be_overridden_more_than_once()
     {
-        $this->app->singleton(Detect::class, function ($app) {
-            return (new Detect($app['request'], Config::from(['locales' => [
+        $this->app->singleton(DetectLocaleAndScope::class, function ($app) {
+            return (new DetectLocaleAndScope($app['request'], Config::from(['locales' => [
                 'lu.example.com' => 'lu',
                 '*' => 'foobar',
-            ]])))->forceScope(new Scope(['aa' => 'bb','/' => 'cc'], Root::fromString('fake')));
+            ]])))->setScope(new Scope(['aa' => 'bb', '/' => 'cc'], Root::fromString('fake')));
         });
 
         $this->get('http://foobar.com/aa');
 
-        app(Detect::class)->detect();
+        app(DetectLocaleAndScope::class)->detectLocale();
         $this->assertEquals('bb',app()->getLocale());
 
-        app(Detect::class)->forceScope(new Scope(['aa' => 'ee','/' => 'ff'], Root::fromString('fake')))->detect();
+        app(DetectLocaleAndScope::class)->setScope(new Scope(['aa' => 'ee', '/' => 'ff'], Root::fromString('fake')))->detectLocale();
         $this->assertEquals('ee',app()->getLocale());
     }
 
@@ -134,7 +134,7 @@ class DetectTest extends TestCase
         if($uri) $this->get($uri);
         if($originalLocale) $this->app->setLocale($originalLocale);
 
-        return (new Detect($this->app->make('request'), Config::from([
+        return (new DetectLocaleAndScope($this->app->make('request'), Config::from([
             'query_key' => 'locale',
             'locales' => [
                 'lu.example.com'   => [
@@ -154,6 +154,6 @@ class DetectTest extends TestCase
                     '/'  => 'foobar',
                 ],
             ]
-        ])))->forceScope($forceScope)->detect();
+        ])))->setScope($forceScope)->detectLocale();
     }
 }

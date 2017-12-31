@@ -2,13 +2,11 @@
 
 namespace Thinktomorrow\Locale\Tests\Unit;
 
-use Thinktomorrow\Locale\Scopes\CanonicalScope;
+use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Values\Canonical;
 use Thinktomorrow\Locale\Values\Config;
-use Thinktomorrow\Locale\Values\Locale;
 use Thinktomorrow\Locale\Values\Root;
-use Thinktomorrow\Locale\Scopes\Scope;
-use Thinktomorrow\Locale\Scopes\ScopeCollection;
+use Thinktomorrow\Locale\ScopeCollection;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class CanonicalTest extends TestCase
@@ -20,27 +18,28 @@ class CanonicalTest extends TestCase
     }
 
     /** @test */
-    function it_defaults_to_default_scope_if_matching_canonical_host_isnt_a_valid_locale_key()
+    function it_can_find_canonical_scope_for_locale()
     {
-        $hub = $this->createScopeCollection(['nl' => 'awesome']);
+        $scopeCollection = $this->createScopeCollection(['nl' => 'http://example.nl']);
 
-        $this->assertEquals(new CanonicalScope(['/' => 'en'],Root::fromString('foobar')), $hub->findCanonical('nl'));
+        $this->assertEquals((new Scope(['/' => 'nl']))->setCustomRoot(Root::fromString('http://example.nl')), $scopeCollection->findCanonical('nl'));
     }
 
     /** @test */
-    function it_can_find_canonical_scope_for_locale()
+    function it_defaults_to_default_scope_if_matching_canonical_host_isnt_a_valid_locale_key()
     {
-        $hub = $this->createScopeCollection(['nl' => 'http://example.nl']);
+        $scopeCollection = $this->createScopeCollection(['nl' => 'supervet', 'en' => 'awesome']);
 
-        $this->assertEquals(new CanonicalScope(['/' => 'nl'],Root::fromString('http://example.nl')), $hub->findCanonical('nl'));
+        $this->assertEquals((new Scope(['/' => 'en']))->setCustomRoot(Root::fromString('supervet')), $scopeCollection->findCanonical('nl'));
+        $this->assertEquals((new Scope(['/' => 'en']))->setCustomRoot(Root::fromString('awesome')), $scopeCollection->findCanonical('en'));
     }
 
     /** @test */
     function it_matches_pattern_group_keys()
     {
-        $hub = $this->createScopeCollection(['fr' => 'http://fr.foobar.com']);
+        $scopeCollection = $this->createScopeCollection(['fr' => 'http://fr.foobar.com']);
 
-        $this->assertEquals(new CanonicalScope(['dk' => 'DK_dk', 'fr' => 'FR-fr', '/' => 'en'],Root::fromString('http://fr.foobar.com')), $hub->findCanonical('fr'));
+        $this->assertEquals((new Scope(['dk' => 'DK_dk', 'fr' => 'FR-fr', '/' => 'en']))->setCustomRoot(Root::fromString('http://fr.foobar.com')), $scopeCollection->findCanonical('fr'));
     }
 
     private function createScopeCollection(array $canonicals = [])

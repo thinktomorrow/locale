@@ -1,9 +1,10 @@
 <?php
 
-namespace Thinktomorrow\Locale\Scopes;
+namespace Thinktomorrow\Locale;
 
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
 use Thinktomorrow\Locale\Values\Locale;
+use Thinktomorrow\Locale\Values\Root;
 
 class Scope
 {
@@ -20,6 +21,15 @@ class Scope
      */
     private $default;
 
+    /**
+     * When the canonical scope has a root set to be
+     * other than the current, that specific root is defined here
+     * By default the current request root is of use (NULL)
+     *
+     * @var null|Root
+     */
+    private $customRoot = null;
+
     public function __construct(array $locales)
     {
         if(!isset($locales['/'])) throw new InvalidScope('Default locale is required for scope.');
@@ -28,15 +38,42 @@ class Scope
         $this->default = Locale::from($this->locales['/']);
     }
 
+    public function setCustomRoot(Root $customRoot)
+    {
+        $this->customRoot = $customRoot;
+
+        return $this;
+    }
+
+    public function customRoot(): ?Root
+    {
+        return $this->customRoot;
+    }
+
     /**
      * Get the locale by segment identifier
      *
-     * @param $key
+     * @param $segment
      * @return null|Locale
      */
-    public function get($key): ?Locale
+    public function findLocale($segment): ?Locale
     {
-        return isset($this->locales[$key]) ? Locale::from($this->locales[$key]) : null;
+        return isset($this->locales[$segment]) ? Locale::from($this->locales[$segment]) : null;
+    }
+
+    public function locales(): array
+    {
+        return $this->locales;
+    }
+
+    public function defaultLocale(): Locale
+    {
+        return $this->default;
+    }
+
+    public function activeLocale(): string
+    {
+        return app()->getLocale();
     }
 
     /**
@@ -50,22 +87,12 @@ class Scope
         return ($key = array_search($locale, $this->locales)) ? $key : null;
     }
 
-    public function active(): string
-    {
-        return app()->getLocale();
-    }
-
     public function activeSegment(): ?string
     {
-        return $this->segment($this->active());
+        return $this->segment($this->activeLocale());
     }
 
-    public function all(): array
-    {
-        return $this->locales;
-    }
-
-    public function validate(string $locale = null): bool
+    public function validateLocale(string $locale = null): bool
     {
         if(!$locale) return false;
 
@@ -77,10 +104,5 @@ class Scope
         if(!$segment) return false;
 
         return isset($this->locales[$segment]);
-    }
-
-    public function default(): Locale
-    {
-        return $this->default;
     }
 }

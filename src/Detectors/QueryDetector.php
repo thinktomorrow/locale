@@ -5,7 +5,7 @@ namespace Thinktomorrow\Locale\Detectors;
 use Illuminate\Http\Request;
 use Thinktomorrow\Locale\Values\Locale;
 use Thinktomorrow\Locale\Values\Config;
-use Thinktomorrow\Locale\Scopes\Scope;
+use Thinktomorrow\Locale\Scope;
 
 class QueryDetector implements Detector
 {
@@ -25,6 +25,6 @@ class QueryDetector implements Detector
 
         if( ! $queryValue = $this->request->get($config['query_key']) ) return null;
 
-        return ($scope->validate(Locale::from($queryValue))) ? Locale::from($queryValue) : null;
+        return ($scope->validateLocale(Locale::from($queryValue))) ? Locale::from($queryValue) : null;
     }
 }

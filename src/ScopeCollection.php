@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Scopes;
+namespace Thinktomorrow\Locale;
 
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
 use Thinktomorrow\Locale\Values\Config;
@@ -28,28 +28,27 @@ final class ScopeCollection
         return new static($config);
     }
 
-    public function findByRoot(string $root, $asCanonical = false): Scope
+    public function findByRoot(string $root): Scope
     {
-        return $this->findByKey(
-            $this->findKey($root),
-            ($asCanonical) ? Root::fromString($root) : null
-        );
+        return $this->findByKey( $this->guessKeyFromRoot($root) );
     }
 
     /**
      * @param string $locale
-     * @return null|CanonicalScope
+     * @return null|Scope
      */
-    public function findCanonical(string $locale): ?CanonicalScope
+    public function findCanonical(string $locale): ?Scope
     {
         $canonicals = $this->config->get('canonicals');
 
         if(!isset($canonicals[$locale])) return null;
 
-        return $this->findByRoot($canonicals[$locale], true);
+        $scope = $this->findByRoot($canonicals[$locale]);
+
+        return $scope->setCustomRoot(Root::fromString($canonicals[$locale]));
     }
 
-    private function findKey(string $value): string
+    private function guessKeyFromRoot(string $value): string
     {
         foreach($this->config->get('locales') as $scopeKey => $locales)
         {
@@ -65,8 +64,6 @@ final class ScopeCollection
                 $pattern = str_replace('\*','(.+)',$pattern);
             }
 
-//            if( preg_match("#^$pattern$#", $value) )
-//            ^(https?:\/\/)?(www\.)?example\.com\/?$
             if( preg_match("#^(https?://)?(www\.)?$pattern/?$#", $value) )
             {
                 return $scopeKey;
@@ -78,7 +75,7 @@ final class ScopeCollection
     }
 
     // We limit the available locales to the current domain space, including the default ones
-    private function findByKey(string $scopeKey, Root $canonical = null): Scope
+    private function findByKey(string $scopeKey): Scope
     {
         if(!$scopeKey || !isset($this->config['locales'][$scopeKey]))
         {
@@ -88,6 +85,6 @@ final class ScopeCollection
         $locales = $this->config->get('locales');
         $locales = array_merge($locales['*'], $locales[$scopeKey]);
 
-        return $canonical ? (new CanonicalScope($locales))->setRoot($canonical) : new Scope($locales);
+        return new Scope($locales);
     }
 }

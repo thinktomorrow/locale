@@ -3,8 +3,8 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Support\ServiceProvider;
-use Thinktomorrow\Locale\Parsers\RouteParserContract;
-use Thinktomorrow\Locale\Parsers\UrlParserContract;
+use Thinktomorrow\Locale\Parsers\RouteParser;
+use Thinktomorrow\Locale\Parsers\UrlParser;
 use Thinktomorrow\Locale\Values\Config;
 
 class LocaleServiceProvider extends ServiceProvider
@@ -17,40 +17,44 @@ class LocaleServiceProvider extends ServiceProvider
             __DIR__ . '/config/locale.php' => config_path('thinktomorrow/locale.php'),
         ]);
 
-        $this->app->singleton(Detect::class, function ($app) {
-            return new Detect($app['request'], Config::from($this->getConfigValues()));
+        $this->app->singleton(DetectLocaleAndScope::class, function ($app) {
+            return new DetectLocaleAndScope($app['request'], Config::from($this->getConfigValues()));
         });
 
-        $this->app->singleton(UrlParserContract::class, function ($app) {
-            return new UrlParserContract(
+        $this->app->singleton(UrlParser::class, function ($app) {
+            return new UrlParser(
                 $app['Illuminate\Contracts\Routing\UrlGenerator']
             );
         });
 
-        $this->app->singleton(RouteParserContract::class, function ($app) {
-            return new RouteParserContract(
-                $app['Thinktomorrow\Locale\Parsers\UrlParserContract'],
+        $this->app->singleton(RouteParser::class, function ($app) {
+            return new RouteParser(
+                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
                 $app['translator']
             );
         });
 
         $this->app->singleton(LocaleUrl::class, function ($app) {
             return new LocaleUrl(
-                $app['Thinktomorrow\Locale\Detect'],
-                new UrlParserContract(
+                $app['Thinktomorrow\Locale\DetectLocaleAndScope'],
+                new UrlParser(
                     $app['Illuminate\Contracts\Routing\UrlGenerator']
                 ),
-                new RouteParserContract(
-                    new UrlParserContract(
+                new RouteParser(
+                    new UrlParser(
                         $app['Illuminate\Contracts\Routing\UrlGenerator']
                     ),
                     $app['translator']),
-                $app['Thinktomorrow\Locale\Parsers\RouteParserContract']
+                $app['Thinktomorrow\Locale\Parsers\RouteParser']
             );
         });
 
-        $this->app->alias(Detect::class, 'tt-locale');
-        $this->app->alias(LocaleUrl::class, 'tt-locale-url');
+        /**
+         * Facade for getting current active scope
+         */
+        $this->app->singleton('tt-locale-scope', function ($app) {
+            return $app->make(DetectLocaleAndScope::class)->detect()->getScope();
+        });
     }
 
     private function getConfigValues()

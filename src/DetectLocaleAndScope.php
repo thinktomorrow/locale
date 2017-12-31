@@ -9,11 +9,8 @@ use Thinktomorrow\Locale\Detectors\QueryDetector;
 use Thinktomorrow\Locale\Detectors\SegmentDetector;
 use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Locale\Values\Locale;
-use Thinktomorrow\Locale\Values\Root;
-use Thinktomorrow\Locale\Scopes\Scope;
-use Thinktomorrow\Locale\Scopes\ScopeCollection;
 
-final class Detect
+final class DetectLocaleAndScope
 {
 
     /**
@@ -58,7 +55,7 @@ final class Detect
      *
      * @return self
      */
-    public function detect(): self
+    public function detectLocale(): self
     {
         $locale = null;
 
@@ -82,6 +79,8 @@ final class Detect
 
     public function getLocale(): Locale
     {
+        if( ! $this->locale ) $this->detectLocale();
+
         return $this->locale;
     }
 
@@ -93,14 +92,14 @@ final class Detect
     }
 
     /**
-     * This is handy for settting allowed scope via other source than config file.
+     * This is handy for setting allowed scope via other source than config file.
      * TODO: we should allow to set config from other source such as db as well so
      * this can be configurable from a cms.
      *
      * @param Scope|null $scope
      * @return $this
      */
-    public function forceScope(Scope $scope = null)
+    public function setScope(Scope $scope = null)
     {
         if($scope) $this->scope = $scope;
 

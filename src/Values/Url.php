@@ -2,6 +2,8 @@
 
 namespace Thinktomorrow\Locale\Values;
 
+use Thinktomorrow\Locale\Exceptions\InvalidUrl;
+
 class Url
 {
     private $parsed;
@@ -21,7 +23,7 @@ class Url
         return new self($url);
     }
 
-    public function forceRoot(Root $root)
+    public function setCustomRoot(Root $root)
     {
         $this->root = $root;
 
@@ -56,7 +58,7 @@ class Url
         return $this->absolute;
     }
 
-    public function localize(string $localeSegment = null, array $available_locales)
+    public function localize(string $localeSegment = null, array $available_locales = [])
     {
         $this->parsed['path'] = str_replace('//', '/',
             rtrim(
@@ -79,17 +81,10 @@ class Url
 
         $path_segments = explode('/', trim($this->parsed['path'], '/'));
 
-        if (count($path_segments) < 1) {
-            return;
-        }
-
         // Remove the locale segment if present
         if (in_array($path_segments[0], array_keys($available_locales))){
             unset($path_segments[0]);
         }
-//        if (in_array($path_segments[0], $available_locales) $path_segments[0] == $scope->default() || $path_segments[0] === $scope->segment($path_segments[0])) {
-
-//        }
 
         return '/'.implode('/', $path_segments);
     }
@@ -104,7 +99,7 @@ class Url
         $this->parsed = parse_url($url);
 
         if (false === $this->parsed) {
-            throw new \InvalidArgumentException('Failed to parse url. Invalid url [' . $url . '] passed as parameter.');
+            throw new InvalidUrl('Failed to parse url. Invalid url [' . $url . '] passed as parameter.');
         }
 
         // If a schemeless url is passed, parse_url will ignore this and strip the first tags

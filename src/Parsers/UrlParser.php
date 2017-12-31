@@ -6,7 +6,7 @@ use Illuminate\Routing\UrlGenerator;
 use Thinktomorrow\Locale\Values\Root;
 use Thinktomorrow\Locale\Values\Url;
 
-class UrlParserContract implements ParserContract
+class UrlParser
 {
     /** @var Url */
     private $url;
@@ -52,9 +52,9 @@ class UrlParserContract implements ParserContract
         return $this;
     }
 
-    public function forceRoot(Root $root)
+    public function setCustomRoot(Root $root)
     {
-        $this->url->forceRoot($root);
+        $this->url->setCustomRoot($root);
 
         return $this;
     }

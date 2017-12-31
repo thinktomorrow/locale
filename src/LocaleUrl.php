@@ -2,10 +2,11 @@
 
 namespace Thinktomorrow\Locale;
 
-use Thinktomorrow\Locale\Parsers\RouteParserContract;
-use Thinktomorrow\Locale\Parsers\UrlParserContract;
-use Thinktomorrow\Locale\Scopes\CanonicalScope;
-use Thinktomorrow\Locale\Scopes\ScopeCollection;
+use Illuminate\Routing\Route;
+use Thinktomorrow\Locale\Parsers\RouteParser;
+use Thinktomorrow\Locale\Parsers\UrlParser;
+use Thinktomorrow\Locale\CanonicalScope;
+use Thinktomorrow\Locale\ScopeCollection;
 use Thinktomorrow\Locale\Values\Config;
 
 class LocaleUrl
@@ -21,7 +22,7 @@ class LocaleUrl
     private $scopeCollection;
 
     /**
-     * @var UrlParserContract
+     * @var UrlParser
      */
     private $urlparser;
 
@@ -31,11 +32,11 @@ class LocaleUrl
     private $placeholder;
 
     /**
-     * @var RouteParserContract
+     * @var RouteParser
      */
     private $routeparser;
 
-    public function __construct(Detect $detect, UrlParserContract $urlparser, RouteParserContract $routeparser, Config $config)
+    public function __construct(DetectLocaleAndScope $detect, UrlParser $urlparser, RouteParser $routeparser, Config $config)
     {
         $this->scope = $detect->getScope(); // TODO check if this still returns proper results when loading before routes
         $this->scopeCollection = ScopeCollection::fromConfig($config);
@@ -65,7 +66,7 @@ class LocaleUrl
          * Convert locale to segment
          */
         return $this->urlparser->set($url)
-            ->locale($this->scope->segment($locale), $this->scope->all())
+            ->locale($this->scope->segment($locale), $this->scope->locales())
             ->parameters($parameters)
             ->get();
     }
@@ -83,18 +84,20 @@ class LocaleUrl
      */
     public function route($name, $locale = null, $parameters = [], $asCanonical = false)
     {
-        // TODO: what is dev wants to get localized route for locale outside of current scope?
+        // TODO: what if dev wants to get localized route for locale outside of current scope?
         // e.g. route('foo.bar','en'); - how we know which en to take? Default to canonical else to first matching scope?
 
         $parameters = array_merge($this->normalizeLocaleAsParameter($locale), (array)$parameters);
         $localeSegment = $this->extractLocaleSegmentFromParameters($parameters);
 
-        $parser = $this->routeparser->set($name)
-            ->locale($localeSegment, $this->scope->all())
-            ->parameters($parameters);
+        $parser = $this->routeparser->set($name, $parameters)
+            ->locale($localeSegment, $this->scope->locales());
 
-        if ($asCanonical && $this->scope instanceof CanonicalScope) {
-            $parser->forceRoot($this->scope->root());
+        if ($asCanonical) {
+            $parser = $this->withCanonicalScope($parser, $locale, function($parser){
+                if( ! $this->scope->customRoot()) return $parser;
+                return $parser->setCustomRoot($this->scope->customRoot());
+            });
         }
 
         return $parser->get();
@@ -102,19 +105,28 @@ class LocaleUrl
 
     public function canonicalRoute($name, $locale = null, $parameters = [])
     {
+        return $this->route($name, $locale, $parameters, true);
+    }
+
+    private function withCanonicalScope(RouteParser $parser, $locale = null, callable $routeCallback): RouteParser
+    {
+        /**
+         * Freeze the current scope so that after the temporary switch into
+         * the other canonical scope, we can safely return to the current.
+         */
         $scopeOnIce = $this->scope;
 
-        if($canonicalScope = $this->scopeCollection->findCanonical($locale ?? $this->scope->active()))
+        if($canonicalScope = $this->scopeCollection->findCanonical($locale ?? $this->scope->activeLocale()))
         {
             $this->scope = $canonicalScope;
         }
 
-        $parsedRoute = $this->route($name, $locale, $parameters,!!$canonicalScope);
+        $parser = call_user_func_array($routeCallback, [$parser]);
+        //$parsedRoute = $this->route($name, $locale, $parameters, !!$canonicalScope);
 
-        // Reset the current scope
         $this->scope = $scopeOnIce;
 
-        return $parsedRoute;
+        return $parser;
     }
 
     /**
@@ -159,13 +171,13 @@ class LocaleUrl
 
             // You should provide the actual locale but in case the segment value is passed
             // we allow for this as well and normalize it to the expected locale value.
-            if (!$this->scope->validate($locale) && $this->scope->validateSegment($locale)) {
-                $locale = $this->scope->get($locale);
+            if (!$this->scope->validateLocale($locale) && $this->scope->validateSegment($locale)) {
+                $locale = $this->scope->findLocale($locale);
             }
 
             // Locale should be passed as second parameter but in case it is passed as array
             // alongside other parameters, we will try to extract it
-            if ($this->scope->validate($locale)) {
+            if ($this->scope->validateLocale($locale)) {
                 $locale = [$this->placeholder => $this->scope->segment($locale)];
             }
         }

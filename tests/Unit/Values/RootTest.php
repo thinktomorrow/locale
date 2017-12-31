@@ -1,8 +1,9 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Unit;
+namespace Thinktomorrow\Locale\Tests\Unit\Values;
 
 use PHPUnit\Framework\TestCase;
+use Thinktomorrow\Locale\Exceptions\InvalidUrl;
 use Thinktomorrow\Locale\Values\Root;
 
 class RootTest extends TestCase
@@ -14,7 +15,7 @@ class RootTest extends TestCase
     }
 
     /** @test */
-    public function it_converts_urls_to_proper_root()
+    public function it_normalizes_domain_to_complete_root()
     {
         $urls = [
             'example.com'                => 'http://example.com',
@@ -31,7 +32,7 @@ class RootTest extends TestCase
             // Schemeless
             '//example.com/foo/bar?s=q'  => '//example.com',
 
-            // Edgecases
+            // Edgecases - are there any?
             '/'                          => 'http:///', // Is this expected behaviour?
             '//'                         => 'http:///',
             ''                           => 'http://',
@@ -54,6 +55,8 @@ class RootTest extends TestCase
         foreach ($urls as $original => $result) {
             $this->assertEquals($result, Root::fromString($original)->secure()->get());
         }
+
+        $this->assertEquals(Root::fromString('uk.foobar.com')->secure(), Root::fromString('https://uk.foobar.com'));
     }
 
     /** @test */
@@ -62,5 +65,19 @@ class RootTest extends TestCase
         $this->assertFalse(Root::fromString('')->valid());
         $this->assertTrue(Root::fromString('foobar')->valid());
         $this->assertTrue(Root::fromString('https://example.com')->valid());
+    }
+
+    /** @test */
+    function instance_can_be_printed_as_string()
+    {
+        $this->assertEquals('http://foobar.com',Root::fromString('foobar.com'));
+    }
+    
+    /** @test */
+    function it_throws_exception_if_url_cannot_be_parsed()
+    {
+        $this->expectException(InvalidUrl::class);
+
+        Root::fromString('javascript://');
     }
 }

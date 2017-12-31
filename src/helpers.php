@@ -31,3 +31,11 @@ if (!function_exists('localeroute')) {
         return app(LocaleUrl::class)->route($name, $locale, $parameters, $absolute);
     }
 }
+
+
+if (!function_exists('activeLocaleSegment')) {
+    function activeLocaleSegment()
+    {
+        return LocaleFacade::detect()->getScope()->activeSegment();
+    }
+}
