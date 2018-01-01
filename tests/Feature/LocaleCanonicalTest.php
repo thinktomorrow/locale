@@ -48,8 +48,38 @@ class LocaleCanonicalTest extends TestCase
         $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','BE-nl'));
     }
 
+
+    /** @test */
+    function it_can_get_the_canonical_for_current_locale()
+    {
+        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
+
+        // No explicit canonical set for en-gb so keep current root
+        app()->setLocale('en-gb');
+        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
+
+        // BE_Fr has explicit canonical
+        app()->setLocale('FR_fr');
+        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
+
+        // BE-Nl has explicit canonical but is not default locale of this root so it still needs a locale segment
+        app()->setLocale('BE-nl');
+        $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
+    }
+
     /** @test */
     function scope_is_properly_reset_after_each_url_creation()
+    {
+        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
+
+        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
+        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
+        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
+        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
+    }
+
+    /** @test */
+    function mixing_regular_route_and_canonicalized_should_return_expected_results()
     {
         Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
 

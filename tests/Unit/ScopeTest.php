@@ -5,7 +5,6 @@ namespace Thinktomorrow\Locale\Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
 use Thinktomorrow\Locale\Values\Locale;
-use Thinktomorrow\Locale\Values\Root;
 use Thinktomorrow\Locale\Scope;
 
 class ScopeTest extends TestCase
@@ -16,13 +15,13 @@ class ScopeTest extends TestCase
     {
         parent::setUp();
 
-        $this->scope = new Scope(['foo' => 'nl', '/' => 'fr'], Root::fromString('foobar'));
+        $this->scope = new Scope(['foo' => 'nl', '/' => 'fr']);
     }
 
     /** @test */
     function it_can_be_instantiated()
     {
-        $this->assertInstanceOf(Scope::class, new Scope(['nl' => 'nl', '/' => 'fr'], Root::fromString('foobar')));
+        $this->assertInstanceOf(Scope::class, new Scope(['nl' => 'nl', '/' => 'fr']));
     }
 
     /** @test */
@@ -30,7 +29,7 @@ class ScopeTest extends TestCase
     {
         $this->expectException(InvalidScope::class);
 
-        new Scope(['nl' => 'nl'], Root::fromString('foobar'));
+        new Scope(['nl' => 'nl']);
     }
 
     /** @test */
@@ -58,7 +57,7 @@ class ScopeTest extends TestCase
     function it_can_get_all_locales_in_scope()
     {
         $locales = ['nl' => 'nl', '/' => 'fr'];
-        $this->assertEquals($locales,(new Scope($locales, Root::fromString('foobar')))->locales());
+        $this->assertEquals($locales,(new Scope($locales))->locales());
     }
 
     /** @test */

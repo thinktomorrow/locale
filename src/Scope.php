@@ -79,11 +79,13 @@ class Scope
     /**
      * Get the url segment which corresponds with the passed locale
      *
-     * @param $locale
+     * @param null $locale
      * @return null|string
      */
-    public function segment($locale): ?string
+    public function segment($locale = null): ?string
     {
+        if(is_null($locale)) return $this->activeSegment();
+
         return ($key = array_search($locale, $this->locales)) ? $key : null;
     }
 

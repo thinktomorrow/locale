@@ -2,8 +2,8 @@
 
 namespace Thinktomorrow\Locale\Tests\Feature;
 
-use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class LocaleUrlTest extends TestCase
@@ -18,143 +18,62 @@ class LocaleUrlTest extends TestCase
     }
 
     /** @test */
-    public function it_can_create_a_localized_named_route()
+    public function when_localizing_an_url_it_keeps_all_uri_segments_intact()
     {
-        // In fact routekey is taken from the translation files
-        Route::get('foo/bar/{slug?}', ['as' => 'foo.custom', 'uses' => function () {}]);
+        $urls = [
+            '/foo/bar'                          => 'http://example.com/fr/foo/bar',
+            'foo/bar'                           => 'http://example.com/fr/foo/bar',
+            ''                                  => 'http://example.com/fr',
+            'http://example.com'                => 'http://example.com/fr',
+            'http://example.com/foo/bar'        => 'http://example.com/fr/foo/bar',
+            'http://example.com/foo/bar?s=q'    => 'http://example.com/fr/foo/bar?s=q',
+            'http://example.fr/foo/bar'         => 'http://example.fr/fr/foo/bar',
+            'https://example.com/fr/foo/bar'    => 'https://example.com/fr/foo/bar',
+            'https://example.com/es/foo/bar'    => 'https://example.com/fr/es/foo/bar', // Unknown locale segment for current scope is left untouched
+            'https://example.com/foo/bar#index' => 'https://example.com/fr/foo/bar#index',
+        ];
 
-        $this->assertEquals('http://example.com/fr/foo/bar', $this->localeUrl->route('foo.custom', 'BE_fr'));
-        $this->assertEquals('http://example.com/fr/foo/bar', $this->localeUrl->route('foo.custom', 'fr'));
-        $this->assertEquals('http://example.com/foo/bar', $this->localeUrl->route('foo.custom', 'FR_fr'));
-        $this->assertEquals('http://example.com/foo/bar', $this->localeUrl->route('foo.custom', '/'));
+        foreach ($urls as $original => $result) {
+            $this->assertEquals($result, $this->localeUrl->to($original, 'BE_fr'), 'improper conversion from '.$original.' to '.$this->localeUrl->to($original, 'fr').' - '.$result.' was expected.');
+        }
     }
 
     /** @test */
-    public function it_is_kind_on_various_ways_of_passing_locale()
+    public function when_localizing_an_url_with_default_locale_it_keeps_all_uri_segments_intact()
     {
-        // In fact routekey is taken from the translation files
-        Route::get('foo/bar/{slug}', ['as' => 'foo.custom', 'uses' => function () {}]);
+        $urls = [
+            '/foo/bar'                          => 'http://example.com/foo/bar',
+            'foo/bar'                           => 'http://example.com/foo/bar',
+            ''                                  => 'http://example.com',
+            'http://example.com'                => 'http://example.com',
+            'http://example.com/foo/bar'        => 'http://example.com/foo/bar',
+            'http://example.com/foo/bar?s=q'    => 'http://example.com/foo/bar?s=q',
+            'http://example.nl/foo/bar'         => 'http://example.nl/foo/bar',
+            'https://example.com/nl/foo/bar'    => 'https://example.com/foo/bar',
+            'https://example.com/foo/bar#index' => 'https://example.com/foo/bar#index',
+        ];
 
-        $this->assertEquals('http://example.com/fr/foo/bar/crazy', $this->localeUrl->route('foo.custom', 'fr', 'crazy'));
-
-        // If second parameter is not a locale, it is considered a custom parameter
-        $this->assertEquals('http://example.com/foo/bar/cow', $this->localeUrl->route('foo.custom', 'cow'));
-        $this->assertEquals('http://example.com/en/foo/bar/cow', $this->localeUrl->route('foo.custom', 'cow', ['locale_slug' => 'en']));
+        foreach ($urls as $original => $result) {
+            $this->assertEquals($result, $this->localeUrl->to($original, 'FR_fr'), 'improper conversion from '.$original.' to '.$this->localeUrl->to($original, 'nl').' - '.$result.' was expected.');
+        }
     }
 
     /** @test */
-    public function it_can_create_a_named_route_where_first_segment_is_dynamic()
+    public function if_locale_is_detected_url_localisation_uses_active_locale_by_default()
     {
-        Route::get('{color}/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
+        $this->get('http://example.com/en');
+        $this->assertEquals('http://example.com', $this->localeUrl->to('/')); // no locale known yet
 
-        app()->setLocale('en-gb');
-        $this->assertEquals('http://example.com/en/blue/foo/bar', $this->localeUrl->route('foo.custom', ['color' => 'blue']));
-        $this->assertEquals('http://example.com/fr/blue/foo/bar', $this->localeUrl->route('foo.custom', 'fr', ['color' => 'blue']));
-
-        app()->setLocale('BE-nl');
-        $this->assertEquals('http://example.com/nl/blue/foo/bar', $this->localeUrl->route('foo.custom', ['color' => 'blue']));
-        $this->assertEquals('http://example.com/nl/blue/foo/bar', $this->localeUrl->route('foo.custom', 'nl', ['color' => 'blue']));
-
-        app()->setLocale('FR_fr');
-        $this->assertEquals('http://example.com/blue/foo/bar', $this->localeUrl->route('foo.custom', ['color' => 'blue']));
-        $this->assertEquals('http://example.com/blue/foo/bar', $this->localeUrl->route('foo.custom', 'FR_fr', ['color' => 'blue']));
+        app(DetectLocaleAndScope::class)->detectLocale();
+        $this->assertEquals('http://example.com/en', $this->localeUrl->to('/')); // locale is set as 'en' based on request
     }
 
     /** @test */
-    public function in_case_of_duplicate_locale_parameters_the_one_last_passed_is_used()
+    public function a_localeurl_facade_can_be_used_for_convenience()
     {
-        Route::get('{color}/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
+        $this->get('http://example.com/en');
+        app(DetectLocaleAndScope::class)->detectLocale();
 
-        $this->assertEquals('http://example.com/fr/blue/foo/bar', $this->localeUrl->route('foo.custom', 'en', ['locale_slug' => 'fr', 'color' => 'blue']));
-    }
-
-    /** @test */
-    public function first_dynamic_url_segment_is_replaced()
-    {
-        Route::get('{color}/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
-        app()->setLocale('en-gb');
-        $this->assertEquals('http://example.com/en/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.custom', ['color' => 'blue', 'dazzle' => 'awesome', 'crazy' => 'vibe']));
-
-        app()->setLocale('FR_fr');
-        $this->assertEquals('http://example.com/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.custom', ['color' => 'blue', 'dazzle' => 'awesome', 'crazy' => 'vibe']));
-    }
-
-    /** @test */
-    public function it_can_create_a_named_route_with_multiple_segments_for_hidden_locale()
-    {
-        Route::get('{color}/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
-        $this->assertEquals('http://example.com/blue/foo/bar?dazzle=awesome&crazy=vibe', $this->localeUrl->route('foo.custom', ['color' => 'blue', 'dazzle' => 'awesome', 'crazy' => 'vibe']));
-    }
-
-    /** @test */
-    public function it_can_create_translated_prefixed_route()
-    {
-        $this->get('http://foobar.com');
-        $this->refreshBindings('Foobar');
-
-        Route::group(['prefix' => app(DetectLocaleAndScope::class)->detect()->getScope()->activeSegment()], function () {
-            Route::get('/foo/bar/{color}', ['as' => 'foo.custom', 'uses' => function () {
-            }]);
-        });
-
-        $this->assertEquals('http://foobar.com/foo/bar/blue', $this->localeUrl->route('foo.custom', ['locale_slug' => null, 'color' => 'blue']));
-        $this->assertEquals('http://foobar.com/foo/bar/blue', $this->localeUrl->route('foo.custom', 'Foobar', ['color' => 'blue']));
-        $this->assertEquals('http://foobar.com/foo/bar/blue', $this->localeUrl->route('foo.custom', ['locale_slug' => '/', 'color' => 'blue']));
-        $this->assertEquals('http://foobar.com/en/foo/bar/blue', $this->localeUrl->route('foo.custom', ['locale_slug' => 'en', 'color' => 'blue']));
-
-        // Passed locale not present in current scope
-        $this->assertEquals('http://foobar.com/foo/bar/blue?de', $this->localeUrl->route('foo.custom', ['locale_slug' => 'de', 'color' => 'blue']));
-    }
-
-    /** @test */
-    function it_can_find_canonicals_for_specific_locale()
-    {
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','BE-nl'));
-    }
-
-    /** @test */
-    function mixing_regular_route_and_canonicalized_should_return_expected_results()
-    {
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-    }
-
-    /** @test */
-    function it_can_find_the_canonical_for_current_locale()
-    {
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
-        // No explicit canonical set for en-gb so keep current root
-        app()->setLocale('en-gb');
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
-
-        // BE_Fr has explicit canonical
-        app()->setLocale('FR_fr');
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
-
-        // BE-Nl has explicit canonical but is not default locale of this root so it still needs a locale segment
-        app()->setLocale('BE-nl');
-        $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
-    }
-
-    /** @test */
-    public function localeurl_facade()
-    {
-        app()->setLocale('en');
-        Route::get('foo/bar/{slug?}', ['as' => 'foo.show', 'uses' => function () {}]);
-
-        $this->assertEquals('http://example.com/en/foo/bar', LocaleUrlFacade::route('foo.show'));
         $this->assertEquals('http://example.com/en', LocaleUrlFacade::to('/'));
     }
-
 }
