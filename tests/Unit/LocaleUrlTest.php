@@ -2,8 +2,10 @@
 
 namespace Thinktomorrow\Locale\Tests\Unit;
 
+use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class LocaleUrlTest extends TestCase
@@ -17,6 +19,7 @@ class LocaleUrlTest extends TestCase
         $this->refreshBindings();
 
         Route::get('foo/bar/{slug}', ['as' => 'foo.custom', 'uses' => function () {}]);
+        Route::get('foo/bar', ['as' => 'foobar.sample', 'uses' => function () {}]);
         Route::get('{color}/foo/bar', ['as' => 'bar.custom', 'uses' => function () {}]);
     }
 
@@ -64,15 +67,23 @@ class LocaleUrlTest extends TestCase
     /** @test */
     public function it_can_localize_a_named_route()
     {
-        $this->assertEquals('http://example.com/fr/foo/bar', $this->localeUrl->route('foo.custom', 'BE_fr'));
-        $this->assertEquals('http://example.com/foo/bar', $this->localeUrl->route('foo.custom', 'FR_fr'));
+        $this->assertEquals('http://example.com/fr/foo/bar', $this->localeUrl->route('foobar.sample', 'BE_fr'));
+        $this->assertEquals('http://example.com/foo/bar', $this->localeUrl->route('foobar.sample', 'FR_fr'));
+    }
+
+    /** @test */
+    public function it_halts_execution_if_required_parameter_is_missing()
+    {
+        $this->expectException(UrlGenerationException::class);
+
+        $this->localeUrl->route('foo.custom', 'FR_fr');
     }
 
     /** @test */
     public function if_locale_segment_is_passed_instead_of_the_locale_it_can_still_be_localized()
     {
-        $this->assertEquals('http://example.com/fr/foo/bar', $this->localeUrl->route('foo.custom', 'fr'));
-        $this->assertEquals('http://example.com/foo/bar', $this->localeUrl->route('foo.custom', '/'));
+        $this->assertEquals('http://example.com/fr/foo/bar', $this->localeUrl->route('foobar.sample', 'fr'));
+        $this->assertEquals('http://example.com/foo/bar', $this->localeUrl->route('foobar.sample', '/'));
     }
 
     /** @test */
@@ -138,7 +149,7 @@ class LocaleUrlTest extends TestCase
         $this->get('http://foobar.com');
         $this->refreshBindings('Foobar');
 
-        Route::group(['prefix' => app(DetectLocaleAndScope::class)->detect()->getScope()->activeSegment()], function () {
+        Route::group(['prefix' => app(DetectLocaleAndScope::class)->detectLocale()->getScope()->activeSegment()], function () {
             Route::get('/foo/bar/{color}', ['as' => 'foo.custom', 'uses' => function () {
             }]);
         });
@@ -155,10 +166,10 @@ class LocaleUrlTest extends TestCase
     /** @test */
     public function localeurl_facade()
     {
-        app()->setLocale('en');
-        Route::get('foo/bar/{slug?}', ['as' => 'foo.show', 'uses' => function () {}]);
+        app()->setLocale('en-gb');
+        Route::get('foobar', ['as' => 'foobar.sample', 'uses' => function () {}]);
 
-        $this->assertEquals('http://example.com/en/foo/bar', LocaleUrlFacade::route('foo.show'));
+        $this->assertEquals('http://example.com/en/foobar', LocaleUrlFacade::route('foobar.sample'));
         $this->assertEquals('http://example.com/en', LocaleUrlFacade::to('/'));
     }
 

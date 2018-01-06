@@ -37,15 +37,9 @@ class LocaleServiceProvider extends ServiceProvider
         $this->app->singleton(LocaleUrl::class, function ($app) {
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\DetectLocaleAndScope'],
-                new UrlParser(
-                    $app['Illuminate\Contracts\Routing\UrlGenerator']
-                ),
-                new RouteParser(
-                    new UrlParser(
-                        $app['Illuminate\Contracts\Routing\UrlGenerator']
-                    ),
-                    $app['translator']),
-                $app['Thinktomorrow\Locale\Parsers\RouteParser']
+                $app['Thinktomorrow\Locale\Parsers\UrlParser'],
+                $app['Thinktomorrow\Locale\Parsers\RouteParser'],
+                Config::from($this->getConfigValues())
             );
         });
 
@@ -53,7 +47,7 @@ class LocaleServiceProvider extends ServiceProvider
          * Facade for getting current active scope
          */
         $this->app->singleton('tt-locale-scope', function ($app) {
-            return $app->make(DetectLocaleAndScope::class)->detect()->getScope();
+            return $app->make(DetectLocaleAndScope::class)->detectLocale()->getScope();
         });
     }
 

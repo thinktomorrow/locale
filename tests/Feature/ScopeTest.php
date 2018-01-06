@@ -21,8 +21,8 @@ class ScopeTest extends TestCase
     public function detect_scope_from_request()
     {
         // Detected scope
-        $this->assertEquals('en-gb', app(DetectLocaleAndScope::class)->detect()->getScope()->activeLocale());
-        $this->assertEquals('en', app(DetectLocaleAndScope::class)->detect()->getScope()->activeSegment());
+        $this->assertEquals('en-gb', app(DetectLocaleAndScope::class)->detectLocale()->getScope()->activeLocale());
+        $this->assertEquals('en', app(DetectLocaleAndScope::class)->detectLocale()->getScope()->activeSegment());
     }
 
     /** @test */

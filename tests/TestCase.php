@@ -62,9 +62,9 @@ class TestCase extends OrchestraTestCase
             'canonicals' => [
                 'FR_fr' => 'fr.foobar.com',
                 'BE-nl' => 'https://www.foobar.com',
-                'be-de' => 'https://german-foobar.com',
+                'be-de' => 'https://german-foobar.de',
             ],
-            'placeholder' => 'locale_slug',
+            'route_key' => 'locale_slug',
         ]);
 
         app()->singleton('Thinktomorrow\Locale\DetectLocaleAndScope', function ($app) use ($config){

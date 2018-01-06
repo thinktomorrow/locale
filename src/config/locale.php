@@ -43,14 +43,6 @@ return [
     ],
 
     /*
-     * Query parameter
-     *
-     * The locale can be passed as query parameter to pass a specific locale to the request.
-     * This can be handy for ajax requests. By default this is set to 'locale'.
-     */
-    'query_key' => 'locale',
-
-    /*
      * Route uri placeholder
      *
      * When this parameter key is passed, it will inject a
@@ -58,6 +50,14 @@ return [
      * e.g. LocaleUrl::route('pages.home',['locale' => 'en']);
      */
     'route_key' => 'locale',
+
+    /*
+     * Query parameter
+     *
+     * The locale can be passed as query parameter to pass a specific locale to the request.
+     * This can be handy for ajax requests. By default this is set to 'locale'.
+     */
+    'query_key' => 'locale',
 
     /**
      * language filename where the route names are stored

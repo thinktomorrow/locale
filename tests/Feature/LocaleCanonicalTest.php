@@ -34,7 +34,7 @@ class LocaleCanonicalTest extends TestCase
         $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
 
         // be-de has explicit canonical but is not default locale of this root so it still needs a locale segment
-        app()->setLocale('BE-de');
+        app()->setLocale('be-de');
         $this->assertEquals('https://german-foobar.de/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
     }
 

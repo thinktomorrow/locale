@@ -3,8 +3,6 @@
 namespace Thinktomorrow\Locale\Parsers;
 
 use Illuminate\Contracts\Translation\Translator;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Thinktomorrow\Locale\Values\Root;
 
 class RouteParser
@@ -86,7 +84,7 @@ class RouteParser
         return $this;
     }
 
-    public function locale(string $localeSegment = null, array $available_locales): self
+    public function localize(string $localeSegment = null, array $available_locales): self
     {
         $this->localeSegment = $localeSegment;
         $this->available_locales = $available_locales;

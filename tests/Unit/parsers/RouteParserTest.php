@@ -10,7 +10,7 @@ use Thinktomorrow\Locale\Tests\TestCase;
 
 class RouteParserTest extends TestCase
 {
-    private $parser;
+    private $routeParser;
 
     public function setUp()
     {
@@ -19,36 +19,40 @@ class RouteParserTest extends TestCase
         $this->get('http://example.com');
         $this->refreshBindings();
 
-        $this->parser = app()->make(RouteParser::class);
+        $this->routeParser = app()->make(RouteParser::class);
     }
 
     /** @test */
-    public function to_locale_translatable_route()
+    public function parser_injects_locale_segment_if_needed()
     {
-        $this->assertEquals('http://example.com/foz/baz/cow', $this->parser->set('foo.show',['slug' => 'cow'])->locale('/',['/' => 'nl'])->get());
-        $this->assertEquals('http://example.com/en/foo/bar/cow', $this->parser->set('foo.show',['slug' => 'cow'])->locale('en',['en' => 'en'])->get());
+        $this->assertEquals('http://example.com/foz/baz/cow', $this->routeParser->set('foo.show',['slug' => 'cow'])->localize('/',['/' => 'nl'])->get());
     }
 
     /** @test */
-    public function to_take_default_when_given_route_not_found_as_translatable()
+    public function parser_translates_route_segments_if_provided_via_lang_file()
+    {
+        $this->assertEquals('http://example.com/en/foo/bar/cow', $this->routeParser->set('foo.show',['slug' => 'cow'])->localize('en',['en' => 'en-gb'])->get());
+    }
+
+    /** @test */
+    public function parser_takes_default_route_translation_if_translation_is_missing_for_given_locale()
     {
         // Uses fallback locale (nl) for translation of routekey
-        $this->assertEquals('http://example.com/fr/foz/baz/cow', $this->parser->set('foo.show', ['slug' => 'cow'])->locale('fr',['fr' => 'fr'])->get());
+        $this->assertEquals('http://example.com/fr/foz/baz/cow', $this->routeParser->set('foo.show', ['slug' => 'cow'])->localize('fr',['fr' => 'fr'])->get());
     }
 
     /** @test */
-    public function to_halt_execution_when_route_isnt_translatable()
+    public function parser_halts_execution_if_route_is_not_defined()
     {
         $this->expectException(InvalidArgumentException::class);
-        $this->assertEquals('http://example.com/fr/foo.unknown', $this->parser->set('foo.unknown')->locale('fr',['fr' => 'fr'])->get());
+
+        $this->routeParser->set('foo.unknown')->localize('fr',['fr' => 'fr'])->get();
     }
 
     /** @test */
-    public function to_make_route_secure()
+    public function parser_can_create_a_secure_route()
     {
-        Route::get('{color}/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
-        $this->assertEquals('https://example.com/blue/foo/bar', $this->parser->set('foo.custom', ['color' => 'blue'],true)->get());
+        $this->assertEquals('https://example.com/foz/baz/blue', $this->routeParser->set('foo.show', ['blue'],true)->get());
     }
 
 }

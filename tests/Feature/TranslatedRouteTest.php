@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale\Tests\Feature;
 
 use Illuminate\Support\Facades\Route;
+use Thinktomorrow\Locale\Tests\TestCase;
 
 class TranslatedRouteTest extends TestCase
 {

@@ -1,17 +1,25 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests;
+namespace Thinktomorrow\Locale\Tests\Feature;
 
 use Illuminate\Support\Facades\Route;
+use Thinktomorrow\Locale\Facades\ScopeFacade;
+use Thinktomorrow\Locale\Tests\TestCase;
 
-class ZHelpersTest extends TestCase
+class HelpersTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->get('http://example.com');
+    }
+
     /** @test */
     public function localeurl_is_a_wrapper()
     {
-        $this->markTestIncomplete();
+        app()->setLocale('en-GB');
 
-        app()->setLocale('en');
         $this->assertEquals('http://example.com/en', localeurl('/'));
         $this->assertEquals('http://example.com/en/foobar', localeurl('/foobar'));
         $this->assertEquals('http://example.com', localeurl('/fr', 'nl'));
@@ -20,9 +28,7 @@ class ZHelpersTest extends TestCase
     /** @test */
     public function localeroute_is_a_wrapper()
     {
-        $this->markTestIncomplete();
-
-        app()->setLocale('en');
+        app()->setLocale('en-GB');
         Route::get('foo/bar/{slug?}', ['as' => 'foo.custom', 'uses' => function () {
         }]);
 

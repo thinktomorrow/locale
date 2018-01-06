@@ -72,6 +72,7 @@ final class DetectLocaleAndScope
         }
 
         $this->locale = $locale;
+
         app()->setLocale($locale->get());
 
         return $this;

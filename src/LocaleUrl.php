@@ -2,11 +2,9 @@
 
 namespace Thinktomorrow\Locale;
 
-use Illuminate\Routing\Route;
 use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Parsers\UrlParser;
 use Thinktomorrow\Locale\CanonicalScope;
-use Thinktomorrow\Locale\ScopeCollection;
 use Thinktomorrow\Locale\Values\Config;
 
 class LocaleUrl
@@ -43,7 +41,7 @@ class LocaleUrl
         $this->urlparser = $urlparser;
         $this->routeparser = $routeparser;
 
-        $this->placeholder = $config->get('placeholder');
+        $this->placeholder = $config->get('route_key');
     }
 
     /**
@@ -91,13 +89,10 @@ class LocaleUrl
         $localeSegment = $this->extractLocaleSegmentFromParameters($parameters);
 
         $parser = $this->routeparser->set($name, $parameters)
-            ->locale($localeSegment, $this->scope->locales());
+            ->localize($localeSegment, $this->scope->locales());
 
         if ($asCanonical) {
-            $parser = $this->withCanonicalScope($parser, $locale, function($parser){
-                if( ! $this->scope->customRoot()) return $parser;
-                return $parser->setCustomRoot($this->scope->customRoot());
-            });
+            $parser = $this->parseWithCanonicalScope($parser, $locale);
         }
 
         return $parser->get();
@@ -108,23 +103,13 @@ class LocaleUrl
         return $this->route($name, $locale, $parameters, true);
     }
 
-    private function withCanonicalScope(RouteParser $parser, $locale = null, callable $routeCallback): RouteParser
+    private function parseWithCanonicalScope(RouteParser $parser, $locale = null): RouteParser
     {
-        /**
-         * Freeze the current scope so that after the temporary switch into
-         * the other canonical scope, we can safely return to the current.
-         */
-        $scopeOnIce = $this->scope;
-
         if($canonicalScope = $this->scopeCollection->findCanonical($locale ?? $this->scope->activeLocale()))
         {
-            $this->scope = $canonicalScope;
+            if( ! $canonicalScope->customRoot()) return $parser;
+            return $parser->setCustomRoot($canonicalScope->customRoot());
         }
-
-        $parser = call_user_func_array($routeCallback, [$parser]);
-        //$parsedRoute = $this->route($name, $locale, $parameters, !!$canonicalScope);
-
-        $this->scope = $scopeOnIce;
 
         return $parser;
     }
