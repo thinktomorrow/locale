@@ -41,19 +41,14 @@ final class Detect
     }
 
     /**
-     * Detect the locale for current request
+     * Detect the locale from current request url.
+     * Once the locale has been determined, it will be set as the application locale.
+     * A locale is only validated if it is present within the current locale scope.
      *
-     * The locale is determined based on the given request url. Locales are available per domain scope which behave
-     * according to the config settings.
-     *
-     * Detection follows this priority
-     * // 0) If locale is passed as parameter, this locale will be forced
-     * 1) If locale is in request as query parameter e.g. ?locale=fr,
-     * 2) If locale is found in request url eg. nl.example.com, example.nl or example.com/nl
-     * // 3) Default: get locale from cookie
-     * 4) Otherwise: set locale to our fallback language
-     *
-     * @return self
+     * Detection honours following priority:
+     * 1) If locale is found in request as query parameter e.g. ?locale=fr,
+     * 2) If locale is found in request url, either from host or segment eg. nl.example.com, example.nl or example.com/nl
+     * 3) Otherwise set locale to our fallback language (app.locale)
      */
     public function detectLocale(): self
     {

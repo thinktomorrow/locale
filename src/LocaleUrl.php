@@ -2,6 +2,7 @@
 
 namespace Thinktomorrow\Locale;
 
+use Thinktomorrow\Locale\Parsers\LocaleSegmentParameter;
 use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Parsers\UrlParser;
 use Thinktomorrow\Locale\CanonicalScope;
@@ -27,7 +28,7 @@ class LocaleUrl
     /**
      * @var null|string
      */
-    private $placeholder;
+    private $routeKey;
 
     /**
      * @var RouteParser
@@ -41,7 +42,7 @@ class LocaleUrl
         $this->urlparser = $urlparser;
         $this->routeparser = $routeparser;
 
-        $this->placeholder = $config->get('route_key');
+        $this->routeKey = $config->get('route_key');
     }
 
     /**
@@ -64,7 +65,7 @@ class LocaleUrl
          * Convert locale to segment
          */
         return $this->urlparser->set($url)
-            ->locale($this->scope->segment($locale), $this->scope->locales())
+            ->localize($this->scope->segment($locale), $this->scope->locales())
             ->parameters($parameters)
             ->get();
     }
@@ -82,18 +83,27 @@ class LocaleUrl
      */
     public function route($name, $locale = null, $parameters = [], $asCanonical = false)
     {
-        // TODO: what if dev wants to get localized route for locale outside of current scope?
-        // e.g. route('foo.bar','en'); - how we know which en to take? Default to canonical else to first matching scope?
+        $scope = $this->scope;
+        $available_locales = $scope->locales();
 
-        $parameters = array_merge($this->normalizeLocaleAsParameter($locale), (array)$parameters);
-        $localeSegment = $this->extractLocaleSegmentFromParameters($parameters);
+        if($asCanonical && $canonicalScope = $this->getCanonicalScope($locale))
+        {
+            $scope = $canonicalScope;
+
+            /**
+             * In current scope the prefix is /test/ for fr but in passed canonical scope it is the default /
+             * In canonical scope we have no knowledge of this being a locale segment so it is not removed by the parser
+             */
+            $available_locales = array_merge($available_locales, $canonicalScope->locales());
+        }
+
+        $parameters = array_merge(LocaleSegmentParameter::normalizeLocaleAsParameter($scope, $this->routeKey, $locale), (array)$parameters);
+        $localeSegment = LocaleSegmentParameter::extractLocaleSegmentFromParameters($scope, $this->routeKey, $parameters);
 
         $parser = $this->routeparser->set($name, $parameters)
-            ->localize($localeSegment, $this->scope->locales());
+            ->localize($localeSegment, $available_locales);
 
-        if ($asCanonical) {
-            $parser = $this->parseWithCanonicalScope($parser, $locale);
-        }
+        if ($asCanonical) $parser = $this->parseWithCanonicalScope($scope, $parser);
 
         return $parser->get();
     }
@@ -103,70 +113,20 @@ class LocaleUrl
         return $this->route($name, $locale, $parameters, true);
     }
 
-    private function parseWithCanonicalScope(RouteParser $parser, $locale = null): RouteParser
+    private function getCanonicalScope($locale = null): ?Scope
     {
         if($canonicalScope = $this->scopeCollection->findCanonical($locale ?? $this->scope->activeLocale()))
         {
-            if( ! $canonicalScope->customRoot()) return $parser;
-            return $parser->setCustomRoot($canonicalScope->customRoot());
+            return $canonicalScope;
         }
 
-        return $parser;
+        return null;
     }
 
-    /**
-     * Isolate locale value from parameters.
-     *
-     * @param array $parameters
-     *
-     * @return null|string
-     */
-    private function extractLocaleSegmentFromParameters(array &$parameters = [])
+    private function parseWithCanonicalScope(Scope $scope, RouteParser $parser): RouteParser
     {
-        $localeSegment = null;
+        if( ! $scope->customRoot()) return $parser;
 
-        // If none given, we should be returning the current active locale segment
-        // If value is explicitly null, we assume the current locale is expected
-        if (!array_key_exists($this->placeholder, $parameters) || is_null($parameters[$this->placeholder])) {
-            return $this->scope->activeSegment();
-        }
-
-        if ($this->scope->validateSegment($parameters[$this->placeholder])) {
-            $localeSegment = $parameters[$this->placeholder];
-        }
-
-        // If locale segment parameter is not a 'real' parameter, we ignore this value and use the current locale instead
-        // The 'wrong' parameter will be passed along but without key
-        if ($localeSegment != $parameters[$this->placeholder]) {
-            $parameters[] = $parameters[$this->placeholder];
-        }
-
-        unset($parameters[$this->placeholder]);
-
-        return $localeSegment;
-    }
-
-    /**
-     * @param $locale
-     * @return array|null|Values\Locale
-     */
-    private function normalizeLocaleAsParameter($locale)
-    {
-        if (!is_array($locale)) {
-
-            // You should provide the actual locale but in case the segment value is passed
-            // we allow for this as well and normalize it to the expected locale value.
-            if (!$this->scope->validateLocale($locale) && $this->scope->validateSegment($locale)) {
-                $locale = $this->scope->findLocale($locale);
-            }
-
-            // Locale should be passed as second parameter but in case it is passed as array
-            // alongside other parameters, we will try to extract it
-            if ($this->scope->validateLocale($locale)) {
-                $locale = [$this->placeholder => $this->scope->segment($locale)];
-            }
-        }
-
-        return (array)$locale;
+        return $parser->setCustomRoot($scope->customRoot());
     }
 }

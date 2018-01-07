@@ -153,6 +153,23 @@ class ScopeCollectionTest extends TestCase
     /**
      * @test
      */
+    function if_locale_already_exists_in_default_group_only_the_one_from_own_scope_remains()
+    {
+        $collection = ScopeCollection::fromArray([
+            'locales' => [
+                'fr.foobar.com' => 'fr',
+                '*' => ['fr' => 'fr', '/' => 'en'],
+            ],
+        ]);
+
+        $this->assertEquals(
+            (new Scope(['/' => 'fr'])), $collection->findByRoot('fr.foobar.com')
+        );
+    }
+
+    /**
+     * @test
+     */
     function it_finds_the_expected_canonical_scope()
     {
         $this->assertEquals(

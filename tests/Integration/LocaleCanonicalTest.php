@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale\Tests\Integration;
 
 use Illuminate\Support\Facades\Route;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class LocaleCanonicalTest extends TestCase
@@ -46,6 +47,15 @@ class LocaleCanonicalTest extends TestCase
         $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
         $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
         $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','BE-nl'));
+    }
+
+    /** @test */
+    function parsing_canonical_route_removes_locale_segment_coming_from_current_scope()
+    {
+        $this->get('http://example.com/de');
+        Route::get('/fr/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
+
+        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
     }
 
 

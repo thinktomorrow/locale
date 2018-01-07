@@ -22,20 +22,20 @@ if (!function_exists('localeroute')) {
      * @param $name
      * @param null  $locale
      * @param array $parameters
-     * @param bool  $absolute
+     * @param bool  $asCanonical
      *
      * @return
      */
-    function localeroute($name, $locale = null, $parameters = [], $absolute = true)
+    function localeroute($name, $locale = null, $parameters = [], $asCanonical = true)
     {
-        return app(LocaleUrl::class)->route($name, $locale, $parameters, $absolute);
+        return app(LocaleUrl::class)->route($name, $locale, $parameters, $asCanonical);
     }
 }
 
 
-if (!function_exists('activeLocaleSegment')) {
-    function activeLocaleSegment()
+if (!function_exists('localeRoutePrefix')) {
+    function localeRoutePrefix()
     {
-        return LocaleFacade::detect()->getScope()->activeSegment();
+        return app(\Thinktomorrow\Locale\Detect::class)->detectLocale()->getScope()->activeSegment();
     }
 }

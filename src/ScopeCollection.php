@@ -83,8 +83,11 @@ final class ScopeCollection
         }
 
         $locales = $this->config->get('locales');
+
         $locales = array_merge($locales['*'], $locales[$scopeKey]);
 
-        return new Scope($locales);
+        // We flip our values so in case of duplicate locales, the default one
+        // is omitted and the one from the specific scope is preserved.
+        return new Scope(array_flip(array_flip($locales)));
     }
 }

@@ -42,14 +42,15 @@ class RouteParser
 
     public function get(): string
     {
-        $routekey = $this->translator->get('routes.'.$this->routename, [], $this->locale);
-        $routeTranslationExists = !($routekey === 'routes.'.$this->routename);
+        // TODO: take route filename from config
+        $url = $this->translator->get('routes.'.$this->routename, [], $this->locale);
 
-        $url = $routeTranslationExists
-            ? UriParameters::replace($routekey, $this->parameters)
-            : $this->resolveRoute($this->routename, $this->parameters);
+        // If route translation does not exist, laravel returns us back the langkey.
+        $url = ($url == 'routes.'.$this->routename)
+            ? $this->resolveRoute($this->routename, $this->parameters)
+            : UriParameters::replace($url, $this->parameters);
 
-        $parser = $this->urlParser->set($url)->secure($this->secure)->locale($this->localeSegment, $this->available_locales);
+        $parser = $this->urlParser->set($url)->secure($this->secure)->localize($this->localeSegment, $this->available_locales);
 
         if($this->customRoot) $parser->setCustomRoot($this->customRoot);
 

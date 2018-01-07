@@ -69,7 +69,7 @@ class UrlParserTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, $this->parser->set($original)->locale('fr',['fr' => 'fr'])->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->locale('fr',['fr' => 'fr'])->get().' - '.$result.' was expected.');
+            $this->assertEquals($result, $this->parser->set($original)->localize('fr',['fr' => 'fr'])->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->localize('fr',['fr' => 'fr'])->get().' - '.$result.' was expected.');
         }
     }
 
@@ -78,8 +78,8 @@ class UrlParserTest extends TestCase
     */
     public function it_does_not_fail_on_parsing_double_slashed()
     {
-        $this->assertEquals('//foobar.com/fr', $this->parser->set('//foobar.com//')->locale('fr',['fr' => 'BE-fr'])->get());
-        $this->assertEquals('http://example.com/fr', $this->parser->set('//')->locale('fr',['fr' => 'BE-fr'])->get());
+        $this->assertEquals('//foobar.com/fr', $this->parser->set('//foobar.com//')->localize('fr',['fr' => 'BE-fr'])->get());
+        $this->assertEquals('http://example.com/fr', $this->parser->set('//')->localize('fr',['fr' => 'BE-fr'])->get());
     }
 
     /** @test */
@@ -93,7 +93,7 @@ class UrlParserTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $parsed = $this->parser->set($original)->locale('fr',['fr' => 'BE-fr'])->secure()->get();
+            $parsed = $this->parser->set($original)->localize('fr',['fr' => 'BE-fr'])->secure()->get();
             $this->assertEquals($result, $parsed, 'improper conversion from '.$original.' to '.$parsed.' - '.$result.' was expected.');
         }
     }
@@ -109,6 +109,6 @@ class UrlParserTest extends TestCase
     /** @test */
     public function give_default_root_if_an_url_is_not_set()
     {
-        $this->assertEquals('http://example.com/en',$this->parser->locale('en',['en' => 'en'])->get());
+        $this->assertEquals('http://example.com/en',$this->parser->localize('en',['en' => 'en'])->get());
     }
 }
