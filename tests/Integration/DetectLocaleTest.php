@@ -26,6 +26,18 @@ class DetectLocaleTest extends TestCase
     }
 
     /** @test */
+    function it_can_determine_locale_by_port()
+    {
+        $locales = [
+            'localhost:4000' => 'fr', // NOTE: put the specific ones on top
+            'localhost:5000' => 'de',
+            '*' => 'nl',
+        ];
+
+        $this->assertEquals('fr', $this->localeFor('https://localhost:4000', $locales));
+    }
+
+    /** @test */
     function protocol_does_not_matter()
     {
         $this->assertEquals('fr', $this->localeFor('http://fr.example.com/testje'));
@@ -45,33 +57,35 @@ class DetectLocaleTest extends TestCase
         $this->assertEquals('en-gb', $this->localeFor('https://foobar.co.uk/en/amazing/search'));
     }
 
-    private function localeFor($url): string
+    private function localeFor($url, $locales = null): string
     {
         $this->call('GET', $url);
-        $detect = $this->createLocale();
+        $detect = $this->createLocale($locales);
         $detect->detectLocale();
 
         return app()->getLocale();
     }
 
-    private function createLocale()
+    private function createLocale($locales = null)
     {
-        return new Detect(app()->make('request'),Config::from([
-            'locales' => [
-                'fr.example.com' => 'fr', // NOTE: put the specific ones on top
-                'example.com' => 'nl',
-                'foobar.com' => [
-                    'en' => 'en-us',
-                    '/' => 'dk',
-                ],
-                'foobar.co.uk' => [
-                    'en' => 'en-gb',
-                    '/' => 'de',
-                ],
-                '*' => [
-                    '/' => 'nl'
-                ],
+        $locales = $locales ?? [
+            'fr.example.com' => 'fr', // NOTE: put the specific ones on top
+            'example.com' => 'nl',
+            'foobar.com' => [
+                'en' => 'en-us',
+                '/' => 'dk',
             ],
+            'foobar.co.uk' => [
+                'en' => 'en-gb',
+                '/' => 'de',
+            ],
+            '*' => [
+                '/' => 'nl'
+            ],
+        ];
+
+        return new Detect(app()->make('request'),Config::from([
+            'locales' => $locales,
             'fallback_locale'   => 'en',
             'hidden_locale'     => null,
             'query_key'        => null,

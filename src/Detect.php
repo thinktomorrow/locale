@@ -104,6 +104,6 @@ final class Detect
 
     private function detectScope()
     {
-        $this->scope = ScopeCollection::fromConfig($this->config)->findByRoot($this->request->getHost());
+        $this->scope = ScopeCollection::fromConfig($this->config)->findByRoot($this->request->root());
     }
 }
