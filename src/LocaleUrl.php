@@ -34,7 +34,7 @@ class LocaleUrl
      */
     private $routeparser;
 
-    public function __construct(DetectLocaleAndScope $detect, UrlParser $urlparser, RouteParser $routeparser, Config $config)
+    public function __construct(Detect $detect, UrlParser $urlparser, RouteParser $routeparser, Config $config)
     {
         $this->scope = $detect->getScope(); // TODO check if this still returns proper results when loading before routes
         $this->scopeCollection = ScopeCollection::fromConfig($config);

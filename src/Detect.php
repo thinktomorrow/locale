@@ -10,7 +10,7 @@ use Thinktomorrow\Locale\Detectors\SegmentDetector;
 use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Locale\Values\Locale;
 
-final class DetectLocaleAndScope
+final class Detect
 {
 
     /**

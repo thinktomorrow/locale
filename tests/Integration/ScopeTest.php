@@ -1,8 +1,8 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Feature;
+namespace Thinktomorrow\Locale\Tests\Integration;
 
-use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Values\Root;
@@ -21,8 +21,8 @@ class ScopeTest extends TestCase
     public function detect_scope_from_request()
     {
         // Detected scope
-        $this->assertEquals('en-gb', app(DetectLocaleAndScope::class)->detectLocale()->getScope()->activeLocale());
-        $this->assertEquals('en', app(DetectLocaleAndScope::class)->detectLocale()->getScope()->activeSegment());
+        $this->assertEquals('en-gb', app(Detect::class)->detectLocale()->getScope()->activeLocale());
+        $this->assertEquals('en', app(Detect::class)->detectLocale()->getScope()->activeSegment());
     }
 
     /** @test */

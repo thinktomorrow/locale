@@ -1,8 +1,8 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Feature;
+namespace Thinktomorrow\Locale\Tests\Integration;
 
-use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
@@ -64,7 +64,7 @@ class LocaleUrlTest extends TestCase
         $this->get('http://example.com/en');
         $this->assertEquals('http://example.com', $this->localeUrl->to('/')); // no locale known yet
 
-        app(DetectLocaleAndScope::class)->detectLocale();
+        app(Detect::class)->detectLocale();
         $this->assertEquals('http://example.com/en', $this->localeUrl->to('/')); // locale is set as 'en' based on request
     }
 
@@ -72,7 +72,7 @@ class LocaleUrlTest extends TestCase
     public function a_localeurl_facade_can_be_used_for_convenience()
     {
         $this->get('http://example.com/en');
-        app(DetectLocaleAndScope::class)->detectLocale();
+        app(Detect::class)->detectLocale();
 
         $this->assertEquals('http://example.com/en', LocaleUrlFacade::to('/'));
     }

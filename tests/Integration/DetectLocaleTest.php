@@ -1,8 +1,8 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Unit;
+namespace Thinktomorrow\Locale\Tests\Integration;
 
-use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Values\Config;
 
@@ -56,7 +56,7 @@ class DetectLocaleTest extends TestCase
 
     private function createLocale()
     {
-        return new DetectLocaleAndScope(app()->make('request'),Config::from([
+        return new Detect(app()->make('request'),Config::from([
             'locales' => [
                 'fr.example.com' => 'fr', // NOTE: put the specific ones on top
                 'example.com' => 'nl',

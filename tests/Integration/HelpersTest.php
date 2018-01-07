@@ -1,9 +1,8 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Feature;
+namespace Thinktomorrow\Locale\Tests\Integration;
 
 use Illuminate\Support\Facades\Route;
-use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class HelpersTest extends TestCase

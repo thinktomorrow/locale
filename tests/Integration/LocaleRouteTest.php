@@ -1,9 +1,9 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Feature;
+namespace Thinktomorrow\Locale\Tests\Integration;
 
 use Illuminate\Support\Facades\Route;
-use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
@@ -102,7 +102,7 @@ class LocaleRouteTest extends TestCase
     {
         $this->get('http://foobar.com/fr');
 
-        Route::group(['prefix' => app(DetectLocaleAndScope::class)->detectLocale()->getScope()->activeSegment()], function () {
+        Route::group(['prefix' => app(Detect::class)->detectLocale()->getScope()->activeSegment()], function () {
             Route::get('/foo/bar/{color}', ['as' => 'foo.custom', 'uses' => function () {
             }]);
         });

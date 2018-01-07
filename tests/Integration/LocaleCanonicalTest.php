@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Feature;
+namespace Thinktomorrow\Locale\Tests\Integration;
 
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Tests\TestCase;

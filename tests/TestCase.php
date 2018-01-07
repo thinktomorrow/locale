@@ -4,7 +4,7 @@ namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
-use Thinktomorrow\Locale\DetectLocaleAndScope;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\LocaleServiceProvider;
 use Thinktomorrow\Locale\LocaleUrl;
 use Thinktomorrow\Locale\Values\Config;
@@ -67,13 +67,13 @@ class TestCase extends OrchestraTestCase
             'route_key' => 'locale_slug',
         ]);
 
-        app()->singleton('Thinktomorrow\Locale\DetectLocaleAndScope', function ($app) use ($config){
-            return new DetectLocaleAndScope($app['request'], $config );
+        app()->singleton('Thinktomorrow\Locale\Detect', function ($app) use ($config){
+            return new Detect($app['request'], $config );
         });
 
         app()->singleton('Thinktomorrow\Locale\LocaleUrl', function ($app) use($config) {
             return new LocaleUrl(
-                $app['Thinktomorrow\Locale\DetectLocaleAndScope'],
+                $app['Thinktomorrow\Locale\Detect'],
                 $app['Thinktomorrow\Locale\Parsers\UrlParser'],
                 $app['Thinktomorrow\Locale\Parsers\RouteParser'],
                 $config
