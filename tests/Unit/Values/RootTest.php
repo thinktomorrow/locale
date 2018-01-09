@@ -80,4 +80,19 @@ class RootTest extends TestCase
 
         Root::fromString('javascript://');
     }
+
+    /** @test */
+    function it_can_get_scheme()
+    {
+        $urls = [
+            'example.com'         => null,
+            '//example.com'       => null,
+            'http://example.com'  => 'http',
+            'https://example.com' => 'https',
+        ];
+
+        foreach ($urls as $original => $result) {
+            $this->assertEquals($result, Root::fromString($original)->scheme());
+        }
+    }
 }

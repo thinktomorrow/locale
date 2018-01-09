@@ -110,4 +110,42 @@ class LocaleRouteTest extends TestCase
         $this->assertEquals('http://foobar.com/fr/foo/bar/blue', route('foo.custom', ['color' => 'blue']));
         $this->assertEquals('http://foobar.com/fr/foo/bar/blue', $this->localeUrl->route('foo.custom', ['color' => 'blue']));
     }
+
+    /** @test */
+    function if_secure_config_is_true_all_routes_are_created_as_secure()
+    {
+        $this->get('http://example.com');
+        $this->refreshBindings('nl',null,['secure' => true]);
+
+        $this->assertEquals('https://example.com/en/foo/bar', localeroute('foo.custom', 'en-gb'));
+    }
+
+    /** @test */
+    function if_secure_config_is_true_only_canonicals_with_scheme_can_be_explicitly_different()
+    {
+        $this->get('http://example.com');
+        $this->refreshBindings('nl',null,['secure' => true]);
+
+        // Canonical has explicit http scheme so it is honoured
+        $this->assertEquals('http://www.foobar.com/nl/foo/bar', localeroute('foo.custom', 'BE-nl', null, true));
+
+        // Canonical has no specific scheme given so it receives https
+        $this->assertEquals('https://fr.foobar.com/foo/bar', localeroute('foo.custom', 'FR_fr', null, true));
+
+        // Canonical has https scheme
+        $this->assertEquals('https://german-foobar.de/foo/bar', localeroute('foo.custom', 'DE_de', null, true));
+    }
+
+    /** @test */
+    function if_secure_config_is_false_all_routes_are_created_as_given()
+    {
+        $this->get('http://example.com');
+        $this->refreshBindings('nl',null,['secure' => false]);
+
+        // Canonical has no specific scheme given so it receives https
+        $this->assertEquals('http://fr.foobar.com/foo/bar', localeroute('foo.custom', 'FR_fr', null, true));
+
+        // Canonical has https scheme so this is honoured
+        $this->assertEquals('https://german-foobar.de/foo/bar', localeroute('foo.custom', 'DE_de', null, true));
+    }
 }

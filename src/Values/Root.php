@@ -59,6 +59,11 @@ class Root
         return $this->host;
     }
 
+    public function scheme(): ?string
+    {
+        return $this->scheme;
+    }
+
     private function parse(string $host)
     {
         // Sanitize url input a bit to remove double slashes, but do not remove first slashes

@@ -9,11 +9,7 @@ return [
      * The only mandatory scope entry is '*' which are the default locales and apply to all requests.
      */
     'locales' => [
-        'fr.example.com'   => [
-            '/en' => 'en',
-            '/'   => 'fr',
-        ],
-        'staging.example.be' => 'nl',
+        'fr.example.com'   => 'fr',
         'example.com'   => [
             '/fr' => 'fr',
             '/'   => 'en',
@@ -41,6 +37,13 @@ return [
     'canonicals' => [
         // e.g. 'nl' => 'http://example.nl',
     ],
+
+    /**
+     * If set to true, all urls created by localeroute() and localeurl() will be forced to https,
+     * Domain defined in the canonicals setting will keep their scheme if it is provided.
+     * If set to false, url schemes will remain unmodified.
+     */
+    'secure' => true,
 
     /*
      * Route uri placeholder

@@ -35,6 +35,11 @@ class LocaleUrl
      */
     private $routeparser;
 
+    /**
+     * @var bool
+     */
+    private $forceSecure = false;
+
     public function __construct(Detect $detect, UrlParser $urlparser, RouteParser $routeparser, Config $config)
     {
         $this->scope = $detect->getScope(); // TODO check if this still returns proper results when loading before routes
@@ -43,6 +48,7 @@ class LocaleUrl
         $this->routeparser = $routeparser;
 
         $this->routeKey = $config->get('route_key');
+        $this->forceSecure = $config->get('secure') === true;
     }
 
     /**
@@ -60,10 +66,10 @@ class LocaleUrl
         if (is_bool($secure)) {
             $this->urlparser->secure($secure);
         }
+        elseif($this->forceSecure) {
+            $this->urlparser->secure();
+        }
 
-        /**
-         * Convert locale to segment
-         */
         return $this->urlparser->set($url)
             ->localize($this->scope->segment($locale), $this->scope->locales())
             ->parameters($parameters)
@@ -84,6 +90,7 @@ class LocaleUrl
     public function route($name, $locale = null, $parameters = [], $asCanonical = false)
     {
         $scope = $this->scope;
+        $forceSecure = $this->forceSecure;
         $available_locales = $scope->locales();
 
         if($asCanonical && $canonicalScope = $this->getCanonicalScope($locale))
@@ -95,12 +102,18 @@ class LocaleUrl
              * In canonical scope we have no knowledge of this being a locale segment so it is not removed by the parser
              */
             $available_locales = array_merge($available_locales, $canonicalScope->locales());
+
+            /**
+             * Canonical that has no scheme will be forced as secure is set so in config.
+             * If an explicit scheme is given, this is left unmodified in case of canonicals
+             */
+            $forceSecure = $scope->customRoot() && $scope->customRoot()->scheme() ? false : $forceSecure;
         }
 
         $parameters = array_merge(LocaleSegmentParameter::normalizeLocaleAsParameter($scope, $this->routeKey, $locale), (array)$parameters);
         $localeSegment = LocaleSegmentParameter::extractLocaleSegmentFromParameters($scope, $this->routeKey, $parameters);
 
-        $parser = $this->routeparser->set($name, $parameters)
+        $parser = $this->routeparser->set($name, $parameters, ($forceSecure) ? true : null)
             ->localize($localeSegment, $available_locales);
 
         if ($asCanonical) $parser = $this->parseWithCanonicalScope($scope, $parser);

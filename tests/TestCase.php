@@ -34,7 +34,7 @@ class TestCase extends OrchestraTestCase
         return __DIR__.'/stubs/'.$dir;
     }
 
-    protected function refreshBindings($defaultLocale = 'nl', $domain = null)
+    protected function refreshBindings($defaultLocale = 'nl', $domain = null, $overrides = [])
     {
         if($domain)
         {
@@ -42,13 +42,14 @@ class TestCase extends OrchestraTestCase
             app(UrlGenerator::class)->forceRootUrl($domain);
         }
 
-        $config = Config::from([
+        $config = Config::from(array_merge([
             'locales' => [
                 'example.com' => [
                     'de' => 'DE_de',
                     'fr' => 'BE_fr',
                     '/' => 'FR_fr',
                 ],
+                'https://german-foobar.de' => 'DE_de',
                 '*.foobar.com' => [
                     'be-fr' => 'BE_fr',
                     '/' => 'FR_fr',
@@ -61,11 +62,12 @@ class TestCase extends OrchestraTestCase
             ],
             'canonicals' => [
                 'FR_fr' => 'fr.foobar.com',
-                'BE-nl' => 'https://www.foobar.com',
-                'be-de' => 'https://german-foobar.de',
+                'BE-nl' => 'http://www.foobar.com',
+                'DE_de' => 'https://german-foobar.de',
             ],
+            'secure' => false,
             'route_key' => 'locale_slug',
-        ]);
+        ],$overrides));
 
         app()->singleton('Thinktomorrow\Locale\Detect', function ($app) use ($config){
             return new Detect($app['request'], $config );

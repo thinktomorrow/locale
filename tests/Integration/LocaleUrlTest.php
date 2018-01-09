@@ -76,4 +76,22 @@ class LocaleUrlTest extends TestCase
 
         $this->assertEquals('http://example.com/en', LocaleUrlFacade::to('/'));
     }
+
+    /** @test */
+    function if_secure_config_is_true_urls_are_created_as_secure()
+    {
+        $this->refreshBindings('nl',null,['secure' => true]);
+
+        $this->assertEquals('https://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb'));
+    }
+
+    /** @test */
+    function parameter_has_priority_over_secure_config()
+    {
+        $this->get('http://example.com');
+        $this->refreshBindings('nl',null,['secure' => true]);
+
+        $this->assertEquals('http://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb', [], false));
+        $this->assertEquals('https://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb', [], true));
+    }
 }

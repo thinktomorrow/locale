@@ -8,6 +8,15 @@
 [![Total Downloads][ico-downloads]][link-downloads]
 
 ## TODO version 2.0
+
+- TODO: meerdere env. Hoe local, staging in config. Canonicals kn slechts één entry per taal.
+- TODO: is default really required???
+- TODO: detect default canonicals per locale if none given
+- TODO: config setting 'secure' ? 
+     * If set to true, all urls created by LocaleUrl class will be forced to https,
+     * Domain defined in the canonicals setting will keep their scheme if it is provided.
+    'secure' => true,
+
 - reduce code logic in tests, avoid duplicates, create helpers
 - clearly distinct between unit and feature tests
 - make all tests do one specific task, keep 'spelling check tests' in unit test, not in feature.

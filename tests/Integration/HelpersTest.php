@@ -12,12 +12,13 @@ class HelpersTest extends TestCase
         parent::setUp();
 
         $this->get('http://example.com');
+        $this->refreshBindings();
     }
 
     /** @test */
     public function localeurl_is_a_wrapper()
     {
-        app()->setLocale('en-GB');
+        app()->setLocale('en-gb');
 
         $this->assertEquals('http://example.com/en', localeurl('/'));
         $this->assertEquals('http://example.com/en/foobar', localeurl('/foobar'));
@@ -27,7 +28,7 @@ class HelpersTest extends TestCase
     /** @test */
     public function localeroute_is_a_wrapper()
     {
-        app()->setLocale('en-GB');
+        app()->setLocale('en-gb');
         Route::get('foo/bar/{slug?}', ['as' => 'foo.custom', 'uses' => function () {
         }]);
 

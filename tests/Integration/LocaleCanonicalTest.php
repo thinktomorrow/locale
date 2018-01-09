@@ -32,10 +32,10 @@ class LocaleCanonicalTest extends TestCase
 
         // BE-Nl has explicit canonical but is not default locale of this root so it still needs a locale segment
         app()->setLocale('BE-nl');
-        $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
+        $this->assertEquals('http://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
 
-        // be-de has explicit canonical but is not default locale of this root so it still needs a locale segment
-        app()->setLocale('be-de');
+        // DE_de has explicit canonical but is not default locale of this root so it still needs a locale segment
+        app()->setLocale('DE_de');
         $this->assertEquals('https://german-foobar.de/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
     }
 
@@ -46,7 +46,7 @@ class LocaleCanonicalTest extends TestCase
 
         $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
         $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','BE-nl'));
+        $this->assertEquals('http://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','BE-nl'));
     }
 
     /** @test */
@@ -74,7 +74,7 @@ class LocaleCanonicalTest extends TestCase
 
         // BE-Nl has explicit canonical but is not default locale of this root so it still needs a locale segment
         app()->setLocale('BE-nl');
-        $this->assertEquals('https://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
+        $this->assertEquals('http://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
     }
 
     /** @test */
