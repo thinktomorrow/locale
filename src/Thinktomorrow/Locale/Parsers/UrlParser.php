@@ -58,8 +58,9 @@ class UrlParser implements Parser
      *
      * @param $url
      *
-     * @return $this
      * @throws \InvalidArgumentException
+     *
+     * @return $this
      */
     public function set($url)
     {

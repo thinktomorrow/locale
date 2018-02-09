@@ -29,16 +29,16 @@ class LocaleTest extends TestCase
     }
 
     /**
-    * @test
-    */
-    public function it_can_get_the_default_locale_from_config(){
+     * @test
+     */
+    public function it_can_get_the_default_locale_from_config()
+    {
         config(['app.locale' => 'nl']);
 
         $this->assertEquals('nl', Locale::getDefault());
         config(['app.locale' => 'fr']);
 
         $this->assertEquals('fr', Locale::getDefault());
-
     }
 
     /** @test */
