@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "54963e2e938359bbef205f239fe750e2",
+    "content-hash": "b5c2f5939dcb5d21980525892b2368ea",
     "packages": [
         {
             "name": "doctrine/inflector",
@@ -280,16 +280,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.6.0",
+            "version": "v5.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "56a58e0fa3d845bb992d7c64ac9bb6d0c24b745a"
+                "reference": "7742e7b54ba48b49f43a7d6f51ff57a63b9ed108"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/56a58e0fa3d845bb992d7c64ac9bb6d0c24b745a",
-                "reference": "56a58e0fa3d845bb992d7c64ac9bb6d0c24b745a",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/7742e7b54ba48b49f43a7d6f51ff57a63b9ed108",
+                "reference": "7742e7b54ba48b49f43a7d6f51ff57a63b9ed108",
                 "shasum": ""
             },
             "require": {
@@ -411,7 +411,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-02-07T15:36:40+00:00"
+            "time": "2018-02-08T22:17:44+00:00"
         },
         {
             "name": "league/flysystem",
@@ -3597,7 +3597,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": ">=7.1.3"
+        "php": "5.6.*|>=7.1.3"
     },
     "platform-dev": []
 }

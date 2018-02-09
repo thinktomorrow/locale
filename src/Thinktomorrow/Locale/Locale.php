@@ -69,7 +69,7 @@ class Locale
      *
      * @return null|string
      */
-    public static function getDefault(): string
+    public static function getDefault()
     {
         return config('app.locale');
     }
