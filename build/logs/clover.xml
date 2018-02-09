@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1518184812">
-  <project timestamp="1518184812">
+<coverage generated="1518185637">
+  <project timestamp="1518185637">
     <package name="Thinktomorrow\Locale\Facades">
       <file name="/Users/philippedamen/Code/locale/src/Thinktomorrow/Locale/Facades/LocaleFacade.php">
-        <class name="LocaleFacade" namespace="Thinktomorrow\Locale\Facades">
+        <class name="Thinktomorrow\Locale\Facades\LocaleFacade" namespace="Thinktomorrow\Locale\Facades">
           <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
         </class>
         <line num="9" type="method" name="getFacadeAccessor" visibility="public" complexity="1" crap="1" count="1"/>
@@ -11,7 +11,7 @@
         <metrics loc="13" ncloc="13" classes="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
       </file>
       <file name="/Users/philippedamen/Code/locale/src/Thinktomorrow/Locale/Facades/LocaleUrlFacade.php">
-        <class name="LocaleUrlFacade" namespace="Thinktomorrow\Locale\Facades">
+        <class name="Thinktomorrow\Locale\Facades\LocaleUrlFacade" namespace="Thinktomorrow\Locale\Facades">
           <metrics complexity="1" methods="1" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="1" coveredstatements="1" elements="2" coveredelements="2"/>
         </class>
         <line num="9" type="method" name="getFacadeAccessor" visibility="public" complexity="1" crap="1" count="1"/>
@@ -21,7 +21,7 @@
     </package>
     <package name="Thinktomorrow\Locale">
       <file name="/Users/philippedamen/Code/locale/src/Thinktomorrow/Locale/Locale.php">
-        <class name="Locale" namespace="Thinktomorrow\Locale">
+        <class name="Thinktomorrow\Locale\Locale" namespace="Thinktomorrow\Locale">
           <metrics complexity="30" methods="11" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="40" coveredstatements="40" elements="51" coveredelements="51"/>
         </class>
         <line num="15" type="method" name="__construct" visibility="public" complexity="5" crap="5" count="60"/>
@@ -78,24 +78,27 @@
         <metrics loc="188" ncloc="119" classes="1" methods="11" coveredmethods="11" conditionals="0" coveredconditionals="0" statements="40" coveredstatements="40" elements="51" coveredelements="51"/>
       </file>
       <file name="/Users/philippedamen/Code/locale/src/Thinktomorrow/Locale/LocaleServiceProvider.php">
-        <class name="LocaleServiceProvider" namespace="Thinktomorrow\Locale">
-          <metrics complexity="4" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="16" elements="25" coveredelements="17"/>
+        <class name="Thinktomorrow\Locale\LocaleServiceProvider" namespace="Thinktomorrow\Locale">
+          <metrics complexity="7" methods="6" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="22" coveredstatements="16" elements="28" coveredelements="20"/>
         </class>
         <line num="11" type="method" name="register" visibility="public" complexity="1" crap="1" count="60"/>
         <line num="13" type="stmt" count="60"/>
         <line num="15" type="stmt" count="60"/>
         <line num="16" type="stmt" count="60"/>
+        <line num="19" type="method" name="anonymousFunction:19#100" complexity="1" crap="1" count="60"/>
         <line num="20" type="stmt" count="1"/>
         <line num="21" type="stmt" count="60"/>
+        <line num="23" type="method" name="anonymousFunction:23#143" complexity="1" crap="1" count="60"/>
         <line num="24" type="stmt" count="50"/>
         <line num="25" type="stmt" count="50"/>
         <line num="26" type="stmt" count="50"/>
         <line num="28" type="stmt" count="60"/>
+        <line num="30" type="method" name="anonymousFunction:30#187" complexity="1" crap="1" count="60"/>
         <line num="31" type="stmt" count="50"/>
         <line num="32" type="stmt" count="50"/>
         <line num="33" type="stmt" count="50"/>
         <line num="35" type="stmt" count="60"/>
-        <line num="37" type="method" name="anonymous function" complexity="1" crap="1.58" count="60"/>
+        <line num="37" type="method" name="anonymousFunction:37#231" complexity="1" crap="1.58" count="60"/>
         <line num="38" type="stmt" count="0"/>
         <line num="39" type="stmt" count="0"/>
         <line num="40" type="stmt" count="0"/>
@@ -109,10 +112,10 @@
         <line num="52" type="stmt" count="1"/>
         <line num="53" type="stmt" count="0"/>
         <line num="56" type="stmt" count="1"/>
-        <metrics loc="58" ncloc="58" classes="1" methods="3" coveredmethods="1" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="19" elements="28" coveredelements="20"/>
+        <metrics loc="58" ncloc="58" classes="1" methods="6" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="25" coveredstatements="19" elements="31" coveredelements="23"/>
       </file>
       <file name="/Users/philippedamen/Code/locale/src/Thinktomorrow/Locale/LocaleUrl.php">
-        <class name="LocaleUrl" namespace="Thinktomorrow\Locale">
+        <class name="Thinktomorrow\Locale\LocaleUrl" namespace="Thinktomorrow\Locale">
           <metrics complexity="8" methods="4" coveredmethods="4" conditionals="0" coveredconditionals="0" statements="26" coveredstatements="26" elements="30" coveredelements="30"/>
         </class>
         <line num="30" type="method" name="__construct" visibility="public" complexity="2" crap="2" count="50"/>
@@ -153,8 +156,8 @@
     </file>
     <package name="Thinktomorrow\Locale\Parsers">
       <file name="/Users/philippedamen/Code/locale/src/Thinktomorrow/Locale/Parsers/RouteParser.php">
-        <class name="RouteParser" namespace="Thinktomorrow\Locale\Parsers">
-          <metrics complexity="15" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="29" elements="38" coveredelements="38"/>
+        <class name="Thinktomorrow\Locale\Parsers\RouteParser" namespace="Thinktomorrow\Locale\Parsers">
+          <metrics complexity="18" methods="10" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="28" coveredstatements="28" elements="38" coveredelements="38"/>
         </class>
         <line num="25" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="50"/>
         <line num="27" type="stmt" count="50"/>
@@ -186,18 +189,19 @@
         <line num="118" type="stmt" count="6"/>
         <line num="131" type="method" name="replaceRouteParameters" visibility="protected" complexity="3" crap="3" count="6"/>
         <line num="133" type="stmt" count="6"/>
+        <line num="135" type="method" name="anonymousFunction:135#478" complexity="3" crap="3" count="6"/>
         <line num="136" type="stmt" count="4"/>
         <line num="137" type="stmt" count="1"/>
         <line num="138" type="stmt" count="4"/>
         <line num="139" type="stmt" count="6"/>
         <line num="141" type="stmt" count="6"/>
-        <line num="156" type="method" name="anonymous function" complexity="2" crap="2" count="6"/>
+        <line num="156" type="method" name="anonymousFunction:156#586" complexity="2" crap="2" count="6"/>
         <line num="157" type="stmt" count="6"/>
         <line num="158" type="stmt" count="6"/>
-        <metrics loc="160" ncloc="94" classes="1" methods="9" coveredmethods="9" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="29" elements="38" coveredelements="38"/>
+        <metrics loc="160" ncloc="94" classes="1" methods="10" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="29" coveredstatements="29" elements="39" coveredelements="39"/>
       </file>
       <file name="/Users/philippedamen/Code/locale/src/Thinktomorrow/Locale/Parsers/UrlParser.php">
-        <class name="UrlParser" namespace="Thinktomorrow\Locale\Parsers">
+        <class name="Thinktomorrow\Locale\Parsers\UrlParser" namespace="Thinktomorrow\Locale\Parsers">
           <metrics complexity="30" methods="11" coveredmethods="10" conditionals="0" coveredconditionals="0" statements="43" coveredstatements="42" elements="54" coveredelements="52"/>
         </class>
         <line num="50" type="method" name="__construct" visibility="public" complexity="1" crap="1" count="50"/>
@@ -268,6 +272,6 @@
       <line num="31" type="stmt" count="1"/>
       <metrics loc="33" ncloc="17" classes="0" methods="0" coveredmethods="0" conditionals="0" coveredconditionals="0" statements="4" coveredstatements="4" elements="4" coveredelements="4"/>
     </file>
-    <metrics files="10" loc="894" ncloc="538" classes="7" methods="40" coveredmethods="37" conditionals="0" coveredconditionals="0" statements="170" coveredstatements="163" elements="210" coveredelements="200"/>
+    <metrics files="10" loc="894" ncloc="538" classes="7" methods="44" coveredmethods="41" conditionals="0" coveredconditionals="0" statements="170" coveredstatements="163" elements="214" coveredelements="204"/>
   </project>
 </coverage>
