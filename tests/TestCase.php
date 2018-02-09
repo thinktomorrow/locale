@@ -60,8 +60,8 @@ class TestCase extends OrchestraTestCase
     /**
      * Set the currently logged in user for the application.
      *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable $user
-     * @param  string $driver
+     * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     * @param string                                     $driver
      *
      * @return void
      */

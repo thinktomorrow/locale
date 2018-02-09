@@ -27,6 +27,7 @@ class Locale
      * This way the developer can set his own curated list of locales.
      *
      * @param array $locales
+     *
      * @return $this
      */
     public function setAvailables(array $locales)
@@ -65,7 +66,7 @@ class Locale
 
     /**
      * Get default locale which is useful for providing locale fallback
-     * TODO: change fallback locale so that it uses the app.locale instead
+     * TODO: change fallback locale so that it uses the app.locale instead.
      *
      * @return null|string
      */
