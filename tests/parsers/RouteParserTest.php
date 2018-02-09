@@ -2,7 +2,6 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Route;
 use InvalidArgumentException;
 use Thinktomorrow\Locale\Parsers\RouteParser;
@@ -49,5 +48,4 @@ class RouteParserTest extends TestCase
 
         $this->assertEquals('https://example.com/blue/foo/bar', $this->parser->set('foo.custom')->parameters(['color' => 'blue'])->secure()->get());
     }
-
 }

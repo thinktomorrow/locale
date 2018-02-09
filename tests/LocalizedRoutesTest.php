@@ -3,7 +3,6 @@
 namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Support\Facades\Route;
-use Thinktomorrow\Locale\LocaleUrl;
 
 class LocalizedRoutesTest extends TestCase
 {

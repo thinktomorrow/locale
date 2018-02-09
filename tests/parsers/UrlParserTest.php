@@ -70,9 +70,10 @@ class UrlParserTest extends TestCase
     }
 
     /**
-    * @test
-    */
-    public function it_does_not_fail_on_parsing_double_slashed(){
+     * @test
+     */
+    public function it_does_not_fail_on_parsing_double_slashed()
+    {
         $urls = [
             '//'    => 'http://example.com/fr',
         ];
