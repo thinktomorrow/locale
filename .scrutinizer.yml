@@ -31,12 +31,12 @@ tools:
         excluded_dirs:
             - vendor
             - tests
-            
+
 build:
     tests:
         override:
             -
-                command: 'vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --configuration phpunit.xml'
+                command: 'vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --configuration phpunit.xml.dist'
                 coverage:
                     file: 'build/logs/clover.xml'
                     format: 'clover'

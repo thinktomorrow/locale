@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1518085228">
-  <project timestamp="1518085228">
+<coverage generated="1518163593">
+  <project timestamp="1518163593">
     <package name="Thinktomorrow\Locale\Facades">
       <file name="/Users/philippedamen/Code/locale/src/Thinktomorrow/Locale/Facades/LocaleFacade.php">
         <class name="Thinktomorrow\Locale\Facades\LocaleFacade" namespace="Thinktomorrow\Locale\Facades">
