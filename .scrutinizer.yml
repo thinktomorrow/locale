@@ -18,6 +18,25 @@ checks:
         fix_doc_comments: true
 
 tools:
-    external_code_coverage:
-        timeout: 600
-        runs: 3
+    php_analyzer: true
+    php_mess_detector: true
+    php_changetracking: true
+    php_code_sniffer:
+        config:
+            standard: PSR2
+    php_loc:
+        excluded_dirs:
+            - vendor
+    php_pdepend:
+        excluded_dirs:
+            - vendor
+            - tests
+
+build:
+    tests:
+        override:
+            -
+                command: 'vendor/bin/phpunit --coverage-clover=build/logs/clover.xml --configuration phpunit.xml.dist'
+                coverage:
+                    file: 'build/logs/clover.xml'
+                    format: 'clover'
