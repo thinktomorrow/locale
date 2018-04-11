@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Integration;
+namespace Thinktomorrow\Locale\Tests\Logic;
 
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Tests\TestCase;
@@ -12,7 +12,7 @@ class HelpersTest extends TestCase
         parent::setUp();
 
         $this->get('http://example.com');
-        $this->refreshBindings();
+        $this->refreshLocaleBindings();
     }
 
     /** @test */

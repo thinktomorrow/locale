@@ -28,6 +28,7 @@
         <log type="coverage-clover" target="build/logs/clover.xml"/>
     </logging>
     <php>
+        <env name="APP_URL" value="http://localhost"/>
         <env name="APP_ENV" value="testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>

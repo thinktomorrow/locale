@@ -17,7 +17,7 @@ class RouteParserTest extends TestCase
         parent::setUp();
 
         $this->get('http://example.com');
-        $this->refreshBindings();
+        $this->refreshLocaleBindings();
 
         $this->routeParser = app()->make(RouteParser::class);
     }

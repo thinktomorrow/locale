@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Integration;
+namespace Thinktomorrow\Locale\Tests\Logic;
 
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
@@ -14,7 +14,7 @@ class LocaleUrlTest extends TestCase
 
         // Fake visiting this url
         $this->get('http://example.com');
-        $this->refreshBindings();
+        $this->refreshLocaleBindings();
     }
 
     /** @test */
@@ -80,7 +80,7 @@ class LocaleUrlTest extends TestCase
     /** @test */
     function if_secure_config_is_true_urls_are_created_as_secure()
     {
-        $this->refreshBindings('nl',null,['secure' => true]);
+        $this->refreshLocaleBindings('nl',null,['secure' => true]);
 
         $this->assertEquals('https://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb'));
     }
@@ -89,7 +89,7 @@ class LocaleUrlTest extends TestCase
     function parameter_has_priority_over_secure_config()
     {
         $this->get('http://example.com');
-        $this->refreshBindings('nl',null,['secure' => true]);
+        $this->refreshLocaleBindings('nl',null,['secure' => true]);
 
         $this->assertEquals('http://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb', [], false));
         $this->assertEquals('https://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb', [], true));

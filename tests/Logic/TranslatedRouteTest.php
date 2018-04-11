@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Integration;
+namespace Thinktomorrow\Locale\Tests\Logic;
 
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Tests\TestCase;
@@ -13,7 +13,7 @@ class TranslatedRouteTest extends TestCase
     {
         parent::setUp();
 
-        $this->refreshBindings('nl', 'http://example.com');
+        $this->refreshLocaleBindings('nl', 'http://example.com');
     }
 
     /** @test */

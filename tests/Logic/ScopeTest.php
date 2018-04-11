@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Integration;
+namespace Thinktomorrow\Locale\Tests\Logic;
 
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\ScopeFacade;
@@ -13,7 +13,7 @@ class ScopeTest extends TestCase
     {
         parent::setUp();
 
-        $this->refreshBindings('nl','http://example.com');
+        $this->refreshLocaleBindings('nl','http://example.com');
         $this->get('http://example.com/en');
     }
 

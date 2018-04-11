@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Unit;
+namespace Thinktomorrow\Locale\Tests\Logic\DetectingLocale;
 
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Values\Config;

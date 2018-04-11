@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Integration;
+namespace Thinktomorrow\Locale\Tests\Logic;
 
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Detect;
@@ -15,7 +15,7 @@ class LocaleRouteTest extends TestCase
 
         // Fake visiting this url
         $this->get('http://example.com');
-        $this->refreshBindings();
+        $this->refreshLocaleBindings();
 
         Route::get('foo/bar/{slug?}', ['as' => 'foo.custom', 'uses' => function () {}]);
         Route::get('{color}/foo/bar', ['as' => 'bar.custom', 'uses' => function () {}]);
@@ -115,7 +115,7 @@ class LocaleRouteTest extends TestCase
     function if_secure_config_is_true_all_routes_are_created_as_secure()
     {
         $this->get('http://example.com');
-        $this->refreshBindings('nl',null,['secure' => true]);
+        $this->refreshLocaleBindings('nl',null,['secure' => true]);
 
         $this->assertEquals('https://example.com/en/foo/bar', localeroute('foo.custom', 'en-gb'));
     }
@@ -124,7 +124,7 @@ class LocaleRouteTest extends TestCase
     function if_secure_config_is_true_only_canonicals_with_scheme_can_be_explicitly_different()
     {
         $this->get('http://example.com');
-        $this->refreshBindings('nl',null,['secure' => true]);
+        $this->refreshLocaleBindings('nl',null,['secure' => true]);
 
         // Canonical has explicit http scheme so it is honoured
         $this->assertEquals('http://www.foobar.com/nl/foo/bar', localeroute('foo.custom', 'BE-nl', null, true));
@@ -140,7 +140,7 @@ class LocaleRouteTest extends TestCase
     function if_secure_config_is_false_all_routes_are_created_as_given()
     {
         $this->get('http://example.com');
-        $this->refreshBindings('nl',null,['secure' => false]);
+        $this->refreshLocaleBindings('nl',null,['secure' => false]);
 
         // Canonical has no specific scheme given so it receives https
         $this->assertEquals('http://fr.foobar.com/foo/bar', localeroute('foo.custom', 'FR_fr', null, true));

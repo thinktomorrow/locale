@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Integration;
+namespace Thinktomorrow\Locale\Tests\Logic;
 
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Detect;
@@ -14,14 +14,14 @@ class LocaleCanonicalTest extends TestCase
 
         // Fake visiting this url
         $this->get('http://example.com');
-        $this->refreshBindings();
+        $this->refreshLocaleBindings();
+
+        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
     }
 
     /** @test */
     function it_can_find_the_canonical_for_current_locale()
     {
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
         // No explicit canonical set for en-gb so keep current root
         app()->setLocale('en-gb');
         $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
@@ -42,8 +42,6 @@ class LocaleCanonicalTest extends TestCase
     /** @test */
     function it_can_find_canonicals_for_specific_locale()
     {
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
         $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
         $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
         $this->assertEquals('http://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','BE-nl'));
@@ -62,8 +60,6 @@ class LocaleCanonicalTest extends TestCase
     /** @test */
     function it_can_get_the_canonical_for_current_locale()
     {
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
         // No explicit canonical set for en-gb so keep current root
         app()->setLocale('en-gb');
         $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
@@ -80,8 +76,6 @@ class LocaleCanonicalTest extends TestCase
     /** @test */
     function scope_is_properly_reset_after_each_url_creation()
     {
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
-
         $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
         $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
         $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
@@ -91,11 +85,34 @@ class LocaleCanonicalTest extends TestCase
     /** @test */
     function mixing_regular_route_and_canonicalized_should_return_expected_results()
     {
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
+        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
+        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
+        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
+        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
+    }
 
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
+    /** @test */
+    function if_canonical_is_not_set_it_is_taken_from_first_locale__domain()
+    {
+        $this->refreshLocaleBindings('nl',null, [
+            'locales' => [
+                'https://german-foobar.de' => 'de',
+                'https://www.foobar.dk' => 'dk',
+                '*.foobar.fr' => 'fr',
+                '*' => [
+                    'de' => 'de',
+                    '/' => 'nl'
+                ],
+            ],
+            'canonicals' => [],
+        ]);
+
+        $this->assertEquals('https://www.foobar.dk/foo/bar', localeroute('foo.custom','dk', [], true));
+        $this->assertEquals('http://example.com/foo/bar', localeroute('foo.custom','de', [], true));
+        $this->assertEquals('http://example.com/foo/bar', localeroute('foo.custom','nl', [], true));
+
+        // Wildcard domains are not automatically picked as canonicals - we don't know the segment for fr in this case
+        // so we revert to default
+        $this->assertEquals('http://example.com/foo/bar', localeroute('foo.custom','fr', [], true));
     }
 }

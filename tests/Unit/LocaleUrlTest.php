@@ -16,7 +16,7 @@ class LocaleUrlTest extends TestCase
 
         // Fake visiting this url
         $this->get('http://example.com');
-        $this->refreshBindings();
+        $this->refreshLocaleBindings();
 
         Route::get('foo/bar/{slug}', ['as' => 'foo.custom', 'uses' => function () {}]);
         Route::get('foo/bar', ['as' => 'foobar.sample', 'uses' => function () {}]);
@@ -147,7 +147,7 @@ class LocaleUrlTest extends TestCase
     public function it_can_create_translated_prefixed_route()
     {
         $this->get('http://foobar.com');
-        $this->refreshBindings('Foobar');
+        $this->refreshLocaleBindings('Foobar');
 
         Route::group(['prefix' => app(Detect::class)->detectLocale()->getScope()->activeSegment()], function () {
             Route::get('/foo/bar/{color}', ['as' => 'foo.custom', 'uses' => function () {

@@ -25,7 +25,9 @@ class Config implements \ArrayAccess
 
     public function get($key)
     {
-        if(!isset($this->config[$key])) throw new \InvalidArgumentException('No config value found by key ['.$key.']');
+        if(!isset($this->config[$key])){
+            throw new \InvalidArgumentException('No config value found by key ['.$key.']');
+        }
 
         return $this->config[$key];
     }
@@ -40,6 +42,8 @@ class Config implements \ArrayAccess
         $locales = $config['locales'];
         $locales = $this->convertSingleEntryToDefault($locales);
         $locales = $this->removeSlashes($locales);
+
+        // TODO: add computed_canonicals list
 
         $config['locales'] = $locales;
 
@@ -96,7 +100,7 @@ class Config implements \ArrayAccess
         $locales = $config['locales'];
 
         if (!isset($locales['*'])) {
-            throw new InvalidConfig('Group [default] is missing for locales structure. At least add the default "*" scope.');
+            throw new InvalidConfig('Default group [*] is missing for locales structure.');
         }
 
         if (is_array($locales['*']) && !isset($locales['*']['/'])) {
