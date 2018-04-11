@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Logic;
+namespace Thinktomorrow\Locale\Tests\LocaleUrl;
 
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Detect;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Unit\Values;
+namespace Thinktomorrow\Locale\Tests\Values;
 
 use PHPUnit\Framework\TestCase;
 use Thinktomorrow\Locale\Exceptions\InvalidUrl;

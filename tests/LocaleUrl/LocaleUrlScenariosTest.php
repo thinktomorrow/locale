@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Unit;
+namespace Thinktomorrow\Locale\Tests\LocaleUrl;
 
 use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Support\Facades\Route;
@@ -8,7 +8,7 @@ use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
-class LocaleUrlTest extends TestCase
+class LocaleUrlScenariosTest extends TestCase
 {
     public function setUp()
     {

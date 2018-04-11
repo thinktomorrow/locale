@@ -24,7 +24,10 @@ class ScopeCollectionTest extends TestCase
      */
     function it_can_create_collection_from_config()
     {
-        $this->assertInstanceOf(ScopeCollection::class, ScopeCollection::fromConfig(Config::from(['locales' => ['*' => 'nl']])) );
+        $this->assertInstanceOf(
+            ScopeCollection::class,
+            ScopeCollection::fromConfig(Config::from(['locales' => ['*' => 'nl']]))
+        );
     }
 
     /**
@@ -52,7 +55,7 @@ class ScopeCollectionTest extends TestCase
      * @test
      * @dataProvider provideRootScopes
      */
-    function it_matches_the_proper_root_and_locales($root, $locales)
+    function it_matches_the_proper_domain_and_locales($root, $locales)
     {
         $this->assertEquals(new Scope($locales), ScopeCollection::fromArray([
             'locales' => [

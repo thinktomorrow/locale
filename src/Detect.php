@@ -89,7 +89,6 @@ final class Detect
 
     /**
      * This is handy for setting allowed scope via other source than config file.
-     * TODO: we should allow to set config from other source such as db as well so
      * this can be configurable from a cms.
      *
      * @param Scope|null $scope

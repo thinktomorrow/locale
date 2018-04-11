@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Unit;
+namespace Thinktomorrow\Locale\Tests\LocaleUrl\Parsers;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Thinktomorrow\Locale\Parsers\UrlParser;

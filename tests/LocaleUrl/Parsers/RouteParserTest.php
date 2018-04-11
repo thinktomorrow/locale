@@ -1,9 +1,7 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Unit;
+namespace Thinktomorrow\Locale\Tests\LocaleUrl\Parsers;
 
-use Illuminate\Contracts\Routing\UrlGenerator;
-use Illuminate\Support\Facades\Route;
 use InvalidArgumentException;
 use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Tests\TestCase;

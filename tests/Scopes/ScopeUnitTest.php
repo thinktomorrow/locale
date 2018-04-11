@@ -1,13 +1,13 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Logic;
+namespace Thinktomorrow\Locale\Tests\Scopes;
 
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Values\Root;
 
-class ScopeTest extends TestCase
+class ScopeUnitTest extends TestCase
 {
     public function setUp()
     {
