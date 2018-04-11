@@ -6,11 +6,6 @@ use Thinktomorrow\Locale\Tests\TestCase;
 
 class DetectLocaleTest extends TestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     /** @test */
     function it_detects_default_locale_when_nothing_matches()
     {
@@ -46,7 +41,7 @@ class DetectLocaleTest extends TestCase
             'locales' => [
                 '*.example.com' => [
                     'segment-ten' => 'locale-ten',
-                    '/' => 'locale-eleven',
+                    '/'           => 'locale-eleven',
                 ],
             ],
         ];
@@ -54,6 +49,20 @@ class DetectLocaleTest extends TestCase
         $this->assertEquals('locale-eleven', $this->detectLocaleAfterVisiting('https://foobar.example.com/', $config));
         $this->assertEquals('locale-eleven', $this->detectLocaleAfterVisiting('https://fr.example.com/amazing/search', $config));
         $this->assertEquals('locale-ten', $this->detectLocaleAfterVisiting('https://fr.example.com/segment-ten/amazing/search', $config));
+    }
+
+    /** @test */
+    function it_detects_a_match_with_the_first_sorted_domain()
+    {
+        $config = [
+            'locales' => [
+                'ten.example.com' => 'locale-ten',
+                '*.example.com'      => 'locale-eleven',
+            ],
+        ];
+
+        $this->assertEquals('locale-eleven', $this->detectLocaleAfterVisiting('https://foobar.example.com/', $config));
+        $this->assertEquals('locale-ten', $this->detectLocaleAfterVisiting('https://ten.example.com/', $config));
     }
 
     /** @test */
@@ -79,32 +88,4 @@ class DetectLocaleTest extends TestCase
         $this->assertEquals('locale-three', $this->detectLocaleAfterVisiting('https://example.com'));
         $this->assertEquals('locale-four', $this->detectLocaleAfterVisiting('https://example.com/segment-four'));
     }
-
-
-
-//    private function createLocale($locales = null)
-//    {
-//        $locales = $locales ?? [
-//            'fr.example.com' => 'fr', // NOTE: put the specific ones on top
-//            'example.com' => 'nl',
-//            'foobar.com' => [
-//                'en' => 'en-us',
-//                '/' => 'dk',
-//            ],
-//            'foobar.co.uk' => [
-//                'en' => 'en-gb',
-//                '/' => 'de',
-//            ],
-//            '*' => [
-//                '/' => 'nl'
-//            ],
-//        ];
-//
-//        return new Detect(app()->make('request'),Config::from([
-//            'locales' => $locales,
-//            'fallback_locale'   => 'en',
-//            'hidden_locale'     => null,
-//            'query_key'        => null,
-//        ]));
-//    }
 }

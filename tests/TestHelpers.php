@@ -25,8 +25,6 @@ trait TestHelpers
         app()->instance('request', Request::create($url, 'GET', [], [], [], $_SERVER));
         app(UrlGenerator::class)->forceRootUrl($root);
 
-        //$this->get($url);
-
         return app(Detect::class)->getLocale();
     }
 
@@ -50,33 +48,7 @@ trait TestHelpers
             ],
             'secure' => false,
             'route_key' => 'locale_slug',
+            'query_key' => 'locale',
         ]));
-
-//        return Config::from(array_merge([
-//            'locales' => [
-//                'example.com' => [
-//                    'de' => 'DE_de',
-//                    'fr' => 'BE_fr',
-//                    '/' => 'FR_fr',
-//                ],
-//                'https://german-foobar.de' => 'DE_de',
-//                '*.foobar.com' => [
-//                    'be-fr' => 'BE_fr',
-//                    '/' => 'FR_fr',
-//                ],
-//                '*' => [
-//                    'nl' => 'BE-nl',
-//                    'en' => 'en-gb',
-//                    '/' => 'nl',
-//                ]
-//            ],
-//            'canonicals' => [
-//                'FR_fr' => 'fr.foobar.com',
-//                'BE-nl' => 'http://www.foobar.com',
-//                'DE_de' => 'https://german-foobar.de',
-//            ],
-//            'secure' => false,
-//            'route_key' => 'locale_slug',
-//        ],$overrides));
     }
 }

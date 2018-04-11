@@ -32,7 +32,7 @@ class Scope
 
     public function __construct(array $locales)
     {
-        if(!isset($locales['/'])) throw new InvalidScope('Default locale is required for scope.');
+        if(!isset($locales['/'])) throw new InvalidScope('Default locale is required for scope. Add this as \'/\' => locale.');
 
         $this->locales = $locales;
         $this->default = Locale::from($this->locales['/']);
