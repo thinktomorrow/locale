@@ -115,4 +115,21 @@ class LocaleCanonicalTest extends TestCase
         // so we revert to default
         $this->assertEquals('http://example.com/foo/bar', localeroute('foo.custom','fr', [], true));
     }
+
+    /** @test */
+    function if_secure_config_is_true_only_canonicals_with_scheme_can_be_explicitly_different()
+    {
+        $this->detectLocaleAfterVisiting('http://example.com', ['secure' => true]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
+
+        // Canonical has explicit http scheme so it is honoured
+        $this->assertEquals('http://www.foobar.com/nl/first', localeroute('route.second', 'BE-nl', null, true));
+
+        // Canonical has no specific scheme given so it receives https
+        $this->assertEquals('https://fr.foobar.com/first', localeroute('route.second', 'locale-three', null, true));
+
+        // Canonical has https scheme
+        $this->assertEquals('https://german-foobar.de/first', localeroute('route.second', 'DE_de', null, true));
+    }
+
 }

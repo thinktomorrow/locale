@@ -98,16 +98,15 @@ class LocaleUrlTest extends TestCase
     {
         $this->refreshLocaleBindings(['secure' => true]);
 
-        $this->assertEquals('https://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb'));
+        $this->assertEquals('https://example.com/segment-five/foo/bar', localeurl('http://example.com/foo/bar', 'locale-five'));
     }
 
     /** @test */
     function parameter_has_priority_over_secure_config()
     {
-        $this->get('http://example.com');
-        $this->refreshLocaleBindings('nl', null, ['secure' => true]);
+        $this->detectLocaleAfterVisiting('http://example.com', ['secure' => true]);
 
-        $this->assertEquals('http://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb', [], false));
-        $this->assertEquals('https://example.com/en/foo/bar', localeurl('http://example.com/foo/bar', 'en-gb', [], true));
+        $this->assertEquals('http://example.com/segment-five/foo/bar', localeurl('http://example.com/foo/bar', 'locale-five', [], false));
+        $this->assertEquals('https://example.com/segment-five/foo/bar', localeurl('http://example.com/foo/bar', 'locale-five', [], true));
     }
 }
