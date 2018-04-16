@@ -5,6 +5,7 @@ namespace Thinktomorrow\Locale\Tests;
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\Request;
 use Thinktomorrow\Locale\Detect;
+use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Values\Root;
 use Thinktomorrow\Locale\Values\Config;
 
@@ -62,5 +63,14 @@ trait TestHelpers
             'route_key' => 'locale_slug',
             'query_key' => 'locale',
         ],$overrides_without_locales));
+    }
+
+    protected function getDefaultScope()
+    {
+        return new Scope([
+            'segment-four' => 'locale-four',
+            'segment-five' => 'locale-five',
+            '/'            => 'locale-zero'
+        ]);
     }
 }

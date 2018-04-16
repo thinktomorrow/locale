@@ -19,14 +19,12 @@ class ScopeCollectionTest extends TestCase
         ScopeCollection::fromArray([]);
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     function it_can_create_collection_from_config()
     {
         $this->assertInstanceOf(
             ScopeCollection::class,
-            ScopeCollection::fromConfig(Config::from(['locales' => ['*' => 'nl']]))
+            ScopeCollection::fromConfig(Config::from(['locales' => ['*' => 'locale-zero']]))
         );
     }
 
@@ -59,11 +57,11 @@ class ScopeCollectionTest extends TestCase
     {
         $this->assertEquals(new Scope($locales), ScopeCollection::fromArray([
             'locales' => [
-                'de.example.com'      => 'de',
-                'de.example.com:8000' => 'foo',
-                'example.com'         => 'en',
-                'fr.*'                => 'fr',
-                '*'                   => 'nl',
+                'segment-ten.example.com'      => 'locale-ten',
+                'segment-ten.example.com:8000' => 'locale-eleven',
+                'example.com'                  => 'locale-twelve',
+                'segment-thirteen.*'           => 'locale-thirteen',
+                '*'                            => 'locale-zero',
             ],
         ])->findByRoot($root));
     }
@@ -72,168 +70,42 @@ class ScopeCollectionTest extends TestCase
     {
         return [
             // Full matches
-            ['http://example.com', ['/' => 'en']],
-            ['de.example.com', ['/' => 'de']],
-            ['http://de.example.com:8000', ['/' => 'foo']],
+            ['http://example.com', ['/' => 'locale-twelve']],
+            ['segment-ten.example.com', ['/' => 'locale-ten']],
+            ['segment-ten.example.com:8000', ['/' => 'locale-eleven']],
 
             // Pattern matching
-            ['https://fr.foobar.com', ['/' => 'fr']],
-            ['fr.foobar.com', ['/' => 'fr']],
+            ['https://segment-thirteen.unknown.com', ['/' => 'locale-thirteen']],
+            ['segment-thirteen.foobar.com', ['/' => 'locale-thirteen']],
 
             // No matches or default
-            ['sfr.example.com', ['/' => 'nl']],
-            ['foobar.com', ['/' => 'nl']],
+            ['segment-unknown.example.com', ['/' => 'locale-zero']],
+            ['unknown.com', ['/' => 'locale-zero']],
         ];
     }
 
     /** @test */
-    function if_no_current_root_is_found_root_is_set_as_default()
+    function if_no_current_root_is_found_default_scope_is_returned()
     {
-        $this->assertEquals(new Scope(['/' => 'nl']), ScopeCollection::fromArray([
+        $this->assertEquals(new Scope(['/' => 'locale-zero']), ScopeCollection::fromArray([
             'locales' => [
-                'example.com' => ['/en' => 'en-gb'],
-                '*'           => 'nl',
+                'example.com'                  => 'locale-twelve',
+                '*'                            => 'locale-zero',
             ],
         ])->findByRoot(''));
     }
 
-    /**
-     * @test
-     * @dataProvider expectedScopeDataProvider
-     */
-    function it_returns_locales_to_scoped_group($root, $original, $locales)
-    {
-        $this->assertEquals(new Scope($locales),
-            ScopeCollection::fromArray(['locales' => $original])->findByRoot($root));
-    }
-
-    function expectedScopeDataProvider()
-    {
-        return [
-            [
-                'foobar.com',
-                [
-                    '*' => 'nl',
-                ],
-                [
-                    '/' => 'nl',
-                ],
-            ],
-            [
-                'example.com',
-                [
-                    'example.com' => ['/en' => 'en-gb'],
-                    '*'           => 'nl',
-                ],
-                [
-                    'en' => 'en-gb',
-                    '/'  => 'nl',
-                ],
-            ],
-            [
-                '*.fr',
-                [
-                    '*.fr' => 'fr',
-                    '*'    => 'nl',
-                ],
-                [
-                    '/' => 'fr',
-                ],
-            ],
-            [
-                'nothing', // return the default because nothing matches
-                [
-                    'example.com' => ['/en' => 'en-gb'],
-                    '*'           => 'nl',
-                ],
-                [
-                    '/' => 'nl',
-                ],
-            ],
-        ];
-    }
-
-    /**
-     * @test
-     */
-    function if_locale_already_exists_in_default_group_only_the_one_from_own_scope_remains()
+    /** @test */
+    function if_locale_already_exists_in_default_group_only_the_one_from_own_scope_it_used()
     {
         $collection = ScopeCollection::fromArray([
             'locales' => [
-                'fr.foobar.com' => 'fr',
-                '*' => ['fr' => 'fr', '/' => 'en'],
+                'segment-ten.foobar.com' => 'locale-ten',
+                '*'             => ['segment-eleven' => 'locale-ten', '/' => 'locale-zero'],
             ],
         ]);
 
-        $this->assertEquals(
-            (new Scope(['/' => 'fr'])), $collection->findByRoot('fr.foobar.com')
-        );
+        $this->assertEquals((new Scope(['/' => 'locale-ten'])), $collection->findByRoot('segment-ten.foobar.com'));
     }
-
-    /**
-     * @test
-     */
-    function it_finds_the_expected_canonical_scope()
-    {
-        $this->assertEquals(
-            (new Scope(['/' => 'nl']))->setCustomRoot(Root::fromString('https://foobar.nl')),
-            ScopeCollection::fromArray($this->canonicalConfig())->findCanonical('nl')
-        );
-    }
-
-    function it_find_canonical_scope_by_pattern()
-    {
-        $this->assertEquals(
-            (new Scope(['us' => 'en-us', '/' => 'en-gb']))->setCustomRoot(Root::fromString('uk.foobar.com')->secure()),
-            ScopeCollection::fromArray($this->canonicalConfig())->findCanonical('en-gb')
-        );
-
-        $this->assertEquals(
-            (new Scope(['us' => 'en-us', '/' => 'en-gb']))->setCustomRoot(Root::fromString('us.foobar.com')->secure()),
-            ScopeCollection::fromArray($this->canonicalConfig())->findCanonical('en-us')
-        );
-    }
-
-    /** @test */
-    function if_canonical_locale_does_not_exist_in_config_it_returns_null()
-    {
-        $this->assertNull(
-            ScopeCollection::fromArray($this->canonicalConfig())->findCanonical('de')
-        );
-    }
-
-    /** @test */
-    function it_defaults_to_default_scope_if_matching_canonical_host_isnt_a_valid_locale_key()
-    {
-        $config = $this->canonicalConfig(['nl' => 'supervet', 'en-gb' => 'awesome']);
-
-        $this->assertEquals((new Scope(['/' => 'en-gb']))->setCustomRoot(Root::fromString('supervet')), ScopeCollection::fromArray($config)->findCanonical('nl'));
-        $this->assertEquals((new Scope(['/' => 'en-gb']))->setCustomRoot(Root::fromString('awesome')), ScopeCollection::fromArray($config)->findCanonical('en-gb'));
-    }
-
-    private function canonicalConfig(array $canonicals = null)
-    {
-        if(!$canonicals)
-        {
-            $canonicals = [
-                'nl' => 'https://foobar.nl',
-                'en-gb' => 'https://uk.foobar.com',
-                'en-us' => 'https://us.foobar.com',
-            ];
-        }
-
-        return [
-            'locales' => [
-                'https://foobar.nl' => 'nl',
-                '*.foobar.com' => [
-                    'us' => 'en-us',
-                    '/' => 'en-gb',
-                ],
-                '*' => 'en-gb',
-            ],
-            'canonicals' => $canonicals,
-        ];
-    }
-
 
 }

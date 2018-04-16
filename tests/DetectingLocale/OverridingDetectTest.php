@@ -4,7 +4,6 @@ namespace Thinktomorrow\Locale\Tests\DetectingLocale;
 
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Values\Config;
-use Thinktomorrow\Locale\Values\Root;
 use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
 
