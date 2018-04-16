@@ -17,7 +17,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_can_get_all_config_values_but_sanitized()
+    function it_sanitizes_passed_values()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
 
@@ -50,7 +50,7 @@ class ConfigTest extends TestCase
      * @test
      * @dataProvider expectedStructureDataProvider
      */
-    function it_converts_locales_to_expected_structure($original, $outcome)
+    function it_normalized_passed_locales($original, $outcome)
     {
         $this->assertEquals($outcome, Config::from(['locales' => $original])->get('locales'));
     }
@@ -112,6 +112,7 @@ class ConfigTest extends TestCase
 
         $config = Config::from(['locales' => ['*' => 'nl'], 'foobar' => 'nl']);
         unset($config['locales']);
+
         $config->get('locales');
     }
 

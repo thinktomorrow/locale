@@ -16,7 +16,7 @@ class UrlTest extends TestCase
     }
 
     /** @test */
-    public function without_localization_parameter_urls_arent_altered()
+    public function without_localization_parameter_urls_aren_not_altered()
     {
         $urls = [
             'http://example.com/fr',
@@ -35,10 +35,10 @@ class UrlTest extends TestCase
     }
 
     /** @test */
-    public function it_accepts_a_locale_path_segment()
+    public function it_accepts_a_locale_segment()
     {
         $urls = [
-            null => '/fr',
+            null                             => '/fr',
             '//'                             => '/fr',
             '/foo/bar'                       => '/fr/foo/bar',
             'foo/bar'                        => '/fr/foo/bar',
@@ -58,7 +58,7 @@ class UrlTest extends TestCase
     }
 
     /** @test */
-    public function it_can_set_a_hidden_locale_path_segment()
+    public function it_can_set_a_hidden_locale()
     {
         $urls = [
             '/foo/bar'                       => '/foo/bar',
@@ -110,7 +110,7 @@ class UrlTest extends TestCase
     }
 
     /** @test */
-    public function it_sets_custom_root_if_set_explicitly()
+    public function it_can_set_custom_root()
     {
         $this->assertEquals('https://example.com/fr/foo/bar',
             Url::fromString('/foo/bar')

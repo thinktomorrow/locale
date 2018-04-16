@@ -30,25 +30,37 @@ trait TestHelpers
 
     protected function validConfig(array $overrides = [])
     {
-        return Config::from(array_merge_recursive($overrides, [
-            'locales' => [
-                'example.com' => [
-                    'segment-one' => 'locale-one',
-                    'segment-two' => 'locale-two',
-                    '/' => 'locale-three',
-                ],
-                '*' => [
-                    'segment-four' => 'locale-four',
-                    'segment-five' => 'locale-five',
-                    '/' => 'locale-zero',
-                ]
+        // Okay so we want to override all values but only the locales we want to prepend
+        // This is because the order of the locales matters and we want to keep the
+        // default as set below
+        $overrides_locales = array_only($overrides, 'locales');
+        if(!empty($overrides_locales)){
+            $overrides_locales = $overrides_locales['locales'];
+        }
+
+        $overrides_without_locales = array_except($overrides, 'locales');
+
+        $locales = array_merge($overrides_locales, [
+            'example.com' => [
+                'segment-one' => 'locale-one',
+                'segment-two' => 'locale-two',
+                '/' => 'locale-three',
             ],
+            '*' => [
+                'segment-four' => 'locale-four',
+                'segment-five' => 'locale-five',
+                '/' => 'locale-zero',
+            ]
+        ]);
+
+        return Config::from(array_merge([
+            'locales' => $locales,
             'canonicals' => [
                 //
             ],
             'secure' => false,
             'route_key' => 'locale_slug',
             'query_key' => 'locale',
-        ]));
+        ],$overrides_without_locales));
     }
 }
