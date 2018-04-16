@@ -24,6 +24,24 @@ class ConfigTest extends TestCase
         $this->assertEquals(['locales' => ['*' => ['/' => 'nl']]], $config->all());
     }
 
+    /** @test */
+    function it_cleans_up_trailing_slash_of_domain_key()
+    {
+        $config = Config::from([
+            'locales' => [
+                'two.example.com/' => 'locale-two',
+                'example.com/'      => 'locale-three',
+                '*'                => 'locale-zero',
+            ]
+        ]);
+
+        $this->assertSame(['locales' => [
+            'two.example.com'  => ['/' => 'locale-two'],
+            'example.com'      => ['/' => 'locale-three'],
+            '*'                => ['/' => 'locale-zero'],
+        ]], $config->all());
+    }
+
     /**
      * @test
      * @dataProvider invalidLocalesDataProvider
@@ -42,7 +60,7 @@ class ConfigTest extends TestCase
             [['nl' => '']],
             [['nl', 'fr']],
             [['foobar']],
-            [['*' => ['en','fr']]], // missing hidden /
+            [['*' => ['en', 'fr']]], // missing hidden /
         ];
     }
 
@@ -69,21 +87,21 @@ class ConfigTest extends TestCase
             [
                 [
                     'example.com' => ['/en' => 'en-gb'],
-                    '*'     => 'nl',
+                    '*'           => 'nl',
                 ],
                 [
                     'example.com' => ['en' => 'en-gb'],
-                    '*'     => ['/' => 'nl'],
+                    '*'           => ['/' => 'nl'],
                 ],
             ],
             [
                 [
-                    '*.fr'    => 'fr',
-                    '*' => 'nl',
+                    '*.fr' => 'fr',
+                    '*'    => 'nl',
                 ],
                 [
-                    '*.fr'    => ['/' => 'fr'],
-                    '*' => ['/' => 'nl'],
+                    '*.fr' => ['/' => 'fr'],
+                    '*'    => ['/' => 'nl'],
                 ],
             ],
         ];
@@ -102,7 +120,7 @@ class ConfigTest extends TestCase
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
         $config[2] = 'foobar';
-        $this->assertEquals('foobar',$config[2]);
+        $this->assertEquals('foobar', $config[2]);
     }
 
     /** @test */

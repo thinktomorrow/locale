@@ -42,6 +42,7 @@ class Config implements \ArrayAccess
         $locales = $config['locales'];
         $locales = $this->convertSingleEntryToDefault($locales);
         $locales = $this->removeSlashes($locales);
+        $locales = $this->removeTrailingDomainSlashes($locales);
 
         // TODO: add computed_canonicals list
 
@@ -67,6 +68,18 @@ class Config implements \ArrayAccess
                     $locales[$group][$_segment] = $locale;
                 }
             }
+        }
+
+        return $locales;
+    }
+
+
+    private function removeTrailingDomainSlashes(array $locales)
+    {
+        foreach($locales as $scopeKey => $segments)
+        {
+            unset($locales[$scopeKey]);
+            $locales[rtrim($scopeKey,'/')] = $segments;
         }
 
         return $locales;

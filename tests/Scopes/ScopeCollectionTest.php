@@ -85,12 +85,30 @@ class ScopeCollectionTest extends TestCase
     }
 
     /** @test */
+    function it_can_match_root_with_or_without_ending_slash()
+    {
+//        $this->assertEquals(new Scope(['/' => 'locale-one']), ScopeCollection::fromConfig(Config::from([
+//            'locales' => [
+//                'example.com/' => 'locale-one',
+//                '*'            => 'locale-zero',
+//            ],
+//        ]))->findByRoot('http://www.example.com/'));
+
+        $this->assertEquals(new Scope(['/' => 'locale-one']), ScopeCollection::fromConfig(Config::from([
+            'locales' => [
+                'example.com/' => 'locale-one',
+                '*'            => 'locale-zero',
+            ],
+        ]))->findByRoot('http://www.example.com'));
+    }
+
+    /** @test */
     function if_no_current_root_is_found_default_scope_is_returned()
     {
         $this->assertEquals(new Scope(['/' => 'locale-zero']), ScopeCollection::fromArray([
             'locales' => [
-                'example.com'                  => 'locale-twelve',
-                '*'                            => 'locale-zero',
+                'example.com' => 'locale-twelve',
+                '*'           => 'locale-zero',
             ],
         ])->findByRoot(''));
     }
@@ -101,7 +119,7 @@ class ScopeCollectionTest extends TestCase
         $collection = ScopeCollection::fromArray([
             'locales' => [
                 'segment-ten.foobar.com' => 'locale-ten',
-                '*'             => ['segment-eleven' => 'locale-ten', '/' => 'locale-zero'],
+                '*'                      => ['segment-eleven' => 'locale-ten', '/' => 'locale-zero'],
             ],
         ]);
 
