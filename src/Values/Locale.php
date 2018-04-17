@@ -26,13 +26,11 @@ final class Locale
 
     public function equals(self $other): bool
     {
-        return (get_class($this) === get_class($other) && (string)$this === (string)$other);
+        return get_class($this) === get_class($other) && (string) $this === (string) $other;
     }
 
     public function __toString(): string
     {
         return $this->get();
     }
-
-
 }

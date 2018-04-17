@@ -2,7 +2,6 @@
 
 namespace Thinktomorrow\Locale;
 
-use Thinktomorrow\Locale\Exceptions\InvalidScope;
 use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Locale\Values\Root;
 
@@ -30,18 +29,21 @@ final class ScopeCollection
 
     public function findByRoot(string $root): Scope
     {
-        return $this->findByKey( $this->guessKeyFromRoot($root) );
+        return $this->findByKey($this->guessKeyFromRoot($root));
     }
 
     /**
      * @param string $locale
+     *
      * @return null|Scope
      */
     public function findCanonical(string $locale): ?Scope
     {
         $canonicals = $this->config->get('canonicals');
 
-        if(!isset($canonicals[$locale])) return null;
+        if (!isset($canonicals[$locale])) {
+            return null;
+        }
 
         $scope = $this->findByRoot($canonicals[$locale]);
 
@@ -50,22 +52,19 @@ final class ScopeCollection
 
     private function guessKeyFromRoot(string $value): string
     {
-        foreach($this->config->get('locales') as $scopeKey => $locales)
-        {
-            $pattern = preg_quote($scopeKey,'#');
+        foreach ($this->config->get('locales') as $scopeKey => $locales) {
+            $pattern = preg_quote($scopeKey, '#');
 
-            /**
+            /*
              * The host pattern allows for an asterix which stands for a
              * wildcard of characters when matching the scope keys.
              * The default '*' scope will match anything
              */
-            if(false !== strpos($pattern, '*'))
-            {
-                $pattern = str_replace('\*','(.+)',$pattern);
+            if (false !== strpos($pattern, '*')) {
+                $pattern = str_replace('\*', '(.+)', $pattern);
             }
 
-            if( preg_match("#^(https?://)?(www\.)?$pattern/?$#", $value) )
-            {
+            if (preg_match("#^(https?://)?(www\.)?$pattern/?$#", $value)) {
                 return $scopeKey;
             }
         }

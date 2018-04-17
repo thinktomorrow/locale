@@ -7,35 +7,35 @@ use Thinktomorrow\Locale\Tests\TestCase;
 class DetectLocaleTest extends TestCase
 {
     /** @test */
-    function it_detects_default_locale_when_nothing_matches()
+    public function it_detects_default_locale_when_nothing_matches()
     {
         $this->assertEquals('locale-zero', $this->detectLocaleAfterVisiting('http://unknown.com/'));
         $this->assertEquals('locale-zero', $this->detectLocaleAfterVisiting('http://unknown.com/foobar'));
     }
 
     /** @test */
-    function it_detects_locale_by_segment()
+    public function it_detects_locale_by_segment()
     {
         $this->assertEquals('locale-four', $this->detectLocaleAfterVisiting('http://unknown.com/segment-four'));
         $this->assertEquals('locale-four', $this->detectLocaleAfterVisiting('http://unknown.com/segment-four/foobar'));
     }
 
     /** @test */
-    function it_detects_locale_by_domain()
+    public function it_detects_locale_by_domain()
     {
         $this->assertEquals('locale-three', $this->detectLocaleAfterVisiting('http://example.com/'));
         $this->assertEquals('locale-three', $this->detectLocaleAfterVisiting('http://example.com/foobar'));
     }
 
     /** @test */
-    function it_detects_locale_by_domain_and_segment()
+    public function it_detects_locale_by_domain_and_segment()
     {
         $this->assertEquals('locale-two', $this->detectLocaleAfterVisiting('http://example.com/segment-two'));
         $this->assertEquals('locale-two', $this->detectLocaleAfterVisiting('http://example.com/segment-two/foobar'));
     }
 
     /** @test */
-    function it_can_detect_locale_by_subdomain_segment()
+    public function it_can_detect_locale_by_subdomain_segment()
     {
         $config = [
             'locales' => [
@@ -52,11 +52,11 @@ class DetectLocaleTest extends TestCase
     }
 
     /** @test */
-    function it_detects_a_match_with_the_first_sorted_domain()
+    public function it_detects_a_match_with_the_first_sorted_domain()
     {
         $config = [
             'locales' => [
-                'ten.example.com' => 'locale-ten',
+                'ten.example.com'    => 'locale-ten',
                 '*.example.com'      => 'locale-eleven',
             ],
         ];
@@ -66,7 +66,7 @@ class DetectLocaleTest extends TestCase
     }
 
     /** @test */
-    function it_can_detect_locale_by_port()
+    public function it_can_detect_locale_by_port()
     {
         $config = [
             'locales' => [
@@ -80,7 +80,7 @@ class DetectLocaleTest extends TestCase
     }
 
     /** @test */
-    function by_default_the_protocol_is_not_relevant_for_locale_detection()
+    public function by_default_the_protocol_is_not_relevant_for_locale_detection()
     {
         $this->assertEquals('locale-three', $this->detectLocaleAfterVisiting('//example.com/'));
         $this->assertEquals('locale-four', $this->detectLocaleAfterVisiting('//example.com/segment-four'));

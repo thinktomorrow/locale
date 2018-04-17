@@ -3,9 +3,9 @@
 namespace Thinktomorrow\Locale\Detectors;
 
 use Illuminate\Http\Request;
-use Thinktomorrow\Locale\Values\Locale;
-use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Locale\Scope;
+use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Values\Locale;
 
 class SegmentDetector implements Detector
 {

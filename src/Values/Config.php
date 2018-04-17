@@ -25,7 +25,7 @@ class Config implements \ArrayAccess
 
     public function get($key)
     {
-        if(!isset($this->config[$key])){
+        if (!isset($this->config[$key])) {
             throw new \InvalidArgumentException('No config value found by key ['.$key.']');
         }
 
@@ -56,13 +56,15 @@ class Config implements \ArrayAccess
     {
         $canonicals = $config['canonicals'] ?? [];
 
-        foreach($config['locales'] as $rootKey => $locales){
+        foreach ($config['locales'] as $rootKey => $locales) {
 
             // We currently do not accept wildcard domains as canonicals as we cannot know to which root this should resolve to.
-            if(false !== strpos($rootKey, '*')) continue;
+            if (false !== strpos($rootKey, '*')) {
+                continue;
+            }
 
-            foreach($locales as $locale){
-                if(!isset($canonicals[$locale])){
+            foreach ($locales as $locale) {
+                if (!isset($canonicals[$locale])) {
                     $canonicals[$locale] = $rootKey;
                 }
             }
@@ -73,12 +75,12 @@ class Config implements \ArrayAccess
 
     /**
      * @param array $locales
+     *
      * @return array
      */
     private function removeSlashes(array $locales): array
     {
-        foreach($locales as $group => $segments)
-        {
+        foreach ($locales as $group => $segments) {
             foreach ($segments as $segment => $locale) {
                 // remove slashes if any e.g. '/nl' will be sanitized to 'nl'
                 if ($segment != '/' && false !== strpos($segment, '/')) {
@@ -93,19 +95,18 @@ class Config implements \ArrayAccess
         return $locales;
     }
 
-
     /**
-     * e.g. example.com/ will be sanitized to example.com
+     * e.g. example.com/ will be sanitized to example.com.
      *
      * @param array $locales
+     *
      * @return array
      */
     private function removeTrailingDomainSlashes(array $locales)
     {
-        foreach($locales as $scopeKey => $segments)
-        {
+        foreach ($locales as $scopeKey => $segments) {
             unset($locales[$scopeKey]);
-            $locales[rtrim($scopeKey,'/')] = $segments;
+            $locales[rtrim($scopeKey, '/')] = $segments;
         }
 
         return $locales;
@@ -113,6 +114,7 @@ class Config implements \ArrayAccess
 
     /**
      * @param array $locales
+     *
      * @return array
      */
     private function convertSingleEntryToDefault(array $locales): array
@@ -148,7 +150,7 @@ class Config implements \ArrayAccess
 
         foreach ($locales as $group => $segments) {
             if (!is_string($group)) {
-                throw new InvalidConfig('Invalid config structure for locales group [' . $group . ']');
+                throw new InvalidConfig('Invalid config structure for locales group ['.$group.']');
             }
         }
 
@@ -156,48 +158,58 @@ class Config implements \ArrayAccess
     }
 
     /**
-     * Each custom canonical entry should point to an existing locale
+     * Each custom canonical entry should point to an existing locale.
+     *
      * @param array $config
      */
     private function validateEachCanonicalLocaleExists(array $config)
     {
         $canonicals = $config['canonicals'] ?? [];
-        foreach ($canonicals as $locale => $canonical)
-        {
-            if (!$this->existsAsLocale($config, $locale))
-            {
-                throw new InvalidConfig('Locale ' . $locale . ' does not exist as existing locale.');
+        foreach ($canonicals as $locale => $canonical) {
+            if (!$this->existsAsLocale($config, $locale)) {
+                throw new InvalidConfig('Locale '.$locale.' does not exist as existing locale.');
             }
         }
     }
 
     private function existsAsLocale($existing_locales, $locale): bool
     {
-        foreach($existing_locales as $existing_locale){
+        foreach ($existing_locales as $existing_locale) {
+            if (is_array($existing_locale)) {
+                return $this->existsAsLocale($existing_locale, $locale);
+            }
 
-            if(is_array($existing_locale)) return $this->existsAsLocale($existing_locale, $locale);
-
-            if($existing_locale === $locale) return true;
+            if ($existing_locale === $locale) {
+                return true;
+            }
         }
 
         return false;
     }
 
-
     public function offsetExists($offset)
     {
-        if(!is_string($offset) && !is_int($offset)) return false;
+        if (!is_string($offset) && !is_int($offset)) {
+            return false;
+        }
+
         return array_key_exists($offset, $this->config);
     }
+
     public function offsetGet($offset)
     {
         return $this->config[$offset];
     }
+
     public function offsetSet($offset, $value)
     {
-        if(is_null($offset)) $this->config[] = $value;
-        else $this->config[$offset] = $value;
+        if (is_null($offset)) {
+            $this->config[] = $value;
+        } else {
+            $this->config[$offset] = $value;
+        }
     }
+
     public function offsetUnset($offset)
     {
         unset($this->config[$offset]);

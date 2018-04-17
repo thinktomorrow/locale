@@ -16,10 +16,12 @@ class LocaleRouteTest extends TestCase
         $this->detectLocaleAfterVisiting('http://example.com');
 
         // Route with optional param
-        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
+        }]);
 
         // Route with required param
-        Route::get('{slug}/second', ['as' => 'route.second', 'uses' => function () {}]);
+        Route::get('{slug}/second', ['as' => 'route.second', 'uses' => function () {
+        }]);
     }
 
     /** @test */
@@ -111,23 +113,25 @@ class LocaleRouteTest extends TestCase
     public function it_can_create_a_named_route_with_multiple_segments()
     {
         $this->assertEquals('http://example.com/blue/second?dazzle=awesome&crazy=vibe', $this->localeUrl->route('route.second', ['slug' => 'blue', 'dazzle' => 'awesome', 'crazy' => 'vibe']));
-        $this->assertEquals('http://example.com/segment-one/blue/second?dazzle=awesome&crazy=vibe', $this->localeUrl->route('route.second', 'locale-one' , ['slug' => 'blue', 'dazzle' => 'awesome', 'crazy' => 'vibe']));
+        $this->assertEquals('http://example.com/segment-one/blue/second?dazzle=awesome&crazy=vibe', $this->localeUrl->route('route.second', 'locale-one', ['slug' => 'blue', 'dazzle' => 'awesome', 'crazy' => 'vibe']));
     }
 
     /** @test */
-    function if_secure_config_is_true_all_routes_are_created_as_secure()
+    public function if_secure_config_is_true_all_routes_are_created_as_secure()
     {
         $this->detectLocaleAfterVisiting('http://example.com', ['secure' => true]);
-        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
+        }]);
 
         $this->assertEquals('https://example.com/segment-one/first', $this->localeUrl->route('route.first', 'locale-one'));
     }
 
     /** @test */
-    function if_secure_config_is_false_all_routes_are_created_as_given()
+    public function if_secure_config_is_false_all_routes_are_created_as_given()
     {
         $this->detectLocaleAfterVisiting('http://example.com', ['secure' => false]);
-        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
+        }]);
 
         $this->assertEquals('http://example.com/first', $this->localeUrl->route('route.first'));
     }

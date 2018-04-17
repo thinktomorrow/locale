@@ -3,16 +3,15 @@
 namespace Thinktomorrow\Locale\Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Thinktomorrow\Locale\Exceptions\InvalidConfig;
 use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\ScopeCollection;
-use Thinktomorrow\Locale\Exceptions\InvalidConfig;
 use Thinktomorrow\Locale\Values\Config;
-use Thinktomorrow\Locale\Values\Root;
 
 class ScopeCollectionTest extends TestCase
 {
     /** @test */
-    function it_expects_locales_as_key()
+    public function it_expects_locales_as_key()
     {
         $this->expectException(InvalidConfig::class);
 
@@ -20,7 +19,7 @@ class ScopeCollectionTest extends TestCase
     }
 
     /** @test */
-    function it_can_create_collection_from_config()
+    public function it_can_create_collection_from_config()
     {
         $this->assertInstanceOf(
             ScopeCollection::class,
@@ -32,14 +31,14 @@ class ScopeCollectionTest extends TestCase
      * @test
      * @dataProvider invalidLocalesDataProvider
      */
-    function it_halts_invalid_locales_structure($locales)
+    public function it_halts_invalid_locales_structure($locales)
     {
         $this->expectException(InvalidConfig::class);
 
         ScopeCollection::fromArray(['locales' => $locales]);
     }
 
-    function invalidLocalesDataProvider()
+    public function invalidLocalesDataProvider()
     {
         return [
             [['foobar']],
@@ -53,7 +52,7 @@ class ScopeCollectionTest extends TestCase
      * @test
      * @dataProvider provideRootScopes
      */
-    function it_matches_the_proper_domain_and_locales($root, $locales)
+    public function it_matches_the_proper_domain_and_locales($root, $locales)
     {
         $this->assertEquals(new Scope($locales), ScopeCollection::fromArray([
             'locales' => [
@@ -66,7 +65,7 @@ class ScopeCollectionTest extends TestCase
         ])->findByRoot($root));
     }
 
-    function provideRootScopes()
+    public function provideRootScopes()
     {
         return [
             // Full matches
@@ -85,7 +84,7 @@ class ScopeCollectionTest extends TestCase
     }
 
     /** @test */
-    function it_can_match_root_with_or_without_ending_slash()
+    public function it_can_match_root_with_or_without_ending_slash()
     {
         $this->assertEquals(new Scope(['/' => 'locale-one']), ScopeCollection::fromConfig(Config::from([
             'locales' => [
@@ -96,7 +95,7 @@ class ScopeCollectionTest extends TestCase
     }
 
     /** @test */
-    function if_no_current_root_is_found_default_scope_is_returned()
+    public function if_no_current_root_is_found_default_scope_is_returned()
     {
         $this->assertEquals(new Scope(['/' => 'locale-zero']), ScopeCollection::fromArray([
             'locales' => [
@@ -107,7 +106,7 @@ class ScopeCollectionTest extends TestCase
     }
 
     /** @test */
-    function if_locale_already_exists_in_default_group_only_the_one_from_own_scope_it_used()
+    public function if_locale_already_exists_in_default_group_only_the_one_from_own_scope_it_used()
     {
         $collection = ScopeCollection::fromArray([
             'locales' => [
@@ -118,5 +117,4 @@ class ScopeCollectionTest extends TestCase
 
         $this->assertEquals((new Scope(['/' => 'locale-ten'])), $collection->findByRoot('segment-ten.foobar.com'));
     }
-
 }

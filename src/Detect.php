@@ -12,7 +12,6 @@ use Thinktomorrow\Locale\Values\Locale;
 
 final class Detect
 {
-
     /**
      * @var Request
      */
@@ -29,7 +28,8 @@ final class Detect
     private $locale;
 
     /**
-     * Current scope of locales
+     * Current scope of locales.
+     *
      * @var Scope
      */
     private $scope;
@@ -61,8 +61,7 @@ final class Detect
             QueryDetector::class,
         ];
 
-        foreach($detectors as $detector)
-        {
+        foreach ($detectors as $detector) {
             $locale = app($detector)->get($this->getScope(), $this->config) ?? $locale;
         }
 
@@ -75,14 +74,18 @@ final class Detect
 
     public function getLocale(): Locale
     {
-        if( ! $this->locale ) $this->detectLocale();
+        if (!$this->locale) {
+            $this->detectLocale();
+        }
 
         return $this->locale;
     }
 
     public function getScope(): Scope
     {
-        if( ! $this->scope ) $this->detectScope();
+        if (!$this->scope) {
+            $this->detectScope();
+        }
 
         return $this->scope;
     }
@@ -92,11 +95,14 @@ final class Detect
      * this can be configurable from a cms.
      *
      * @param Scope|null $scope
+     *
      * @return $this
      */
     public function setScope(Scope $scope = null)
     {
-        if($scope) $this->scope = $scope;
+        if ($scope) {
+            $this->scope = $scope;
+        }
 
         return $this;
     }

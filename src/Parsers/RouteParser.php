@@ -34,7 +34,7 @@ class RouteParser
     /** @var UrlParser */
     private $urlParser;
 
-    public function __construct(UrlParser $urlParser , Translator $translator)
+    public function __construct(UrlParser $urlParser, Translator $translator)
     {
         $this->urlParser = $urlParser;
         $this->translator = $translator;
@@ -42,7 +42,7 @@ class RouteParser
 
     public function get(): string
     {
-        $translationKey = config('thinktomorrow.locale.routes_filename') . '.' . $this->routename;
+        $translationKey = config('thinktomorrow.locale.routes_filename').'.'.$this->routename;
 
         $url = $this->translator->get($translationKey, [], $this->locale);
 
@@ -53,7 +53,9 @@ class RouteParser
 
         $parser = $this->urlParser->set($url)->secure($this->secure)->localize($this->localeSegment, $this->available_locales);
 
-        if($this->customRoot) $parser->setCustomRoot($this->customRoot);
+        if ($this->customRoot) {
+            $parser->setCustomRoot($this->customRoot);
+        }
 
         return $parser->get();
     }

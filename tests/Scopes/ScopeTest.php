@@ -4,9 +4,9 @@ namespace Thinktomorrow\Locale\Tests\Scopes;
 
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
 use Thinktomorrow\Locale\Facades\ScopeFacade;
+use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Values\Locale;
-use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Values\Root;
 
 class ScopeTest extends TestCase
@@ -26,7 +26,7 @@ class ScopeTest extends TestCase
     }
 
     /** @test */
-    function a_default_locale_is_required()
+    public function a_default_locale_is_required()
     {
         $this->expectException(InvalidScope::class);
 
@@ -39,20 +39,20 @@ class ScopeTest extends TestCase
         $this->assertEquals([
             'segment-four' => 'locale-four',
             'segment-five' => 'locale-five',
-            '/'            => 'locale-zero'
+            '/'            => 'locale-zero',
         ], ScopeFacade::locales());
     }
 
     /** @test */
-    function it_can_get_locale_by_key()
+    public function it_can_get_locale_by_key()
     {
         $this->assertEquals(Locale::from('locale-five'), ScopeFacade::findLocale('segment-five'));
         $this->assertEquals(Locale::from('locale-zero'), ScopeFacade::findLocale('/'));
-        $this->assertNull( ScopeFacade::findLocale('unknown'));
+        $this->assertNull(ScopeFacade::findLocale('unknown'));
     }
 
     /** @test */
-    function it_can_get_segment_key_by_locale()
+    public function it_can_get_segment_key_by_locale()
     {
         $this->assertEquals('segment-five', ScopeFacade::segment('locale-five'));
         $this->assertEquals('/', ScopeFacade::segment('locale-zero'));

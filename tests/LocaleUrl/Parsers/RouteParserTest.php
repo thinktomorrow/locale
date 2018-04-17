@@ -18,8 +18,10 @@ class RouteParserTest extends TestCase
         $this->detectLocaleAfterVisiting('http://example.com', ['canonicals' => [
             'locale-one' => 'http://forced.com',
         ]]);
-        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
-        Route::get(trans('routes.trans.first'), ['as' => 'trans.first', 'uses' => function () {}]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
+        }]);
+        Route::get(trans('routes.trans.first'), ['as' => 'trans.first', 'uses' => function () {
+        }]);
 
         $this->routeParser = app()->make(RouteParser::class);
     }
@@ -27,19 +29,19 @@ class RouteParserTest extends TestCase
     /** @test */
     public function parser_injects_locale_segment_if_needed()
     {
-        $this->assertEquals('http://example.com/first/cow', $this->routeParser->set('route.first',['slug' => 'cow'])->localize('/',['/' => 'locale-three'])->get());
+        $this->assertEquals('http://example.com/first/cow', $this->routeParser->set('route.first', ['slug' => 'cow'])->localize('/', ['/' => 'locale-three'])->get());
     }
 
     /** @test */
     public function parser_translates_route_segments_if_provided_via_lang_file()
     {
-        $this->assertEquals('http://example.com/segment-one/first/cow', $this->routeParser->set('trans.first',['slug' => 'cow'])->localize('segment-one',['segment-one' => 'locale-one'])->get());
+        $this->assertEquals('http://example.com/segment-one/first/cow', $this->routeParser->set('trans.first', ['slug' => 'cow'])->localize('segment-one', ['segment-one' => 'locale-one'])->get());
     }
 
     /** @test */
     public function if_route_translation_is_missing_translation_is_set_in_url()
     {
-        $this->assertEquals('http://example.com/segment-four/routes.trans.first?slug=cow', $this->routeParser->set('trans.first', ['slug' => 'cow'])->localize('segment-four',['segment-four' => 'locale-four'])->get());
+        $this->assertEquals('http://example.com/segment-four/routes.trans.first?slug=cow', $this->routeParser->set('trans.first', ['slug' => 'cow'])->localize('segment-four', ['segment-four' => 'locale-four'])->get());
     }
 
     /** @test */
@@ -47,7 +49,7 @@ class RouteParserTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->routeParser->set('foo.unknown')->localize('segment-one',['segment-one' => 'locale-one'])->get();
+        $this->routeParser->set('foo.unknown')->localize('segment-one', ['segment-one' => 'locale-one'])->get();
     }
 
     /** @test */
@@ -55,5 +57,4 @@ class RouteParserTest extends TestCase
     {
         $this->assertEquals('https://example.com/first/blue', $this->routeParser->set('route.first', ['blue'], true)->get());
     }
-
 }

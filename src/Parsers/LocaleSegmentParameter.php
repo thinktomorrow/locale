@@ -9,9 +9,10 @@ class LocaleSegmentParameter
     /**
      * Isolate locale value from parameters.
      *
-     * @param Scope $scope
+     * @param Scope  $scope
      * @param string $routeKey
-     * @param array $parameters
+     * @param array  $parameters
+     *
      * @return null|string
      */
     public static function extractLocaleSegmentFromParameters(Scope $scope, string $routeKey, array &$parameters = [])
@@ -40,9 +41,10 @@ class LocaleSegmentParameter
     }
 
     /**
-     * @param Scope $scope
+     * @param Scope  $scope
      * @param string $routeKey
      * @param $locale
+     *
      * @return array|null|Values\Locale
      */
     public static function normalizeLocaleAsParameter(Scope $scope, string $routeKey, $locale)
@@ -62,6 +64,6 @@ class LocaleSegmentParameter
             }
         }
 
-        return (array)$locale;
+        return (array) $locale;
     }
 }
