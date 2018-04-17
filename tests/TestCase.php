@@ -17,8 +17,6 @@ class TestCase extends OrchestraTestCase
     public function setUp()
     {
         parent::setUp();
-
-        $this->refreshLocaleBindings();
     }
 
     protected function getPackageProviders($app)

@@ -87,13 +87,6 @@ class ScopeCollectionTest extends TestCase
     /** @test */
     function it_can_match_root_with_or_without_ending_slash()
     {
-//        $this->assertEquals(new Scope(['/' => 'locale-one']), ScopeCollection::fromConfig(Config::from([
-//            'locales' => [
-//                'example.com/' => 'locale-one',
-//                '*'            => 'locale-zero',
-//            ],
-//        ]))->findByRoot('http://www.example.com/'));
-
         $this->assertEquals(new Scope(['/' => 'locale-one']), ScopeCollection::fromConfig(Config::from([
             'locales' => [
                 'example.com/' => 'locale-one',

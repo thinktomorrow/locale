@@ -42,7 +42,8 @@ class LocaleUrl
 
     public function __construct(Detect $detect, UrlParser $urlparser, RouteParser $routeparser, Config $config)
     {
-        $this->scope = $detect->getScope(); // TODO check if this still returns proper results when loading before routes
+        // TODO check if this still returns proper results when loading before routes
+        $this->scope = $detect->getScope();
         $this->scopeCollection = ScopeCollection::fromConfig($config);
         $this->urlparser = $urlparser;
         $this->routeparser = $routeparser;
@@ -104,7 +105,7 @@ class LocaleUrl
             $available_locales = array_merge($available_locales, $canonicalScope->locales());
 
             /**
-             * Canonical that has no scheme will be forced as secure is set so in config.
+             * Canonical that has no scheme will be forced as secure if set so in config.
              * If an explicit scheme is given, this is left unmodified in case of canonicals
              */
             $forceSecure = $scope->customRoot() && $scope->customRoot()->scheme() ? false : $forceSecure;

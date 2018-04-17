@@ -77,11 +77,6 @@ final class ScopeCollection
     // We limit the available locales to the current domain space, including the default ones
     private function findByKey(string $scopeKey): Scope
     {
-        if(!$scopeKey || !isset($this->config['locales'][$scopeKey]))
-        {
-            throw new InvalidScope('Scope key [' . $scopeKey . '] does not exist.');
-        }
-
         $locales = $this->config->get('locales');
 
         $locales = array_merge($locales['*'], $locales[$scopeKey]);

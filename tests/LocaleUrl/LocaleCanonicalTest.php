@@ -3,6 +3,8 @@
 namespace Thinktomorrow\Locale\Tests\LocaleUrl;
 
 use Illuminate\Support\Facades\Route;
+use Thinktomorrow\Locale\Detect;
+use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class LocaleCanonicalTest extends TestCase
@@ -11,124 +13,88 @@ class LocaleCanonicalTest extends TestCase
     {
         parent::setUp();
 
-        // Fake visiting this url
-        $this->get('http://example.com');
-        $this->refreshLocaleBindings();
+        $this->detectLocaleAfterVisiting('http://example.com');
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () { }]);
+    }
 
-        Route::get('/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
+    protected function detectLocaleAfterVisiting($url, array $overrides = []): string
+    {
+        return parent::detectLocaleAfterVisiting($url, array_merge([
+            'locales'    => [
+                '*.custom-domain.com' => 'locale-thirteen',
+                'one-domain.com'      => 'locale-one',
+                'custom-domain.com'   => 'locale-ten',
+                'eleventh-domain'     => [
+                    'segment-eleven' => 'locale-eleven',
+                    'segment-twelve' => 'locale-twelve',
+                ],
+            ],
+            'canonicals' => [
+                'locale-one'    => 'overridden-domain.com',
+                'locale-ten'    => 'https://custom-domain.com',
+                'locale-eleven' => 'http://www.eleventh-domain',
+            ]
+        ], $overrides));
     }
 
     /** @test */
-    function it_can_find_the_canonical_for_current_locale()
+    function current_root_is_used_by_default()
     {
-        // No explicit canonical set for en-gb so keep current root
-        app()->setLocale('en-gb');
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
-
-        // BE_Fr has explicit canonical
-        app()->setLocale('FR_fr');
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
-
-        // BE-Nl has explicit canonical but is not default locale of this root so it still needs a locale segment
-        app()->setLocale('BE-nl');
-        $this->assertEquals('http://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
-
-        // DE_de has explicit canonical but is not default locale of this root so it still needs a locale segment
-        app()->setLocale('DE_de');
-        $this->assertEquals('https://german-foobar.de/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
+        // test it out
+        app()->setLocale('locale-two');
+        $this->assertEquals('http://example.com/segment-two/first', $this->localeUrl->canonicalRoute('route.first'));
+        $this->assertEquals('http://example.com/segment-two/first', localeroute('route.first', null, [], true));
     }
 
     /** @test */
-    function it_can_find_canonicals_for_specific_locale()
+    function a_locale_can_have_an_explicit_canonical()
     {
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','BE-nl'));
+        // Custom canonical points to default routes if root cannot be matched against available scopes
+        app()->setLocale('locale-one');
+        $this->assertEquals('http://overridden-domain.com/first', $this->localeUrl->canonicalRoute('route.first'));
+
+        // Locale-two is outside the default scope so it is ignored as locale and set als url param (slug) instead
+        // By default the route is secured if not explicitly set not to secure.
+        $this->assertEquals('https://custom-domain.com/first', $this->localeUrl->canonicalRoute('route.first', 'locale-ten'));
+    }
+
+    /** @test */
+    function a_canonical_can_refer_to_a_locale_segment()
+    {
+        $this->assertEquals('http://www.eleventh-domain/segment-eleven/first', $this->localeUrl->canonicalRoute('route.first', 'locale-eleven'));
     }
 
     /** @test */
     function parsing_canonical_route_removes_locale_segment_coming_from_current_scope()
     {
-        $this->get('http://example.com/de');
-        Route::get('/fr/foo/bar', ['as' => 'foo.custom', 'uses' => function () {}]);
+        $this->detectLocaleAfterVisiting('http://example.com/segment-one');
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () { }]);
 
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-    }
-
-
-    /** @test */
-    function it_can_get_the_canonical_for_current_locale()
-    {
-        // No explicit canonical set for en-gb so keep current root
-        app()->setLocale('en-gb');
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
-
-        // BE_Fr has explicit canonical
-        app()->setLocale('FR_fr');
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
-
-        // BE-Nl has explicit canonical but is not default locale of this root so it still needs a locale segment
-        app()->setLocale('BE-nl');
-        $this->assertEquals('http://www.foobar.com/nl/foo/bar', $this->localeUrl->canonicalRoute('foo.custom'));
+        $this->assertEquals('https://custom-domain.com/first', $this->localeUrl->canonicalRoute('route.first', 'locale-ten'));
     }
 
     /** @test */
-    function scope_is_properly_reset_after_each_url_creation()
+    function canonical_is_computed_based_on_first_appearance_of_locale()
     {
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-    }
+        $this->assertEquals('http://eleventh-domain/segment-twelve/first', $this->localeUrl->canonicalRoute('route.first', 'locale-twelve'));
 
-    /** @test */
-    function mixing_regular_route_and_canonicalized_should_return_expected_results()
-    {
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-        $this->assertEquals('http://fr.foobar.com/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','FR_fr'));
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->canonicalRoute('foo.custom','en-gb'));
-    }
-
-    /** @test */
-    function if_canonical_is_not_set_it_is_taken_from_first_locale__domain()
-    {
-        $this->refreshLocaleBindings('nl',null, [
-            'locales' => [
-                'https://german-foobar.de' => 'de',
-                'https://www.foobar.dk' => 'dk',
-                '*.foobar.fr' => 'fr',
-                '*' => [
-                    'de' => 'de',
-                    '/' => 'nl'
-                ],
-            ],
-            'canonicals' => [],
-        ]);
-
-        $this->assertEquals('https://www.foobar.dk/foo/bar', localeroute('foo.custom','dk', [], true));
-        $this->assertEquals('http://example.com/foo/bar', localeroute('foo.custom','de', [], true));
-        $this->assertEquals('http://example.com/foo/bar', localeroute('foo.custom','nl', [], true));
-
-        // Wildcard domains are not automatically picked as canonicals - we don't know the segment for fr in this case
-        // so we revert to default
-        $this->assertEquals('http://example.com/foo/bar', localeroute('foo.custom','fr', [], true));
+        // Wildcard domains are not automatically picked as canonicals - we don't know the segment for it in this case so we revert to current root
+        $this->assertEquals('http://example.com/first/locale-thirteen', $this->localeUrl->canonicalRoute('route.first', 'locale-thirteen'));
     }
 
     /** @test */
     function if_secure_config_is_true_only_canonicals_with_scheme_can_be_explicitly_different()
     {
         $this->detectLocaleAfterVisiting('http://example.com', ['secure' => true]);
-        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () { }]);
 
         // Canonical has explicit http scheme so it is honoured
-        $this->assertEquals('http://www.foobar.com/nl/first', localeroute('route.second', 'BE-nl', null, true));
+        $this->assertEquals('https://custom-domain.com/first', $this->localeUrl->canonicalRoute('route.first', 'locale-ten'));
 
-        // Canonical has no specific scheme given so it receives https
-        $this->assertEquals('https://fr.foobar.com/first', localeroute('route.second', 'locale-three', null, true));
+        // Locale pointing to custom canonical but without explicit locale segment
+        $this->assertEquals('https://overridden-domain.com/first/locale-one', $this->localeUrl->canonicalRoute('route.first', 'locale-one'));
 
-        // Canonical has https scheme
-        $this->assertEquals('https://german-foobar.de/first', localeroute('route.second', 'DE_de', null, true));
+        $this->assertEquals('https://example.com/first', localeroute('route.first', null, null, true));
     }
 
 }

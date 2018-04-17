@@ -39,16 +39,36 @@ class Config implements \ArrayAccess
 
     private function sanitize(array $config): array
     {
+        // Sanitize locales
         $locales = $config['locales'];
         $locales = $this->convertSingleEntryToDefault($locales);
         $locales = $this->removeSlashes($locales);
         $locales = $this->removeTrailingDomainSlashes($locales);
-
-        // TODO: add computed_canonicals list
-
         $config['locales'] = $locales;
 
+        // Compute canonicals for all locales
+        $config['canonicals'] = $this->computeCanonicals($config);
+
         return $config;
+    }
+
+    private function computeCanonicals(array $config): array
+    {
+        $canonicals = $config['canonicals'] ?? [];
+
+        foreach($config['locales'] as $rootKey => $locales){
+
+            // We currently do not accept wildcard domains as canonicals as we cannot know to which root this should resolve to.
+            if(false !== strpos($rootKey, '*')) continue;
+
+            foreach($locales as $locale){
+                if(!isset($canonicals[$locale])){
+                    $canonicals[$locale] = $rootKey;
+                }
+            }
+        }
+
+        return $canonicals;
     }
 
     /**
@@ -131,7 +151,38 @@ class Config implements \ArrayAccess
                 throw new InvalidConfig('Invalid config structure for locales group [' . $group . ']');
             }
         }
+
+        $this->validateEachCanonicalLocaleExists($config);
     }
+
+    /**
+     * Each custom canonical entry should point to an existing locale
+     * @param array $config
+     */
+    private function validateEachCanonicalLocaleExists(array $config)
+    {
+        $canonicals = $config['canonicals'] ?? [];
+        foreach ($canonicals as $locale => $canonical)
+        {
+            if (!$this->existsAsLocale($config, $locale))
+            {
+                throw new InvalidConfig('Locale ' . $locale . ' does not exist as existing locale.');
+            }
+        }
+    }
+
+    private function existsAsLocale($existing_locales, $locale): bool
+    {
+        foreach($existing_locales as $existing_locale){
+
+            if(is_array($existing_locale)) return $this->existsAsLocale($existing_locale, $locale);
+
+            if($existing_locale === $locale) return true;
+        }
+
+        return false;
+    }
+
 
     public function offsetExists($offset)
     {

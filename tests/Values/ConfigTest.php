@@ -21,7 +21,7 @@ class ConfigTest extends TestCase
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
 
-        $this->assertEquals(['locales' => ['*' => ['/' => 'nl']]], $config->all());
+        $this->assertEquals(['locales' => ['*' => ['/' => 'nl']], 'canonicals' => []], $config->all());
     }
 
     /** @test */
@@ -30,16 +30,16 @@ class ConfigTest extends TestCase
         $config = Config::from([
             'locales' => [
                 'two.example.com/' => 'locale-two',
-                'example.com/'      => 'locale-three',
+                'example.com/'     => 'locale-three',
                 '*'                => 'locale-zero',
             ]
         ]);
 
-        $this->assertSame(['locales' => [
-            'two.example.com'  => ['/' => 'locale-two'],
-            'example.com'      => ['/' => 'locale-three'],
-            '*'                => ['/' => 'locale-zero'],
-        ]], $config->all());
+        $this->assertSame([
+            'two.example.com' => ['/' => 'locale-two'],
+            'example.com'     => ['/' => 'locale-three'],
+            '*'               => ['/' => 'locale-zero'],
+        ], $config->get('locales'));
     }
 
     /**
@@ -112,7 +112,9 @@ class ConfigTest extends TestCase
     {
         $config = Config::from(['locales' => ['*' => 'nl'], 'foobar' => 'nl']);
 
-        $this->assertEquals(['locales' => ['*' => ['/' => 'nl']], 'foobar' => 'nl'], $config->toArray());
+        $this->assertEquals([
+            'locales' => ['*' => ['/' => 'nl']], 'foobar' => 'nl', 'canonicals' => []
+        ], $config->toArray());
     }
 
     /** @test */
@@ -140,6 +142,88 @@ class ConfigTest extends TestCase
         $config = Config::from(['locales' => ['*' => 'nl']]);
         $this->assertTrue(isset($config['locales']));
         $this->assertFalse(isset($config['foobar']));
+    }
+
+    /** @test */
+    function it_validates_that_each_explicit_canonical_exists_as_locale()
+    {
+        $this->expectException(InvalidConfig::class);
+
+        Config::from([
+            'locales'    => [
+                'example.com/' => 'locale-three',
+                '*'            => 'locale-zero',
+            ],
+            'canonicals' => [
+                'locale-unknown' => 'canonical.com',
+            ],
+        ]);
+    }
+
+    /** @test */
+    function it_computes_canonicals_for_all_locales_except_default()
+    {
+        $config = Config::from([
+            'locales'    => [
+                'two.example.com/' => 'locale-two',
+                'example.com/'     => 'locale-three',
+                '*'                => 'locale-zero',
+            ],
+            'canonicals' => [
+                'locale-three' => 'custom-canonical.com',
+            ],
+        ]);
+
+        $this->assertSame([
+            'locale-three' => 'custom-canonical.com',
+            'locale-two'   => 'two.example.com',
+        ], $config->get('canonicals'));
+    }
+
+    /** @test */
+    function when_computing_canonicals_for_multiple_locales_it_takes_first_encountered_domain()
+    {
+        $config = Config::from([
+            'locales'    => [
+                'two.example.com/' => [
+                    'segment-three' => 'locale-three',
+                    'segment-two'   => 'locale-two',
+                    '/'             => 'locale-four',
+                ],
+                'example.com/'     => 'locale-two',
+                '*'                => 'locale-zero',
+            ],
+            'canonicals' => [
+                'locale-three' => 'custom-canonical.com',
+            ],
+        ]);
+
+        $this->assertSame([
+            'locale-three' => 'custom-canonical.com',
+            'locale-two'   => 'two.example.com',
+            'locale-four'  => 'two.example.com',
+        ], $config->get('canonicals'));
+    }
+
+    /** @test */
+    function it_computes_canonicals_for_all_locales_except_wildcard_ones()
+    {
+        $config = Config::from([
+            'locales'    => [
+                '*.example.com/'   => 'locale-two',
+                'two.example.com/' => 'locale-two',
+                'example.com/'     => 'locale-three',
+                '*'                => 'locale-zero',
+            ],
+            'canonicals' => [
+                'locale-three' => 'custom-canonical.com',
+            ],
+        ]);
+
+        $this->assertSame([
+            'locale-three' => 'custom-canonical.com',
+            'locale-two'   => 'two.example.com',
+        ], $config->get('canonicals'));
     }
 
 }

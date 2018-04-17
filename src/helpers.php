@@ -32,10 +32,15 @@ if (!function_exists('localeroute')) {
     }
 }
 
-
+/**
+ * Detect locale and return the active segment. Usefull for route segment injections
+ */
 if (!function_exists('localeRoutePrefix')) {
     function localeRoutePrefix()
     {
-        return app(\Thinktomorrow\Locale\Detect::class)->detectLocale()->getScope()->activeSegment();
+        return app(\Thinktomorrow\Locale\Detect::class)
+                    ->detectLocale()
+                    ->getScope()
+                    ->activeSegment();
     }
 }

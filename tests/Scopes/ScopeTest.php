@@ -11,6 +11,13 @@ use Thinktomorrow\Locale\Values\Root;
 
 class ScopeTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->detectLocaleAfterVisiting('http://unknown.com');
+    }
+
     /** @test */
     public function it_can_get_default_locale_in_scope()
     {
