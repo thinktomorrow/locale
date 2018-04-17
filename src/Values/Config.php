@@ -60,7 +60,7 @@ class Config implements \ArrayAccess
         foreach($locales as $group => $segments)
         {
             foreach ($segments as $segment => $locale) {
-                // remove slashes if any
+                // remove slashes if any e.g. '/nl' will be sanitized to 'nl'
                 if ($segment != '/' && false !== strpos($segment, '/')) {
                     $_segment = str_replace('/', '', $segment);
 
@@ -74,6 +74,12 @@ class Config implements \ArrayAccess
     }
 
 
+    /**
+     * e.g. example.com/ will be sanitized to example.com
+     *
+     * @param array $locales
+     * @return array
+     */
     private function removeTrailingDomainSlashes(array $locales)
     {
         foreach($locales as $scopeKey => $segments)

@@ -109,4 +109,14 @@ class LocaleUrlTest extends TestCase
         $this->assertEquals('http://example.com/segment-five/foo/bar', localeurl('http://example.com/foo/bar', 'locale-five', [], false));
         $this->assertEquals('https://example.com/segment-five/foo/bar', localeurl('http://example.com/foo/bar', 'locale-five', [], true));
     }
+
+    /** @test */
+    public function localeurl_is_available_as_a_global_function()
+    {
+        app()->setLocale('locale-two');
+
+        $this->assertEquals('http://example.com/segment-two', localeurl('/'));
+        $this->assertEquals('http://example.com/segment-two/foobar', localeurl('/foobar'));
+        $this->assertEquals('http://example.com/segment-one', localeurl('/', 'locale-one'));
+    }
 }

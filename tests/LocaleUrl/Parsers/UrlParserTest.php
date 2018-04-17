@@ -14,13 +14,12 @@ class UrlParserTest extends TestCase
     {
         parent::setUp();
 
-        // Force root url for testing
-        app(UrlGenerator::class)->forceRootUrl('http://example.com');
+        $this->detectLocaleAfterVisiting('http://example.com');
         $this->parser = new UrlParser(app(UrlGenerator::class));
     }
 
     /** @test */
-    public function url_path_is_by_default_prepended_with_current_host()
+    public function url_path_is_by_default_prepended_with_current_root()
     {
         $this->parser = new UrlParser(app(UrlGenerator::class));
 
@@ -32,20 +31,23 @@ class UrlParserTest extends TestCase
         foreach ($urls as $original => $result) {
             $this->assertEquals($result, $this->parser->set($original)->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->get().' - '.$result.' was expected.');
         }
+
+        $this->assertEquals('http://example.com/segment-one',$this->parser->localize('segment-one',['segment-one' => 'locale-one'])->get());
     }
 
     /** @test */
     public function without_localization_parameter_urls_arent_altered()
     {
         $urls = [
-            'http://example.com/fr',
-            'http://example.com/fr/foo/bar',
-            'http://example.com/fr/foo/bar?s=q',
-            'http://example.fr/fr/foo/bar',
-            'https://example.com/fr/foo/bar',
-            'https://example.com/fr/foo/bar#index',
-            '//example.com/fr/foo/bar',
-            'http://example.com/fr/foo/bar',
+            'http://example.com/segment-one',
+            'http://example.com/segment-one/foo/bar',
+            'http://example.com/segment-one/foo/bar?s=q',
+            'https://example.com/segment-one/foo/bar',
+            'https://example.com/segment-one/foo/bar#index',
+            '//example.com/segment-one/foo/bar',
+            'http://example.com/segment-one/foo/bar',
+
+            'http://unknown.be/segment-one/foo/bar',
         ];
 
         foreach ($urls as $url) {
@@ -57,19 +59,20 @@ class UrlParserTest extends TestCase
     public function with_localization_parameter_url_is_injected_with_localeslug()
     {
         $urls = [
-            '/foo/bar'                          => 'http://example.com/fr/foo/bar',
-            'foo/bar'                           => 'http://example.com/fr/foo/bar',
-            ''                                  => 'http://example.com/fr',
-            'http://example.com'                => 'http://example.com/fr',
-            'http://example.com/foo/bar'        => 'http://example.com/fr/foo/bar',
-            'http://example.com/foo/bar?s=q'    => 'http://example.com/fr/foo/bar?s=q',
-            'http://example.fr/foo/bar'         => 'http://example.fr/fr/foo/bar',
-            'https://example.com/fr/foo/bar'    => 'https://example.com/fr/foo/bar',
-            'https://example.com/foo/bar#index' => 'https://example.com/fr/foo/bar#index',
+            '/foo/bar'                          => 'http://example.com/segment-one/foo/bar',
+            'foo/bar'                           => 'http://example.com/segment-one/foo/bar',
+            ''                                  => 'http://example.com/segment-one',
+            'http://example.com'                => 'http://example.com/segment-one',
+            'http://example.com/foo/bar'        => 'http://example.com/segment-one/foo/bar',
+            'http://example.com/foo/bar?s=q'    => 'http://example.com/segment-one/foo/bar?s=q',
+            'https://example.com/segment-one/foo/bar'    => 'https://example.com/segment-one/foo/bar',
+            'https://example.com/foo/bar#index' => 'https://example.com/segment-one/foo/bar#index',
+
+            'http://unknown.be/foo/bar'         => 'http://unknown.be/segment-one/foo/bar',
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, $this->parser->set($original)->localize('fr',['fr' => 'fr'])->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->localize('fr',['fr' => 'fr'])->get().' - '.$result.' was expected.');
+            $this->assertEquals($result, $this->parser->set($original)->localize('segment-one',['segment-one' => 'locale-one'])->get(), 'improper conversion from '.$original.' to '.$this->parser->set($original)->localize('locale-one',['segment-one' => 'locale-one'])->get().' - '.$result.' was expected.');
         }
     }
 
@@ -78,22 +81,22 @@ class UrlParserTest extends TestCase
     */
     public function it_does_not_fail_on_parsing_double_slashed()
     {
-        $this->assertEquals('//foobar.com/fr', $this->parser->set('//foobar.com//')->localize('fr',['fr' => 'BE-fr'])->get());
-        $this->assertEquals('http://example.com/fr', $this->parser->set('//')->localize('fr',['fr' => 'BE-fr'])->get());
+        $this->assertEquals('//foobar.com/segment-one', $this->parser->set('//foobar.com//')->localize('segment-one',['segment-one' => 'locale-one'])->get());
+        $this->assertEquals('http://example.com/segment-one', $this->parser->set('//')->localize('segment-one',['segment-one' => 'locale-one'])->get());
     }
 
     /** @test */
     public function to_make_url_secure()
     {
         $urls = [
-            '/foo/bar'                      => 'https://example.com/fr/foo/bar',
-            'foo/bar'                       => 'https://example.com/fr/foo/bar',
-            ''                              => 'https://example.com/fr',
-            'http://example.com/fr/foo/bar' => 'https://example.com/fr/foo/bar',
+            '/foo/bar'                      => 'https://example.com/segment-one/foo/bar',
+            'foo/bar'                       => 'https://example.com/segment-one/foo/bar',
+            ''                              => 'https://example.com/segment-one',
+            'http://example.com/segment-one/foo/bar' => 'https://example.com/segment-one/foo/bar',
         ];
 
         foreach ($urls as $original => $result) {
-            $parsed = $this->parser->set($original)->localize('fr',['fr' => 'BE-fr'])->secure()->get();
+            $parsed = $this->parser->set($original)->localize('segment-one',['segment-one' => 'locale-one'])->secure()->get();
             $this->assertEquals($result, $parsed, 'improper conversion from '.$original.' to '.$parsed.' - '.$result.' was expected.');
         }
     }
@@ -104,11 +107,5 @@ class UrlParserTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         $this->parser->set('http:///example.com');
-    }
-
-    /** @test */
-    public function give_default_root_if_an_url_is_not_set()
-    {
-        $this->assertEquals('http://example.com/en',$this->parser->localize('en',['en' => 'en'])->get());
     }
 }

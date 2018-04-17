@@ -131,4 +131,11 @@ class LocaleRouteTest extends TestCase
 
         $this->assertEquals('http://example.com/first', $this->localeUrl->route('route.first'));
     }
+
+    /** @test */
+    public function localeroute_is_available_as_a_global_function()
+    {
+        $this->assertEquals('http://example.com/first', localeroute('route.first'));
+        $this->assertEquals('http://example.com/segment-one/first', localeroute('route.first', 'locale-one'));
+    }
 }

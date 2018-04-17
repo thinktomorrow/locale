@@ -7,42 +7,40 @@ use Thinktomorrow\Locale\Tests\TestCase;
 
 class TranslatedRouteTest extends TestCase
 {
-    protected $localeUrl;
-
     public function setUp()
     {
         parent::setUp();
 
-        $this->refreshLocaleBindings('nl', 'http://example.com');
+        $this->detectLocaleAfterVisiting('http://example.com');
     }
 
     /** @test */
     public function it_can_translate_routename_with_param()
     {
-        Route::get(trans('routes.foo.show'), ['as' => 'foo.show', 'uses' => function () {}]);
+        Route::get(trans('routes.trans.first'), ['as' => 'trans.first', 'uses' => function () {}]);
 
-        $this->assertEquals('http://example.com/en/foo/bar/crazy', $this->localeUrl->route('foo.show', 'en', 'crazy'));
-        $this->assertEquals('http://example.com/foz/baz/crazy', $this->localeUrl->route('foo.show', 'nl', 'crazy'));
+        $this->assertEquals('http://example.com/segment-two/second/crazy', $this->localeUrl->route('trans.first', 'locale-two', 'crazy'));
+        $this->assertEquals('http://example.com/segment-one/first/crazy', $this->localeUrl->route('trans.first', 'locale-one', 'crazy'));
     }
 
     /** @test */
     public function it_can_translate_routename_with_optional_param()
     {
-        Route::get(trans('routes.foo.index'), ['as' => 'foo.index', 'uses' => function () {}]);
+        Route::get(trans('routes.trans.optional'), ['as' => 'trans.optional', 'uses' => function () {}]);
 
-        $this->assertEquals('http://example.com/en/foo/bar', $this->localeUrl->route('foo.index', 'en'));
+        $this->assertEquals('http://example.com/segment-two/second', $this->localeUrl->route('trans.optional', 'locale-two'));
     }
 
     /** @test */
     public function it_can_translate_routename_with_multiple_param()
     {
         // foo/{slug}/{subcat?}/{tag}/end
-        Route::get(trans('routes.foo.multiple'), ['as' => 'foo.multiple', 'uses' => function () {}]);
+        Route::get(trans('routes.trans.multiple'), ['as' => 'trans.multiple', 'uses' => function () {}]);
 
-        $this->assertEquals('http://example.com/en/foo/{slug}/{tag}/end', $this->localeUrl->route('foo.multiple', 'en'));
-        $this->assertEquals('http://example.com/en/foo/this/great/story/end', $this->localeUrl->route('foo.multiple', 'en', ['this', 'great', 'story']));
-        $this->assertEquals('http://example.com/en/foo/{slug}/great/story/end', $this->localeUrl->route('foo.multiple', 'en', ['subcat' =>'great', 'tag' => 'story']));
-        $this->assertEquals('http://example.com/en/foo/{slug}/great/story/end', $this->localeUrl->route('foo.multiple', 'en', ['tag' => 'story', 'subcat' =>'great']));
-        $this->assertEquals('http://example.com/en/foo/{slug}/great/{tag}/end', $this->localeUrl->route('foo.multiple', 'en', ['subcat' => 'great']));
+        $this->assertEquals('http://example.com/segment-two/second/{slug}/{tag}/end', $this->localeUrl->route('trans.multiple', 'locale-two'));
+        $this->assertEquals('http://example.com/segment-two/second/this/great/story/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['this', 'great', 'story']));
+        $this->assertEquals('http://example.com/segment-two/second/{slug}/great/story/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['subcat' =>'great', 'tag' => 'story']));
+        $this->assertEquals('http://example.com/segment-two/second/{slug}/great/story/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['tag' => 'story', 'subcat' =>'great']));
+        $this->assertEquals('http://example.com/segment-two/second/{slug}/great/{tag}/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['subcat' => 'great']));
     }
 }
