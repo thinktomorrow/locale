@@ -10,7 +10,7 @@ use Thinktomorrow\Locale\Values\Root;
 class CanonicalScopeTest extends TestCase
 {
     /** @test */
-    function it_finds_the_expected_canonical_scope()
+    public function it_finds_the_expected_canonical_scope()
     {
         $this->detectLocaleAfterVisiting('http://example.com');
 
@@ -20,7 +20,7 @@ class CanonicalScopeTest extends TestCase
         );
     }
 
-    function it_find_canonical_scope_by_pattern()
+    public function it_find_canonical_scope_by_pattern()
     {
         $this->assertEquals(
             (new Scope(['us' => 'en-us', '/' => 'en-gb']))->setCustomRoot(Root::fromString('uk.foobar.com')->secure()),
@@ -34,7 +34,7 @@ class CanonicalScopeTest extends TestCase
     }
 
     /** @test */
-    function if_canonical_locale_does_not_exist_in_config_it_returns_null()
+    public function if_canonical_locale_does_not_exist_in_config_it_returns_null()
     {
         $this->assertNull(
             ScopeCollection::fromArray($this->canonicalConfig())->findCanonical('de')
@@ -42,7 +42,7 @@ class CanonicalScopeTest extends TestCase
     }
 
     /** @test */
-    function it_defaults_to_default_scope_if_matching_canonical_host_isnt_a_valid_locale_key()
+    public function it_defaults_to_default_scope_if_matching_canonical_host_isnt_a_valid_locale_key()
     {
         $config = $this->canonicalConfig(['nl' => 'supervet', 'en-gb' => 'awesome']);
 
@@ -52,8 +52,7 @@ class CanonicalScopeTest extends TestCase
 
     private function canonicalConfig(array $canonicals = null)
     {
-        if (!$canonicals)
-        {
+        if (!$canonicals) {
             $canonicals = [
                 'nl'    => 'https://foobar.nl',
                 'en-gb' => 'https://uk.foobar.com',
@@ -73,6 +72,4 @@ class CanonicalScopeTest extends TestCase
             'canonicals' => $canonicals,
         ];
     }
-
-
 }

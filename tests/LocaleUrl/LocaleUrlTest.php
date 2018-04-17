@@ -2,10 +2,8 @@
 
 namespace Thinktomorrow\Locale\Tests\LocaleUrl;
 
-use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
-use Thinktomorrow\Locale\Values\Config;
 
 class LocaleUrlTest extends TestCase
 {
@@ -38,7 +36,7 @@ class LocaleUrlTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, $this->localeUrl->to($original, 'locale-four'), 'improper conversion from ' . $original . ' to ' . $this->localeUrl->to($original, 'fr') . ' - ' . $result . ' was expected.');
+            $this->assertEquals($result, $this->localeUrl->to($original, 'locale-four'), 'improper conversion from '.$original.' to '.$this->localeUrl->to($original, 'fr').' - '.$result.' was expected.');
         }
     }
 
@@ -63,7 +61,7 @@ class LocaleUrlTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result, $this->localeUrl->to($original, 'locale-three'), 'improper conversion from ' . $original . ' to ' . $this->localeUrl->to($original, 'nl') . ' - ' . $result . ' was expected.');
+            $this->assertEquals($result, $this->localeUrl->to($original, 'locale-three'), 'improper conversion from '.$original.' to '.$this->localeUrl->to($original, 'nl').' - '.$result.' was expected.');
         }
     }
 
@@ -94,7 +92,7 @@ class LocaleUrlTest extends TestCase
     }
 
     /** @test */
-    function if_secure_config_is_true_urls_are_created_as_secure()
+    public function if_secure_config_is_true_urls_are_created_as_secure()
     {
         $this->refreshLocaleBindings(['secure' => true]);
 
@@ -102,7 +100,7 @@ class LocaleUrlTest extends TestCase
     }
 
     /** @test */
-    function parameter_has_priority_over_secure_config()
+    public function parameter_has_priority_over_secure_config()
     {
         $this->detectLocaleAfterVisiting('http://example.com', ['secure' => true]);
 

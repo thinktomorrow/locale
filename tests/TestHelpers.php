@@ -6,8 +6,8 @@ use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\Request;
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Scope;
-use Thinktomorrow\Locale\Values\Root;
 use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Values\Root;
 
 trait TestHelpers
 {
@@ -35,7 +35,7 @@ trait TestHelpers
         // This is because the order of the locales matters and we want to keep the
         // default as set below
         $overrides_locales = array_only($overrides, 'locales');
-        if(!empty($overrides_locales)){
+        if (!empty($overrides_locales)) {
             $overrides_locales = $overrides_locales['locales'];
         }
 
@@ -45,25 +45,25 @@ trait TestHelpers
             'example.com' => [
                 'segment-one' => 'locale-one',
                 'segment-two' => 'locale-two',
-                '/' => 'locale-three',
+                '/'           => 'locale-three',
             ],
             '*' => [
                 'segment-four' => 'locale-four',
                 'segment-five' => 'locale-five',
-                '/' => 'locale-zero',
-            ]
+                '/'            => 'locale-zero',
+            ],
         ]);
 
         return Config::from(array_merge([
-            'locales' => $locales,
+            'locales'    => $locales,
             'canonicals' => [
                 //
             ],
-            'secure' => false,
-            'route_key' => 'locale_slug',
-            'query_key' => 'locale',
+            'secure'          => false,
+            'route_key'       => 'locale_slug',
+            'query_key'       => 'locale',
             'routes_filename' => 'routes',
-        ],$overrides_without_locales));
+        ], $overrides_without_locales));
     }
 
     protected function getDefaultScope()
@@ -71,7 +71,7 @@ trait TestHelpers
         return new Scope([
             'segment-four' => 'locale-four',
             'segment-five' => 'locale-five',
-            '/'            => 'locale-zero'
+            '/'            => 'locale-zero',
         ]);
     }
 }

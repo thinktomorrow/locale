@@ -7,7 +7,7 @@ use Thinktomorrow\Locale\Tests\TestCase;
 class LocaleRoutePrefixTest extends TestCase
 {
     /** @test */
-    function locale_route_prefix_gives_you_the_active_segment()
+    public function locale_route_prefix_gives_you_the_active_segment()
     {
         $this->detectLocaleAfterVisiting('http://unknown.com/');
         $this->assertEquals('/', localeRoutePrefix());

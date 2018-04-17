@@ -11,14 +11,14 @@ class LocaleServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        require_once __DIR__ . '/helpers.php';
+        require_once __DIR__.'/helpers.php';
 
         $this->publishes([
-            __DIR__ . '/config/locale.php' => config_path('thinktomorrow/locale.php'),
+            __DIR__.'/config/locale.php' => config_path('thinktomorrow/locale.php'),
         ]);
 
         $this->mergeConfigFrom(
-            __DIR__ . '/config/locale.php', 'thinktomorrow.locale'
+            __DIR__.'/config/locale.php', 'thinktomorrow.locale'
         );
 
         $this->app->singleton(Detect::class, function ($app) {
@@ -47,7 +47,7 @@ class LocaleServiceProvider extends ServiceProvider
             );
         });
 
-        /**
+        /*
          * Facade for getting current active scope
          */
         $this->app->singleton('tt-locale-scope', function ($app) {
@@ -61,6 +61,6 @@ class LocaleServiceProvider extends ServiceProvider
             return require config_path('thinktomorrow/locale.php');
         }
 
-        return require __DIR__ . '/config/locale.php';
+        return require __DIR__.'/config/locale.php';
     }
 }

@@ -3,13 +3,13 @@
 namespace Thinktomorrow\Locale\Tests\Values;
 
 use PHPUnit\Framework\TestCase;
-use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Locale\Exceptions\InvalidConfig;
+use Thinktomorrow\Locale\Values\Config;
 
 class ConfigTest extends TestCase
 {
     /** @test */
-    function it_expects_locales_as_key()
+    public function it_expects_locales_as_key()
     {
         $this->expectException(InvalidConfig::class);
 
@@ -17,7 +17,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_sanitizes_passed_values()
+    public function it_sanitizes_passed_values()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
 
@@ -25,14 +25,14 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_cleans_up_trailing_slash_of_domain_key()
+    public function it_cleans_up_trailing_slash_of_domain_key()
     {
         $config = Config::from([
             'locales' => [
                 'two.example.com/' => 'locale-two',
                 'example.com/'     => 'locale-three',
                 '*'                => 'locale-zero',
-            ]
+            ],
         ]);
 
         $this->assertSame([
@@ -46,14 +46,14 @@ class ConfigTest extends TestCase
      * @test
      * @dataProvider invalidLocalesDataProvider
      */
-    function it_halts_invalid_locales_structure($locales)
+    public function it_halts_invalid_locales_structure($locales)
     {
         $this->expectException(InvalidConfig::class);
 
         Config::from(['locales' => $locales]);
     }
 
-    function invalidLocalesDataProvider()
+    public function invalidLocalesDataProvider()
     {
         return [
             [['foobar']],
@@ -68,12 +68,12 @@ class ConfigTest extends TestCase
      * @test
      * @dataProvider expectedStructureDataProvider
      */
-    function it_normalized_passed_locales($original, $outcome)
+    public function it_normalized_passed_locales($original, $outcome)
     {
         $this->assertEquals($outcome, Config::from(['locales' => $original])->get('locales'));
     }
 
-    function expectedStructureDataProvider()
+    public function expectedStructureDataProvider()
     {
         return [
             [
@@ -108,17 +108,17 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_can_export_to_array()
+    public function it_can_export_to_array()
     {
         $config = Config::from(['locales' => ['*' => 'nl'], 'foobar' => 'nl']);
 
         $this->assertEquals([
-            'locales' => ['*' => ['/' => 'nl']], 'foobar' => 'nl', 'canonicals' => []
+            'locales' => ['*' => ['/' => 'nl']], 'foobar' => 'nl', 'canonicals' => [],
         ], $config->toArray());
     }
 
     /** @test */
-    function it_can_set_value_by_key()
+    public function it_can_set_value_by_key()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
         $config[2] = 'foobar';
@@ -126,7 +126,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_can_unset_a_value()
+    public function it_can_unset_a_value()
     {
         $this->expectException(\InvalidArgumentException::class, 'No config value found');
 
@@ -137,7 +137,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_can_check_if_key_exists()
+    public function it_can_check_if_key_exists()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
         $this->assertTrue(isset($config['locales']));
@@ -145,7 +145,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_validates_that_each_explicit_canonical_exists_as_locale()
+    public function it_validates_that_each_explicit_canonical_exists_as_locale()
     {
         $this->expectException(InvalidConfig::class);
 
@@ -161,7 +161,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_computes_canonicals_for_all_locales_except_default()
+    public function it_computes_canonicals_for_all_locales_except_default()
     {
         $config = Config::from([
             'locales'    => [
@@ -181,7 +181,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function when_computing_canonicals_for_multiple_locales_it_takes_first_encountered_domain()
+    public function when_computing_canonicals_for_multiple_locales_it_takes_first_encountered_domain()
     {
         $config = Config::from([
             'locales'    => [
@@ -206,7 +206,7 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
-    function it_computes_canonicals_for_all_locales_except_wildcard_ones()
+    public function it_computes_canonicals_for_all_locales_except_wildcard_ones()
     {
         $config = Config::from([
             'locales'    => [
@@ -225,5 +225,4 @@ class ConfigTest extends TestCase
             'locale-two'   => 'two.example.com',
         ], $config->get('canonicals'));
     }
-
 }

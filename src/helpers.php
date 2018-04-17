@@ -32,7 +32,7 @@ if (!function_exists('localeroute')) {
     }
 }
 
-/**
+/*
  * Detect locale and return the active segment. Usefull for route segment injections
  */
 if (!function_exists('localeRoutePrefix')) {

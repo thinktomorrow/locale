@@ -2,7 +2,6 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use Illuminate\Contracts\Routing\UrlGenerator;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\LocaleServiceProvider;
@@ -44,11 +43,11 @@ class TestCase extends OrchestraTestCase
     {
         $config = $this->validConfig($overrides);
 
-        app()->singleton(Detect::class, function ($app) use ($config){
-            return new Detect($app['request'], $config );
+        app()->singleton(Detect::class, function ($app) use ($config) {
+            return new Detect($app['request'], $config);
         });
 
-        app()->singleton(LocaleUrl::class, function ($app) use($config) {
+        app()->singleton(LocaleUrl::class, function ($app) use ($config) {
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Detect'],
                 $app['Thinktomorrow\Locale\Parsers\UrlParser'],

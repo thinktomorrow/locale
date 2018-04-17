@@ -12,6 +12,7 @@ class UriParameters
      *
      * @param $uri
      * @param array $parameters
+     *
      * @return mixed|string
      */
     public static function replace($uri, $parameters = [])

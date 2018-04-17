@@ -33,7 +33,7 @@ return [
 //        ],
 //    ],
 
-    /**
+    /*
      * Define your canonical domains here.
      * Specify unique domains for each locale to avoid crawler duplicate content warnings.
      * By default the current scope is used to determine the canonical domain. Here
@@ -43,7 +43,7 @@ return [
         // e.g. 'nl' => 'http://example.nl',
     ],
 
-    /**
+    /*
      * If set to true, all urls created by localeroute() and localeurl() will be forced to https,
      * Domain defined in the canonicals setting will keep their scheme if it is provided.
      * If set to false, url schemes will remain unmodified.
@@ -67,7 +67,7 @@ return [
      */
     'query_key' => 'locale',
 
-    /**
+    /*
      * language filename where the route names are stored
      */
     'routes_filename' => 'routes',

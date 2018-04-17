@@ -15,7 +15,7 @@ class Scope
 
     /**
      * The default locale. In the request path
-     * it's the hidden segment, e.g. /
+     * it's the hidden segment, e.g. /.
      *
      * @var Locale
      */
@@ -24,7 +24,7 @@ class Scope
     /**
      * When the canonical scope has a root set to be
      * other than the current, that specific root is defined here
-     * By default the current request root is of use (NULL)
+     * By default the current request root is of use (NULL).
      *
      * @var null|Root
      */
@@ -32,8 +32,9 @@ class Scope
 
     public function __construct(array $locales)
     {
-        if(!isset($locales['/'])) throw new InvalidScope('Default locale is required for scope. Add this as \'/\' => locale.');
-
+        if (!isset($locales['/'])) {
+            throw new InvalidScope('Default locale is required for scope. Add this as \'/\' => locale.');
+        }
         $this->locales = $locales;
         $this->default = Locale::from($this->locales['/']);
     }
@@ -51,9 +52,10 @@ class Scope
     }
 
     /**
-     * Get the locale by segment identifier
+     * Get the locale by segment identifier.
      *
      * @param $segment
+     *
      * @return null|Locale
      */
     public function findLocale($segment): ?Locale
@@ -77,14 +79,17 @@ class Scope
     }
 
     /**
-     * Get the url segment which corresponds with the passed locale
+     * Get the url segment which corresponds with the passed locale.
      *
      * @param null $locale
+     *
      * @return null|string
      */
     public function segment($locale = null): ?string
     {
-        if(is_null($locale)) return $this->activeSegment();
+        if (is_null($locale)) {
+            return $this->activeSegment();
+        }
 
         return ($key = array_search($locale, $this->locales)) ? $key : null;
     }
@@ -96,14 +101,18 @@ class Scope
 
     public function validateLocale(string $locale = null): bool
     {
-        if(!$locale) return false;
+        if (!$locale) {
+            return false;
+        }
 
-        return (in_array($locale, $this->locales));
+        return in_array($locale, $this->locales);
     }
 
     public function validateSegment(string $segment = null): bool
     {
-        if(!$segment) return false;
+        if (!$segment) {
+            return false;
+        }
 
         return isset($this->locales[$segment]);
     }

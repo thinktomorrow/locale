@@ -4,13 +4,12 @@ namespace Thinktomorrow\Locale\Tests\DetectingLocale;
 
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\ScopeFacade;
-use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class DetectScopeTest extends TestCase
 {
     /** @test */
-    function it_detects_default_scope_when_nothing_matches()
+    public function it_detects_default_scope_when_nothing_matches()
     {
         $this->detectLocaleAfterVisiting('http://unknown.com/');
 

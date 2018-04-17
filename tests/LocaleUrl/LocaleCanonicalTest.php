@@ -3,8 +3,6 @@
 namespace Thinktomorrow\Locale\Tests\LocaleUrl;
 
 use Illuminate\Support\Facades\Route;
-use Thinktomorrow\Locale\Detect;
-use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class LocaleCanonicalTest extends TestCase
@@ -14,7 +12,8 @@ class LocaleCanonicalTest extends TestCase
         parent::setUp();
 
         $this->detectLocaleAfterVisiting('http://example.com');
-        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () { }]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
+        }]);
     }
 
     protected function detectLocaleAfterVisiting($url, array $overrides = []): string
@@ -33,12 +32,12 @@ class LocaleCanonicalTest extends TestCase
                 'locale-one'    => 'overridden-domain.com',
                 'locale-ten'    => 'https://custom-domain.com',
                 'locale-eleven' => 'http://www.eleventh-domain',
-            ]
+            ],
         ], $overrides));
     }
 
     /** @test */
-    function current_root_is_used_by_default()
+    public function current_root_is_used_by_default()
     {
         // test it out
         app()->setLocale('locale-two');
@@ -47,7 +46,7 @@ class LocaleCanonicalTest extends TestCase
     }
 
     /** @test */
-    function a_locale_can_have_an_explicit_canonical()
+    public function a_locale_can_have_an_explicit_canonical()
     {
         // Custom canonical points to default routes if root cannot be matched against available scopes
         app()->setLocale('locale-one');
@@ -59,22 +58,23 @@ class LocaleCanonicalTest extends TestCase
     }
 
     /** @test */
-    function a_canonical_can_refer_to_a_locale_segment()
+    public function a_canonical_can_refer_to_a_locale_segment()
     {
         $this->assertEquals('http://www.eleventh-domain/segment-eleven/first', $this->localeUrl->canonicalRoute('route.first', 'locale-eleven'));
     }
 
     /** @test */
-    function parsing_canonical_route_removes_locale_segment_coming_from_current_scope()
+    public function parsing_canonical_route_removes_locale_segment_coming_from_current_scope()
     {
         $this->detectLocaleAfterVisiting('http://example.com/segment-one');
-        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () { }]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
+        }]);
 
         $this->assertEquals('https://custom-domain.com/first', $this->localeUrl->canonicalRoute('route.first', 'locale-ten'));
     }
 
     /** @test */
-    function canonical_is_computed_based_on_first_appearance_of_locale()
+    public function canonical_is_computed_based_on_first_appearance_of_locale()
     {
         $this->assertEquals('http://eleventh-domain/segment-twelve/first', $this->localeUrl->canonicalRoute('route.first', 'locale-twelve'));
 
@@ -83,10 +83,11 @@ class LocaleCanonicalTest extends TestCase
     }
 
     /** @test */
-    function if_secure_config_is_true_only_canonicals_with_scheme_can_be_explicitly_different()
+    public function if_secure_config_is_true_only_canonicals_with_scheme_can_be_explicitly_different()
     {
         $this->detectLocaleAfterVisiting('http://example.com', ['secure' => true]);
-        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () { }]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
+        }]);
 
         // Canonical has explicit http scheme so it is honoured
         $this->assertEquals('https://custom-domain.com/first', $this->localeUrl->canonicalRoute('route.first', 'locale-ten'));
@@ -96,5 +97,4 @@ class LocaleCanonicalTest extends TestCase
 
         $this->assertEquals('https://example.com/first', localeroute('route.first', null, null, true));
     }
-
 }

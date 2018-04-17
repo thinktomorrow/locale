@@ -30,7 +30,7 @@ class UrlParser
     {
         $this->generator = $generator;
 
-        /**
+        /*
          * Default url is the root as given by the application
          */
         $this->url = $this->rootFromApplication();
@@ -38,7 +38,9 @@ class UrlParser
 
     public function get(): string
     {
-        if(is_bool($this->secure)) $this->url->secure($this->secure);
+        if (is_bool($this->secure)) {
+            $this->url->secure($this->secure);
+        }
 
         return $this->generator->to(
             $this->url->localize($this->localeSegment, $this->available_locales)->get(), $this->parameters, $this->secure
@@ -88,7 +90,7 @@ class UrlParser
 
     /**
      * Resolve the route via the Illuminate UrlGenerator.
-
+     *
      * @param $routekey
      * @param array $parameters
      *

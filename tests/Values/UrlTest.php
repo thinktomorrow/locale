@@ -10,7 +10,7 @@ use Thinktomorrow\Locale\Values\Url;
 class UrlTest extends TestCase
 {
     /** @test */
-    function it_can_be_instantiated()
+    public function it_can_be_instantiated()
     {
         $this->assertInstanceOf(Url::class, Url::fromString('fake'));
     }
@@ -82,7 +82,7 @@ class UrlTest extends TestCase
     public function it_removes_existing_locale_segment()
     {
         $urls = [
-            ''                             => '/nl',
+            ''                              => '/nl',
             '/fr/foo/bar'                   => '/nl/foo/bar',
             'fr/foo/bar'                    => '/nl/foo/bar',
             'fr'                            => '/nl',
@@ -161,13 +161,13 @@ class UrlTest extends TestCase
     }
 
     /** @test */
-    function instance_can_be_printed_as_string()
+    public function instance_can_be_printed_as_string()
     {
-        $this->assertEquals('foobar.com',Url::fromString('foobar.com'));
+        $this->assertEquals('foobar.com', Url::fromString('foobar.com'));
     }
 
     /** @test */
-    function it_throws_exception_if_url_cannot_be_parsed()
+    public function it_throws_exception_if_url_cannot_be_parsed()
     {
         $this->expectException(InvalidUrl::class);
 

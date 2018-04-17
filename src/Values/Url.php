@@ -32,22 +32,25 @@ class Url
 
     public function secure($secure = true)
     {
-        $this->secure = (bool)$secure;
+        $this->secure = (bool) $secure;
 
         return $this;
     }
 
     public function get()
     {
-        if($this->root)
-        {
-            if($this->secure) $this->root->secure($this->secure);
+        if ($this->root) {
+            if ($this->secure) {
+                $this->root->secure($this->secure);
+            }
 
             // Path is reconstructed. Taken care of possible double slashes
-            $path = str_replace('//','/','/'. trim($this->reassembleWithoutRoot(),'/'));
-            if($path == '/') $path = '';
+            $path = str_replace('//', '/', '/'.trim($this->reassembleWithoutRoot(), '/'));
+            if ($path == '/') {
+                $path = '';
+            }
 
-            return $this->root->get() . $path;
+            return $this->root->get().$path;
         }
 
         return $this->reassemble();
@@ -62,13 +65,11 @@ class Url
     {
         $this->parsed['path'] = str_replace('//', '/',
             rtrim(
-                '/'.trim($localeSegment.$this->delocalizePath($available_locales),'/'),
+                '/'.trim($localeSegment.$this->delocalizePath($available_locales), '/'),
                 '/'
             )
 
         );
-
-
 
         return $this;
     }
@@ -82,7 +83,7 @@ class Url
         $path_segments = explode('/', trim($this->parsed['path'], '/'));
 
         // Remove the locale segment if present
-        if (in_array($path_segments[0], array_keys($available_locales))){
+        if (in_array($path_segments[0], array_keys($available_locales))) {
             unset($path_segments[0]);
         }
 
@@ -99,14 +100,14 @@ class Url
         $this->parsed = parse_url($url);
 
         if (false === $this->parsed) {
-            throw new InvalidUrl('Failed to parse url. Invalid url [' . $url . '] passed as parameter.');
+            throw new InvalidUrl('Failed to parse url. Invalid url ['.$url.'] passed as parameter.');
         }
 
         // If a schemeless url is passed, parse_url will ignore this and strip the first tags
         // so we keep a reminder to explicitly reassemble the 'anonymous scheme' manually
         $this->schemeless = (0 === strpos($url, '//') && isset($this->parsed['host']));
 
-        $this->absolute = (! preg_match('~^(#|//|https?://|mailto:|tel:)~', $url))
+        $this->absolute = (!preg_match('~^(#|//|https?://|mailto:|tel:)~', $url))
                 ? filter_var($url, FILTER_VALIDATE_URL) !== false
                 : true;
     }
@@ -123,8 +124,11 @@ class Url
             : ($this->schemeless ? '//' : '');
 
         // Convert to secure scheme if needed or vice versa
-        if($scheme == 'http://' && $this->secure) $scheme = 'https://';
-        else if($scheme == 'https://' && false === $this->secure) $scheme = 'http://';
+        if ($scheme == 'http://' && $this->secure) {
+            $scheme = 'https://';
+        } elseif ($scheme == 'https://' && false === $this->secure) {
+            $scheme = 'http://';
+        }
 
         return
             $scheme
@@ -144,7 +148,9 @@ class Url
      */
     private function reassembleWithoutRoot()
     {
-        if(!$this->root) return $this->reassemble();
+        if (!$this->root) {
+            return $this->reassemble();
+        }
 
         /**
          * In some rare conditions the path in interpreted as the host when there is no domain.tld format given.
@@ -155,7 +161,7 @@ class Url
                     : '';
 
         return $path
-            . ((isset($this->parsed['query'])) ? '?' . $this->parsed['query'] : '')
-            . ((isset($this->parsed['fragment'])) ? '#' . $this->parsed['fragment'] : '');
+            .((isset($this->parsed['query'])) ? '?'.$this->parsed['query'] : '')
+            .((isset($this->parsed['fragment'])) ? '#'.$this->parsed['fragment'] : '');
     }
 }

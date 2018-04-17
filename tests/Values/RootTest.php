@@ -9,7 +9,7 @@ use Thinktomorrow\Locale\Values\Root;
 class RootTest extends TestCase
 {
     /** @test */
-    function it_can_be_instantiated()
+    public function it_can_be_instantiated()
     {
         $this->assertInstanceOf(Root::class, Root::fromString('nl'));
     }
@@ -44,7 +44,7 @@ class RootTest extends TestCase
     }
 
     /** @test */
-    function it_can_set_root_as_secure()
+    public function it_can_set_root_as_secure()
     {
         $urls = [
             'example.com'         => 'https://example.com',
@@ -60,7 +60,7 @@ class RootTest extends TestCase
     }
 
     /** @test */
-    function it_can_validate_root()
+    public function it_can_validate_root()
     {
         $this->assertFalse(Root::fromString('')->valid());
         $this->assertTrue(Root::fromString('foobar')->valid());
@@ -68,13 +68,13 @@ class RootTest extends TestCase
     }
 
     /** @test */
-    function instance_can_be_printed_as_string()
+    public function instance_can_be_printed_as_string()
     {
-        $this->assertEquals('http://foobar.com',Root::fromString('foobar.com'));
+        $this->assertEquals('http://foobar.com', Root::fromString('foobar.com'));
     }
-    
+
     /** @test */
-    function it_throws_exception_if_url_cannot_be_parsed()
+    public function it_throws_exception_if_url_cannot_be_parsed()
     {
         $this->expectException(InvalidUrl::class);
 
@@ -82,7 +82,7 @@ class RootTest extends TestCase
     }
 
     /** @test */
-    function it_can_get_scheme()
+    public function it_can_get_scheme()
     {
         $urls = [
             'example.com'         => null,
