@@ -12,6 +12,8 @@
 - TODO: meerdere env. Hoe local, staging in config. Canonicals kn slechts één entry per taal.
 - TODO: is default really required???
 - TODO: detect default canonicals per locale if none given
+- TODO: canonicals with path as well?
+- ASK: force canonical on route without root?
 - TODO: config setting 'secure' ? 
      * If set to true, all urls created by LocaleUrl class will be forced to https,
      * Domain defined in the canonicals setting will keep their scheme if it is provided.

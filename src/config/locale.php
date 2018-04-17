@@ -9,24 +9,29 @@ return [
      * The only mandatory scope entry is '*' which are the default locales and apply to all requests.
      */
     'locales' => [
-        'fr.example.com'   => 'fr',
-        'example.com'   => [
-            '/fr' => 'fr',
-            '/'   => 'en',
-        ],
-        'mijnkindishetallerliefste.be' => 'nl',
-        'monenfantestleplusadorable.be' => [
-            '/' => 'fr-BE',
-        ],
-        'monenfantestleplusadorable.fr' => 'fr',
-
-        '*' => [
-            'en' => 'en-GB',
-            'us' => 'en-US',
-            'fr' => 'fr',
-            '/'  => 'nl',
-        ],
+        '*' => 'en',
     ],
+
+//    'locales' => [
+//        'fr.example.com'   => 'fr',
+//        'example.com'   => [
+//            '/fr' => 'fr',
+//            '/'   => 'en',
+//        ],
+//        'mijnkindishetallerliefste.be' => 'nl',
+//        'monenfantestleplusadorable.be' => [
+//            '/nl' => 'nl',
+//            '/' => 'fr-BE',
+//        ],
+//        'monenfantestleplusadorable.fr' => 'fr',
+//
+//        '*' => [
+//            'en' => 'en-GB',
+//            'us' => 'en-US',
+//            'fr' => 'fr',
+//            '/'  => 'nl',
+//        ],
+//    ],
 
     /**
      * Define your canonical domains here.

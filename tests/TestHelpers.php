@@ -62,6 +62,7 @@ trait TestHelpers
             'secure' => false,
             'route_key' => 'locale_slug',
             'query_key' => 'locale',
+            'routes_filename' => 'routes',
         ],$overrides_without_locales));
     }
 

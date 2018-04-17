@@ -2,6 +2,7 @@
 
 namespace Thinktomorrow\Locale\Tests\LocaleUrl\Parsers;
 
+use Illuminate\Support\Facades\Route;
 use InvalidArgumentException;
 use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Tests\TestCase;
@@ -14,8 +15,11 @@ class RouteParserTest extends TestCase
     {
         parent::setUp();
 
-        $this->get('http://example.com');
-        $this->refreshLocaleBindings();
+        $this->detectLocaleAfterVisiting('http://example.com', ['canonicals' => [
+            'locale-one' => 'http://forced.com',
+        ]]);
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
+        Route::get(trans('routes.trans.first'), ['as' => 'trans.first', 'uses' => function () {}]);
 
         $this->routeParser = app()->make(RouteParser::class);
     }
@@ -23,20 +27,19 @@ class RouteParserTest extends TestCase
     /** @test */
     public function parser_injects_locale_segment_if_needed()
     {
-        $this->assertEquals('http://example.com/foz/baz/cow', $this->routeParser->set('foo.show',['slug' => 'cow'])->localize('/',['/' => 'nl'])->get());
+        $this->assertEquals('http://example.com/first/cow', $this->routeParser->set('route.first',['slug' => 'cow'])->localize('/',['/' => 'locale-three'])->get());
     }
 
     /** @test */
     public function parser_translates_route_segments_if_provided_via_lang_file()
     {
-        $this->assertEquals('http://example.com/en/foo/bar/cow', $this->routeParser->set('foo.show',['slug' => 'cow'])->localize('en',['en' => 'en-gb'])->get());
+        $this->assertEquals('http://example.com/segment-one/first/cow', $this->routeParser->set('trans.first',['slug' => 'cow'])->localize('segment-one',['segment-one' => 'locale-one'])->get());
     }
 
     /** @test */
-    public function parser_takes_default_route_translation_if_translation_is_missing_for_given_locale()
+    public function if_route_translation_is_missing_translation_is_set_in_url()
     {
-        // Uses fallback locale (nl) for translation of routekey
-        $this->assertEquals('http://example.com/fr/foz/baz/cow', $this->routeParser->set('foo.show', ['slug' => 'cow'])->localize('fr',['fr' => 'fr'])->get());
+        $this->assertEquals('http://example.com/segment-four/routes.trans.first?slug=cow', $this->routeParser->set('trans.first', ['slug' => 'cow'])->localize('segment-four',['segment-four' => 'locale-four'])->get());
     }
 
     /** @test */
@@ -44,13 +47,13 @@ class RouteParserTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $this->routeParser->set('foo.unknown')->localize('fr',['fr' => 'fr'])->get();
+        $this->routeParser->set('foo.unknown')->localize('segment-one',['segment-one' => 'locale-one'])->get();
     }
 
     /** @test */
     public function parser_can_create_a_secure_route()
     {
-        $this->assertEquals('https://example.com/foz/baz/blue', $this->routeParser->set('foo.show', ['blue'],true)->get());
+        $this->assertEquals('https://example.com/first/blue', $this->routeParser->set('route.first', ['blue'], true)->get());
     }
 
 }

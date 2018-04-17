@@ -17,6 +17,10 @@ class LocaleServiceProvider extends ServiceProvider
             __DIR__ . '/config/locale.php' => config_path('thinktomorrow/locale.php'),
         ]);
 
+        $this->mergeConfigFrom(
+            __DIR__ . '/config/locale.php', 'thinktomorrow.locale'
+        );
+
         $this->app->singleton(Detect::class, function ($app) {
             return new Detect($app['request'], Config::from($this->getConfigValues()));
         });

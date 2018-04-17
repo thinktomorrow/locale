@@ -27,7 +27,7 @@ class UriParameters
     /**
      * Replace all of the wildcard parameters for a route path.
      *
-     * @note: based on the Illuminate\Routing\UrlGenerator code
+     * @note: taken from the Illuminate\Routing\UrlGenerator code
      *
      * @param string $path
      * @param array  $parameters
@@ -50,7 +50,7 @@ class UriParameters
     /**
      * Replace all of the named parameters in the path.
      *
-     * @note: based on the Illuminate\Routing\UrlGenerator code
+     * @note: taken from the Illuminate\Routing\UrlGenerator code
      *
      * @param string $path
      * @param array  $parameters

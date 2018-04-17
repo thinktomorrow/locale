@@ -42,11 +42,12 @@ class RouteParser
 
     public function get(): string
     {
-        // TODO: take route filename from config
-        $url = $this->translator->get('routes.'.$this->routename, [], $this->locale);
+        $translationKey = config('thinktomorrow.locale.routes_filename') . '.' . $this->routename;
+
+        $url = $this->translator->get($translationKey, [], $this->locale);
 
         // If route translation does not exist, laravel returns us back the langkey.
-        $url = ($url == 'routes.'.$this->routename)
+        $url = ($url == $translationKey)
             ? $this->resolveRoute($this->routename, $this->parameters)
             : UriParameters::replace($url, $this->parameters);
 
