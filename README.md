@@ -7,6 +7,36 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
+## TODO version 2.0
+
+- TODO: meerdere env. Hoe local, staging in config. Canonicals kn slechts één entry per taal.
+- TODO: is default really required???
+- TODO: detect default canonicals per locale if none given
+- TODO: canonicals with path as well?
+- ASK: force canonical on route without root?
+- TODO: config setting 'secure' ? 
+     * If set to true, all urls created by LocaleUrl class will be forced to https,
+     * Domain defined in the canonicals setting will keep their scheme if it is provided.
+    'secure' => true,
+
+- reduce code logic in tests, avoid duplicates, create helpers
+- clearly distinct between unit and feature tests
+- make all tests do one specific task, keep 'spelling check tests' in unit test, not in feature.
+- localeCanonical() function needs implementation
+- write extensive documentation
+- handle all lingering TODO comments
+- set changelog for changes to 2.0 release. This will include domain support as well as a refactored codebase
+- try to use as little as possible of framework or at one place specifically
+- avoid app()->setLocale or app()->getLocale() calls
+- avoid injection of request? what do we really need?
+- LocaleValidator as separate utility class?
+- rename Locale class for being too generic and prone to conflicts?: maybe Referrer, Scan, Probe,...
+- clear up the parsers
+- clean up the tests and try to go for coverage.
+- improve and complete the documentation
+- routes filename is not everywhere dynamic yet
+
+
 A Laravel package for lightweight route localization. Locale registers the application locale based on the request uri.
 It's also responsible for translating the application routes.
 . 
