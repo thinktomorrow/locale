@@ -67,7 +67,7 @@ final class Detect
 
         $this->locale = $locale;
 
-        app()->setLocale($locale->get());
+        $this->setApplicationLocale();
 
         return $this;
     }
@@ -110,5 +110,29 @@ final class Detect
     private function detectScope()
     {
         $this->scope = ScopeCollection::fromConfig($this->config)->findByRoot($this->request->root());
+    }
+
+    private function setApplicationLocale()
+    {
+        $locale = $this->locale;
+
+        $conversions = $this->config->get('convert_locales_to', []);
+
+        if('auto' === $this->config->get('convert_locales'))
+        {
+            if(isset($conversions[$locale->get()])){
+                $locale = Locale::from($conversions[$locale->get()]);
+            }else{
+                $locale = $locale->withoutRegion();
+            }
+        }
+        else if(true === $this->config->get('convert_locales'))
+        {
+            if(isset($conversions[$locale->get()])){
+                $locale = Locale::from($conversions[$locale->get()]);
+            }
+        }
+
+        app()->setLocale($locale->get());
     }
 }

@@ -12,29 +12,26 @@ return [
         '*' => 'en',
     ],
 
-//    'locales' => [
-//        'fr.example.com'   => 'fr',
-//        'example.com'   => [
-//            '/fr' => 'fr',
-//            '/'   => 'en',
-//        ],
-//        'mijnkindishetallerliefste.be' => 'nl',
-//        'monenfantestleplusadorable.be' => [
-//            '/nl' => 'nl',
-//            '/' => 'fr-BE',
-//        ],
-//        'monenfantestleplusadorable.fr' => 'fr',
-//
-//        '*' => [
-//            'en' => 'en-GB',
-//            'us' => 'en-US',
-//            'fr' => 'fr',
-//            '/'  => 'nl',
-//        ],
-//    ],
+    /**
+     * In case your locales contains both language as region references and this locale differs
+     * from the application's locale, you can opt to point this locale to the one as expected
+     * by the application.
+     *
+     * The value can be either: auto, true or false.
+     * - false      default value. Keeps the locale values as set as above.
+     * - true       locales will be converted to the ones defined below in the 'convert_locales_to'
+     * - auto       if the format is in the RFC 4646 format with hyphen (en-US) or underscore (en_US), we will automatically convert the locale
+     *              to the language portion. e.g. en-US
+     */
+    'convert_locales' => false,
+
+    'convert_locales_to' => [
+        // e.g. 'nl-BE' => 'nl',
+    ],
 
     /*
-     * Define your canonical domains here.
+     * Define specific canonical domains here.
+     *
      * Specify unique domains for each locale to avoid crawler duplicate content warnings.
      * By default the current scope is used to determine the canonical domain. Here
      * you can specify a domain for a certain locale if the same locale is present in multiple domains.

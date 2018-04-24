@@ -19,6 +19,14 @@ class LocaleTest extends TestCase
         $this->assertTrue(Locale::from('nl')->equals(Locale::from('nl')));
         $this->assertFalse(Locale::from('nl')->equals(Locale::from('fr')));
     }
+    
+    /** @test */
+    function it_can_auto_convert_to_language_locale_without_region()
+    {
+        $this->assertEquals(Locale::from('nl'), Locale::from('nl-BE')->withoutRegion());
+        $this->assertEquals(Locale::from('nl'), Locale::from('nl_BE')->withoutRegion());
+        $this->assertEquals(Locale::from('NL'), Locale::from('NL-NL')->withoutRegion());
+    }
 
     /** @test */
     public function it_prints_out_as_string()

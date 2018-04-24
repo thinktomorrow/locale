@@ -19,6 +19,17 @@ final class Locale
         return new static($value);
     }
 
+    public function withoutRegion()
+    {
+        if(false !== strpos($this->value, '-')){
+            $value = substr($this->value,0,strpos($this->value, '-'));
+        }else if(false !== strpos($this->value, '_')){
+            $value = substr($this->value,0,strpos($this->value, '_'));
+        }
+
+        return new static($value);
+    }
+
     public function get(): string
     {
         return $this->value;
