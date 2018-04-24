@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale\Parsers;
 
 use Thinktomorrow\Locale\Scope;
+use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleSegmentParameter
 {
@@ -45,7 +46,7 @@ class LocaleSegmentParameter
      * @param string $routeKey
      * @param $locale
      *
-     * @return array|null|Values\Locale
+     * @return array|null|Locale
      */
     public static function normalizeLocaleAsParameter(Scope $scope, string $routeKey, $locale)
     {
