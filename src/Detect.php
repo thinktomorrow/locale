@@ -67,6 +67,8 @@ final class Detect
 
         $this->locale = $locale;
 
+        Scope::setActiveLocale($locale);
+
         $this->setApplicationLocale();
 
         return $this;
@@ -116,21 +118,16 @@ final class Detect
     {
         $locale = $this->locale;
 
+        $convert_locales = $this->config->get('convert_locales');
         $conversions = $this->config->get('convert_locales_to', []);
 
-        if('auto' === $this->config->get('convert_locales'))
-        {
-            if(isset($conversions[$locale->get()])){
-                $locale = Locale::from($conversions[$locale->get()]);
-            }else{
-                $locale = $locale->withoutRegion();
-            }
+        if('auto' === $convert_locales) {
+            $locale = isset($conversions[$locale->get()])
+                ? Locale::from($conversions[$locale->get()])
+                : $locale->withoutRegion();
         }
-        else if(true === $this->config->get('convert_locales'))
-        {
-            if(isset($conversions[$locale->get()])){
-                $locale = Locale::from($conversions[$locale->get()]);
-            }
+        else if(true === $convert_locales && isset($conversions[$locale->get()])) {
+            $locale = Locale::from($conversions[$locale->get()]);
         }
 
         app()->setLocale($locale->get());

@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale\Tests\ConverLocale;
 
 use Thinktomorrow\Locale\Detect;
+use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
 
 class ConvertLocaleTest extends TestCase
@@ -10,10 +11,11 @@ class ConvertLocaleTest extends TestCase
     /** @test */
     public function it_can_convert_locale_to_application_one()
     {
-        $this->detectLocaleAfterVisiting('http://convert.example.com/', [
+        $this->detectLocaleAfterVisiting('http://convert.example.com/segment-ten', [
             'locales' => [
                 'convert.example.com' => [
-                    '/'           => 'locale-ten',
+                    'segment-ten'           => 'locale-ten',
+                    '/'           => 'locale-eleven',
                 ],
             ],
             'convert_locales' => true,
@@ -24,6 +26,8 @@ class ConvertLocaleTest extends TestCase
 
         $this->assertEquals('locale-ten', app(Detect::class)->getLocale()->get());
         $this->assertEquals('converted-ten', app()->getLocale());
+        $this->assertEquals('locale-ten', ScopeFacade::activeLocale());
+        $this->assertEquals('segment-ten', ScopeFacade::activeSegment());
     }
 
     /** @test */

@@ -5,7 +5,9 @@ namespace Thinktomorrow\Locale\Tests\LocaleUrl;
 use Illuminate\Routing\Exceptions\UrlGenerationException;
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
+use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
+use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleRouteTest extends TestCase
 {
@@ -48,7 +50,7 @@ class LocaleRouteTest extends TestCase
     /** @test */
     public function it_passed_locale_is_invalid_route_is_translated_according_to_application_locale()
     {
-        app()->setLocale('locale-one');
+        Scope::setActiveLocale(Locale::from('locale-one'));
         $this->assertEquals('http://example.com/segment-one/first/blue?xxx', $this->localeUrl->route('route.first', 'xxx', ['slug' => 'blue']));
     }
 
@@ -101,10 +103,10 @@ class LocaleRouteTest extends TestCase
     /** @test */
     public function it_localizes_route_based_on_current_application_locale()
     {
-        app()->setLocale('locale-one');
+        Scope::setActiveLocale(Locale::from('locale-one'));
         $this->assertEquals('http://example.com/segment-one/blue/second', $this->localeUrl->route('route.second', ['slug' => 'blue']));
 
-        app()->setLocale('locale-three');
+        Scope::setActiveLocale(Locale::from('locale-three'));
         $this->assertEquals('http://example.com/blue/second', $this->localeUrl->route('route.second', ['slug' => 'blue']));
         $this->assertEquals('http://example.com/blue/second', $this->localeUrl->route('route.second', 'locale-three', ['slug' => 'blue']));
     }

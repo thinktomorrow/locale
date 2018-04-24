@@ -3,7 +3,9 @@
 namespace Thinktomorrow\Locale\Tests\LocaleUrl;
 
 use Illuminate\Support\Facades\Route;
+use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
+use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleCanonicalTest extends TestCase
 {
@@ -39,8 +41,8 @@ class LocaleCanonicalTest extends TestCase
     /** @test */
     public function current_root_is_used_by_default()
     {
-        // test it out
-        app()->setLocale('locale-two');
+        Scope::setActiveLocale(Locale::from('locale-two'));
+
         $this->assertEquals('http://example.com/segment-two/first', $this->localeUrl->canonicalRoute('route.first'));
         $this->assertEquals('http://example.com/segment-two/first', localeroute('route.first', null, [], true));
     }
@@ -49,7 +51,8 @@ class LocaleCanonicalTest extends TestCase
     public function a_locale_can_have_an_explicit_canonical()
     {
         // Custom canonical points to default routes if root cannot be matched against available scopes
-        app()->setLocale('locale-one');
+        Scope::setActiveLocale(Locale::from('locale-one'));
+
         $this->assertEquals('http://overridden-domain.com/first', $this->localeUrl->canonicalRoute('route.first'));
 
         // Locale-two is outside the default scope so it is ignored as locale and set als url param (slug) instead

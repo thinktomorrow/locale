@@ -14,6 +14,13 @@ class Scope
     private $locales;
 
     /**
+     * The active locale
+     *
+     * @var Locale
+     */
+    private static $activeLocale;
+
+    /**
      * The default locale. In the request path
      * it's the hidden segment, e.g. /.
      *
@@ -73,9 +80,14 @@ class Scope
         return $this->default;
     }
 
-    public function activeLocale(): string
+    public static function activeLocale(): ?Locale
     {
-        return app()->getLocale();
+        return static::$activeLocale;
+    }
+
+    public static function setActiveLocale(Locale $locale)
+    {
+        static::$activeLocale = $locale;
     }
 
     /**

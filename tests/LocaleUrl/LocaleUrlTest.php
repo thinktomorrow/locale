@@ -3,7 +3,9 @@
 namespace Thinktomorrow\Locale\Tests\LocaleUrl;
 
 use Thinktomorrow\Locale\Facades\LocaleUrlFacade;
+use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
+use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleUrlTest extends TestCase
 {
@@ -111,7 +113,7 @@ class LocaleUrlTest extends TestCase
     /** @test */
     public function localeurl_is_available_as_a_global_function()
     {
-        app()->setLocale('locale-two');
+        Scope::setActiveLocale(Locale::from('locale-two'));
 
         $this->assertEquals('http://example.com/segment-two', localeurl('/'));
         $this->assertEquals('http://example.com/segment-two/foobar', localeurl('/foobar'));
