@@ -118,6 +118,15 @@ class ConfigTest extends TestCase
     }
 
     /** @test */
+    public function non_found_key_returns_default_value()
+    {
+        $config = Config::from(['locales' => ['*' => 'nl']]);
+
+        $this->assertEquals('foobar',$config->get('unknown', 'foobar'));
+        $this->assertEquals([],$config->get('unknown', []));
+    }
+
+    /** @test */
     public function it_can_set_value_by_key()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
@@ -128,12 +137,10 @@ class ConfigTest extends TestCase
     /** @test */
     public function it_can_unset_a_value()
     {
-        $this->expectException(\InvalidArgumentException::class, 'No config value found');
-
         $config = Config::from(['locales' => ['*' => 'nl'], 'foobar' => 'nl']);
         unset($config['locales']);
 
-        $config->get('locales');
+        $this->assertNull($config->get('locales'));
     }
 
     /** @test */

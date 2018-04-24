@@ -23,10 +23,10 @@ class Config implements \ArrayAccess
         return new static($config);
     }
 
-    public function get($key)
+    public function get($key, $default = null)
     {
         if (!isset($this->config[$key])) {
-            throw new \InvalidArgumentException('No config value found by key ['.$key.']');
+            return $default;
         }
 
         return $this->config[$key];
