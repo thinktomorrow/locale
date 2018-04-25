@@ -2,6 +2,7 @@
 
 namespace Thinktomorrow\Locale\Tests\ConverLocale;
 
+use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Tests\TestCase;
@@ -28,6 +29,32 @@ class ConvertLocaleTest extends TestCase
         $this->assertEquals('converted-ten', app()->getLocale());
         $this->assertEquals('locale-ten', ScopeFacade::activeLocale());
         $this->assertEquals('segment-ten', ScopeFacade::activeSegment());
+    }
+
+    /** @test */
+    public function route_is_translated_by_application_locale()
+    {
+        $this->detectLocaleAfterVisiting('http://convert.example.com/segment-ten', [
+            'locales' => [
+                'convert.example.com' => [
+                    'segment-ten' => 'locale-ten',
+                    '/'           => 'locale-eleven',
+                ],
+            ],
+            'convert_locales' => true,
+            'convert_locales_to' => [
+                'locale-ten' => 'locale-two'
+            ],
+        ]);
+
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
+
+        $this->assertEquals('locale-ten', app(Detect::class)->getLocale()->get());
+        $this->assertEquals('locale-two', app()->getLocale());
+        $this->assertEquals('locale-ten', ScopeFacade::activeLocale());
+        $this->assertEquals('segment-ten', ScopeFacade::activeSegment());
+
+        dd(localeroute('route.first','nl-BE'));
     }
 
     /** @test */

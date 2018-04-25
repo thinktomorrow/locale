@@ -26,6 +26,8 @@ class LocaleTest extends TestCase
         $this->assertEquals(Locale::from('nl'), Locale::from('nl-BE')->withoutRegion());
         $this->assertEquals(Locale::from('nl'), Locale::from('nl_BE')->withoutRegion());
         $this->assertEquals(Locale::from('NL'), Locale::from('NL-NL')->withoutRegion());
+
+        $this->assertEquals(Locale::from('nl'), Locale::from('nl')->withoutRegion());
     }
 
     /** @test */

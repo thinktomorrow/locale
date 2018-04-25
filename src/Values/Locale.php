@@ -21,10 +21,13 @@ final class Locale
 
     public function withoutRegion()
     {
-        if(false !== strpos($this->value, '-')){
-            $value = substr($this->value,0,strpos($this->value, '-'));
-        }else if(false !== strpos($this->value, '_')){
-            $value = substr($this->value,0,strpos($this->value, '_'));
+        $value = $this->value;
+
+        // TODO: make regex for this once it is fleshed out
+        if(false !== strpos($value, '-')){
+            $value = substr($value,0,strpos($value, '-'));
+        }else if(false !== strpos($value, '_')){
+            $value = substr($value,0,strpos($value, '_'));
         }
 
         return new static($value);

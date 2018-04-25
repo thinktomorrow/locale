@@ -43,7 +43,7 @@ class RouteParser
     public function get(): string
     {
         $translationKey = config('thinktomorrow.locale.routes_filename').'.'.$this->routename;
-
+dd($this->locale);
         $url = $this->translator->get($translationKey, [], $this->locale);
 
         // If route translation does not exist, laravel returns us back the langkey.
