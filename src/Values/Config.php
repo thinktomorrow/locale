@@ -178,7 +178,7 @@ class Config implements \ArrayAccess
 
         foreach ($existing_locales as $existing_locale) {
             if (is_array($existing_locale)) {
-                if(true === $this->existsAsLocale($existing_locale, $locale)){
+                if (true === $this->existsAsLocale($existing_locale, $locale)) {
                     $flag = true;
                     break;
                 }

@@ -122,8 +122,8 @@ class ConfigTest extends TestCase
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
 
-        $this->assertEquals('foobar',$config->get('unknown', 'foobar'));
-        $this->assertEquals([],$config->get('unknown', []));
+        $this->assertEquals('foobar', $config->get('unknown', 'foobar'));
+        $this->assertEquals([], $config->get('unknown', []));
     }
 
     /** @test */
@@ -192,11 +192,11 @@ class ConfigTest extends TestCase
                 ],
             ],
             'canonicals' => [
-                "locale-ten" => "convert.example.com",
-                "locale-eleven" => "convert.example.com",
-                "locale-one" => "example.com",
-                "locale-two" => "example.com",
-                "locale-three" => "example.com",
+                'locale-ten'    => 'convert.example.com',
+                'locale-eleven' => 'convert.example.com',
+                'locale-one'    => 'example.com',
+                'locale-two'    => 'example.com',
+                'locale-three'  => 'example.com',
             ],
         ]);
     }

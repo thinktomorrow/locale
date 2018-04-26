@@ -12,7 +12,7 @@ return [
         '*' => 'en',
     ],
 
-    /**
+    /*
      * In case your locales contains both language as region references and this locale differs
      * from the application's locale, you can opt to point this locale to the one as expected
      * by the application.

@@ -24,10 +24,10 @@ final class Locale
         $value = $this->value;
 
         // TODO: make regex for this once it is fleshed out
-        if(false !== strpos($value, '-')){
-            $value = substr($value,0,strpos($value, '-'));
-        }else if(false !== strpos($value, '_')){
-            $value = substr($value,0,strpos($value, '_'));
+        if (false !== strpos($value, '-')) {
+            $value = substr($value, 0, strpos($value, '-'));
+        } elseif (false !== strpos($value, '_')) {
+            $value = substr($value, 0, strpos($value, '_'));
         }
 
         return new static($value);

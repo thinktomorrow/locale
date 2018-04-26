@@ -14,7 +14,7 @@ class Scope
     private $locales;
 
     /**
-     * The active locale
+     * The active locale.
      *
      * @var Locale
      */
