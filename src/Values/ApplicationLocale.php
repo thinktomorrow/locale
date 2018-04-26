@@ -4,6 +4,8 @@ declare(strict_types = 1);
 
 namespace Thinktomorrow\Locale\Values;
 
+use Illuminate\Support\Facades\Config as LaravelConfig;
+
 class ApplicationLocale
 {
     /** @var Config */
@@ -13,21 +15,27 @@ class ApplicationLocale
     private $originalLocale;
 
     /** @var Locale */
-    private $convertedgs
-Locale;
+    private $locale;
 
-    public function __construct(Config $config)
+    private function __construct(Locale $originalLocale, Config $config)
     {
+        $this->originalLocale = $originalLocale;
         $this->config = $config;
     }
 
-    public function from(Locale $locale)
+    public static function from($originalLocale)
     {
-        $this->originalLocale = $locale;
+        if(is_string($originalLocale)){
+            $originalLocale = Locale::from($originalLocale);
+        }
+
+        return new static($originalLocale, Config::from(app('config')->get('thinktomorrow.locale')));
     }
 
     public function get(): Locale
     {
-        return $this->originalLocale;
+        // Convert ...
+
+        return $this->locale;
     }
 }
