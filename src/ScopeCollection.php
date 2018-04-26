@@ -53,18 +53,7 @@ final class ScopeCollection
     private function guessKeyFromRoot(string $value): string
     {
         foreach ($this->config->get('locales') as $scopeKey => $locales) {
-            $pattern = preg_quote($scopeKey, '#');
-
-            /*
-             * The host pattern allows for an asterix which stands for a
-             * wildcard of characters when matching the scope keys.
-             * The default '*' scope will match anything
-             */
-            if (false !== strpos($pattern, '*')) {
-                $pattern = str_replace('\*', '(.+)', $pattern);
-            }
-
-            if (preg_match("#^(https?://)?(www\.)?$pattern/?$#", $value)) {
+            if(Assistant::matchesRoot($scopeKey, $value)){
                 return $scopeKey;
             }
         }
