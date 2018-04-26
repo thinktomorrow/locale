@@ -43,18 +43,21 @@ class ConvertLocaleTest extends TestCase
             ],
             'convert_locales' => true,
             'convert_locales_to' => [
-                'locale-ten' => 'locale-two'
+                'locale-ten' => 'locale-twenty'
             ],
         ]);
 
         Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {}]);
 
         $this->assertEquals('locale-ten', app(Detect::class)->getLocale()->get());
-        $this->assertEquals('locale-two', app()->getLocale());
+        $this->assertEquals('locale-twenty', app()->getLocale());
         $this->assertEquals('locale-ten', ScopeFacade::activeLocale());
         $this->assertEquals('segment-ten', ScopeFacade::activeSegment());
 
-        dd(localeroute('route.first','nl-BE'));
+        $this->assertEquals('http://convert.example.com/segment-ten/first', localeroute('route.first','locale-ten'));
+
+        // Application locale is not allowed and not encouraged
+        $this->assertEquals('http://convert.example.com/segment-ten/first/locale-twenty', localeroute('route.first','locale-twenty'));
     }
 
     /** @test */

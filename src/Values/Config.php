@@ -166,25 +166,31 @@ class Config implements \ArrayAccess
     {
         $canonicals = $config['canonicals'] ?? [];
         foreach ($canonicals as $locale => $canonical) {
-            if (!$this->existsAsLocale($config, $locale)) {
-                throw new InvalidConfig('Locale '.$locale.' does not exist as existing locale.');
+            if (!$this->existsAsLocale($config['locales'], $locale)) {
+                throw new InvalidConfig('Canonical key '.$locale.' is not present as locale.');
             }
         }
     }
 
     private function existsAsLocale($existing_locales, $locale): bool
     {
+        $flag = false;
+
         foreach ($existing_locales as $existing_locale) {
             if (is_array($existing_locale)) {
-                return $this->existsAsLocale($existing_locale, $locale);
+                if(true === $this->existsAsLocale($existing_locale, $locale)){
+                    $flag = true;
+                    break;
+                }
             }
 
             if ($existing_locale === $locale) {
-                return true;
+                $flag = true;
+                break;
             }
         }
 
-        return false;
+        return $flag;
     }
 
     public function offsetExists($offset)

@@ -59,6 +59,10 @@ trait TestHelpers
             'canonicals' => [
                 //
             ],
+            'convert_locales' => false,
+            'convert_locales_to' => [
+
+            ],
             'secure'          => false,
             'route_key'       => 'locale_slug',
             'query_key'       => 'locale',

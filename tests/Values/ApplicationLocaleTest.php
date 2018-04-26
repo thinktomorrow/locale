@@ -2,8 +2,9 @@
 
 namespace Thinktomorrow\ApplicationLocale\Tests\Values;
 
-use PHPUnit\Framework\TestCase;
+use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Values\ApplicationLocale;
+use Thinktomorrow\Locale\Values\Locale;
 
 class ApplicationLocaleTest extends TestCase
 {
@@ -14,6 +15,12 @@ class ApplicationLocaleTest extends TestCase
     }
 
     /** @test */
+    public function it_accepts_locale_as_well()
+    {
+        $this->assertInstanceOf(ApplicationLocale::class, ApplicationLocale::from(Locale::from('nl')));
+    }
+
+    /** @test */
     public function it_can_compare()
     {
         $this->assertTrue(ApplicationLocale::from('nl')->equals(ApplicationLocale::from('nl')));
@@ -21,18 +28,47 @@ class ApplicationLocaleTest extends TestCase
     }
 
     /** @test */
-    function it_can_auto_convert_to_language_locale_without_region()
-    {
-        $this->assertEquals(ApplicationLocale::from('nl'), ApplicationLocale::from('nl-BE')->withoutRegion());
-        $this->assertEquals(ApplicationLocale::from('nl'), ApplicationLocale::from('nl_BE')->withoutRegion());
-        $this->assertEquals(ApplicationLocale::from('NL'), ApplicationLocale::from('NL-NL')->withoutRegion());
-
-        $this->assertEquals(ApplicationLocale::from('nl'), ApplicationLocale::from('nl')->withoutRegion());
-    }
-
-    /** @test */
     public function it_prints_out_as_string()
     {
         $this->assertEquals('nl', ApplicationLocale::from('nl'));
+    }
+    
+    /** @test */
+    function it_converts_to_application_locale()
+    {
+        $this->refreshLocaleBindings([
+            'convert_locales' => true,
+            'convert_locales_to' => [
+                'locale-ten' => 'convert-ten',
+            ],
+        ]);
+
+        $this->assertEquals('convert-ten', ApplicationLocale::from('locale-ten')->get());
+    }
+
+    /** @test */
+    function it_does_not_convert_to_application_locale_if_not_set_to_do_so()
+    {
+        $this->refreshLocaleBindings([
+            'convert_locales' => false,
+            'convert_locales_to' => [
+                'locale-ten' => 'convert-ten',
+            ],
+        ]);
+
+        $this->assertEquals('locale-ten', ApplicationLocale::from('locale-ten')->get());
+    }
+
+    /** @test */
+    function automatic_conversion_removes_region_portion_of_locale()
+    {
+        $this->refreshLocaleBindings([
+            'convert_locales' => 'auto',
+            'convert_locales_to' => [],
+        ]);
+
+        $this->assertEquals('locale', ApplicationLocale::from('locale-ten')->get());
+        $this->assertEquals('locale', ApplicationLocale::from('locale_ten')->get());
+        $this->assertEquals('locale', ApplicationLocale::from('locale')->get());
     }
 }

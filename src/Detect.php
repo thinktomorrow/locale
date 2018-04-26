@@ -7,6 +7,7 @@ use Thinktomorrow\Locale\Detectors\FallbackDetector;
 use Thinktomorrow\Locale\Detectors\HiddenSegmentDetector;
 use Thinktomorrow\Locale\Detectors\QueryDetector;
 use Thinktomorrow\Locale\Detectors\SegmentDetector;
+use Thinktomorrow\Locale\Values\ApplicationLocale;
 use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Locale\Values\Locale;
 
@@ -116,20 +117,8 @@ final class Detect
 
     private function setApplicationLocale()
     {
-        $locale = $this->locale;
+        $applicationLocale = ApplicationLocale::from($this->locale);
 
-        $convert_locales = $this->config->get('convert_locales');
-        $conversions = $this->config->get('convert_locales_to', []);
-
-        if('auto' === $convert_locales) {
-            $locale = isset($conversions[$locale->get()])
-                ? Locale::from($conversions[$locale->get()])
-                : $locale->withoutRegion();
-        }
-        else if(true === $convert_locales && isset($conversions[$locale->get()])) {
-            $locale = Locale::from($conversions[$locale->get()]);
-        }
-
-        app()->setLocale($locale->get());
+        app()->setLocale($applicationLocale->__toString());
     }
 }
