@@ -59,7 +59,7 @@ trait TestHelpers
             'canonicals' => [
                 //
             ],
-            'convert_locales' => false,
+            'convert_locales'    => false,
             'convert_locales_to' => [
 
             ],

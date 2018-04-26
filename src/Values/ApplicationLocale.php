@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Thinktomorrow\Locale\Values;
 
@@ -20,14 +20,15 @@ class ApplicationLocale
 
     public static function from($originalLocale)
     {
-        if(is_string($originalLocale)){
+        if (is_string($originalLocale)) {
             $originalLocale = Locale::from($originalLocale);
         }
+
         return new static($originalLocale, Config::from(app('config')->get('thinktomorrow.locale', [])));
     }
 
     /**
-     * Convert locale to application locale
+     * Convert locale to application locale.
      *
      * @return Locale
      */
@@ -38,12 +39,11 @@ class ApplicationLocale
         $convert_locales = $this->config->get('convert_locales');
         $conversions = $this->config->get('convert_locales_to', []);
 
-        if('auto' === $convert_locales) {
+        if ('auto' === $convert_locales) {
             $locale = isset($conversions[$locale->get()])
                 ? Locale::from($conversions[$locale->get()])
                 : $locale->withoutRegion();
-        }
-        else if(true === $convert_locales && isset($conversions[$locale->get()])) {
+        } elseif (true === $convert_locales && isset($conversions[$locale->get()])) {
             $locale = Locale::from($conversions[$locale->get()]);
         }
 
