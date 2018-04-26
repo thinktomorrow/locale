@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale\Parsers;
 
 use Illuminate\Contracts\Translation\Translator;
+use Thinktomorrow\Locale\Values\ApplicationLocale;
 use Thinktomorrow\Locale\Values\Root;
 
 class RouteParser
@@ -93,10 +94,12 @@ class RouteParser
         $this->localeSegment = $localeSegment;
         $this->available_locales = $available_locales;
 
-        // Our route translator requires the corresponding locale
-        $this->locale = (!$localeSegment || $localeSegment == '/')
+        // Our route translator requires the corresponding application locale
+        $locale = (!$localeSegment || $localeSegment == '/')
             ? $available_locales['/']
             : $available_locales[$localeSegment];
+
+        $this->locale = ApplicationLocale::from($locale)->__toString();
 
         return $this;
     }

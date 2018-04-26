@@ -122,8 +122,8 @@ class ConfigTest extends TestCase
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
 
-        $this->assertEquals('foobar',$config->get('unknown', 'foobar'));
-        $this->assertEquals([],$config->get('unknown', []));
+        $this->assertEquals('foobar', $config->get('unknown', 'foobar'));
+        $this->assertEquals([], $config->get('unknown', []));
     }
 
     /** @test */
@@ -163,6 +163,40 @@ class ConfigTest extends TestCase
             ],
             'canonicals' => [
                 'locale-unknown' => 'canonical.com',
+            ],
+        ]);
+    }
+
+    /**
+     * @test
+     * @doesNotPerformAssertions
+     */
+    public function it_validates_canonical_exists_as_locale_when_using_multiple_domains()
+    {
+        // Test valid canonicals check with multiple domains
+        Config::from([
+            'locales' => [
+                'convert.example.com' => [
+                    'segment-ten' => 'locale-ten',
+                    '/'           => 'locale-eleven',
+                ],
+                'example.com' => [
+                    'segment-one' => 'locale-one',
+                    'segment-two' => 'locale-two',
+                    '/'           => 'locale-three',
+                ],
+                '*' => [
+                    'segment-four' => 'locale-four',
+                    'segment-five' => 'locale-five',
+                    '/'            => 'locale-zero',
+                ],
+            ],
+            'canonicals' => [
+                'locale-ten'    => 'convert.example.com',
+                'locale-eleven' => 'convert.example.com',
+                'locale-one'    => 'example.com',
+                'locale-two'    => 'example.com',
+                'locale-three'  => 'example.com',
             ],
         ]);
     }
