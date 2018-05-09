@@ -31,6 +31,16 @@ class LocaleTest extends TestCase
     }
 
     /** @test */
+    public function it_can_extract_region_element_if_present()
+    {
+        $this->assertEquals('BE', Locale::from('nl-BE')->region());
+        $this->assertEquals('BE', Locale::from('nl_BE')->region());
+        $this->assertEquals('NL', Locale::from('NL-NL')->region());
+
+        $this->assertNull(Locale::from('nl')->region());
+    }
+
+    /** @test */
     public function it_prints_out_as_string()
     {
         $this->assertEquals('nl', Locale::from('nl'));

@@ -23,14 +23,26 @@ final class Locale
     {
         $value = $this->value;
 
-        // TODO: make regex for this once it is fleshed out
-        if (false !== strpos($value, '-')) {
-            $value = substr($value, 0, strpos($value, '-'));
-        } elseif (false !== strpos($value, '_')) {
-            $value = substr($value, 0, strpos($value, '_'));
+        if($region = $this->region()) {
+            $value = str_replace(['-' . $region, '_' . $region], '', $value);
         }
 
         return new static($value);
+    }
+
+    public function region(): ?string
+    {
+        $value = $this->value;
+
+        if (false !== strpos($value, '-')) {
+            return substr($value, strpos($value, '-')+1);
+        }
+
+        if (false !== strpos($value, '_')) {
+            return substr($value, strpos($value, '_')+1);
+        }
+
+        return null;
     }
 
     public function get(): string
