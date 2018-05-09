@@ -21,7 +21,7 @@ return [
      * - false      default value. Keeps the locale values as set as above.
      * - true       locales will be converted to the ones defined below in the 'convert_locales_to'
      * - auto       if the format is in the RFC 4646 format with hyphen (en-US) or underscore (en_US), we will automatically convert the locale
-     *              to the language portion. e.g. en-US
+     *              to the language portion. e.g. en-US will be interpreted as 'en'.
      */
     'convert_locales' => false,
 

@@ -93,6 +93,11 @@ final class Detect
         return $this->scope;
     }
 
+    public function getConfig(): Config
+    {
+        return $this->config;
+    }
+
     /**
      * This is handy for setting allowed scope via other source than config file.
      * this can be configurable from a cms.

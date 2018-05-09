@@ -44,3 +44,13 @@ if (!function_exists('localeRoutePrefix')) {
                     ->activeSegment();
     }
 }
+
+/*
+ * Get the sanitized locale config which gives you access to the canonicals
+ */
+if (!function_exists('localeConfig')) {
+    function localeConfig()
+    {
+        return app(\Thinktomorrow\Locale\Detect::class)->getConfig();
+    }
+}

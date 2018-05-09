@@ -21,8 +21,10 @@ class LocaleServiceProvider extends ServiceProvider
             __DIR__.'/config/locale.php', 'thinktomorrow.locale'
         );
 
-        $this->app->singleton(Detect::class, function ($app) {
-            return new Detect($app['request'], Config::from($this->getConfigValues()));
+        $config = Config::from($this->getConfigValues());
+
+        $this->app->singleton(Detect::class, function ($app) use($config) {
+            return new Detect($app['request'], $config);
         });
 
         $this->app->singleton(UrlParser::class, function ($app) {
@@ -38,12 +40,12 @@ class LocaleServiceProvider extends ServiceProvider
             );
         });
 
-        $this->app->singleton(LocaleUrl::class, function ($app) {
+        $this->app->singleton(LocaleUrl::class, function ($app) use($config) {
             return new LocaleUrl(
                 $app['Thinktomorrow\Locale\Detect'],
                 $app['Thinktomorrow\Locale\Parsers\UrlParser'],
                 $app['Thinktomorrow\Locale\Parsers\RouteParser'],
-                Config::from($this->getConfigValues())
+                $config
             );
         });
 
