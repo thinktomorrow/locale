@@ -7,41 +7,6 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-## TODO version 2.0
-
-- TODO: meerdere env. Hoe local, staging in config. Canonicals kn slechts één entry per taal.
-- TODO: is default really required???
-- TODO: detect default canonicals per locale if none given
-- TODO: canonicals with path as well?
-- ASK: force canonical on route without root?
-- TODO: config setting 'secure' ? 
-     * If set to true, all urls created by LocaleUrl class will be forced to https,
-     * Domain defined in the canonicals setting will keep their scheme if it is provided.
-    'secure' => true,
-
-- reduce code logic in tests, avoid duplicates, create helpers
-- clearly distinct between unit and feature tests
-- make all tests do one specific task, keep 'spelling check tests' in unit test, not in feature.
-- localeCanonical() function needs implementation
-- write extensive documentation
-- handle all lingering TODO comments
-- set changelog for changes to 2.0 release. This will include domain support as well as a refactored codebase
-- try to use as little as possible of framework or at one place specifically
-- avoid app()->setLocale or app()->getLocale() calls
-- avoid injection of request? what do we really need?
-- LocaleValidator as separate utility class?
-- rename Locale class for being too generic and prone to conflicts?: maybe Referrer, Scan, Probe,...
-- clear up the parsers
-- clean up the tests and try to go for coverage.
-- improve and complete the documentation
-- routes filename is not everywhere dynamic yet
-
-
-A Laravel package for lightweight route localization. Locale registers the application locale based on the request uri.
-It's also responsible for translating the application routes.
-. 
-E.g. `/nl/foo` will set locale to `nl`. 
-
 ## Install
 
 Via Composer
@@ -50,11 +15,7 @@ Via Composer
 $ composer require thinktomorrow/locale
 ```
 
-Next add the provider to the providers array in the `/config/app.php` file:
-
-``` php
-    Thinktomorrow\Locale\LocaleServiceProvider::class,
-```
+The package will be autodiscovered by laravel so no need to add the provider to the config/app.php file.
 
 Finally create a configuration file to `/config/thinktomorrow/locale.php`
 
@@ -62,47 +23,20 @@ Finally create a configuration file to `/config/thinktomorrow/locale.php`
     php artisan vendor:publish --provider="Thinktomorrow\Locale\LocaleServiceProvider"
 ```
 
-## Facades and helper functions
-
-For your convenience the Locale and LocaleUrl classes both have Facades. This can clean up your code a bit if you rely on heavy use of the package.
-If you want to use them you can add the following code to the aliases array in the `config/app.php` file:
-
-``` php
-'aliases' => [
-    ...
-    'Locale' => 'Thinktomorrow\Locale\Facades\LocaleFacade',
-    'LocaleUrl' => 'Thinktomorrow\Locale\Facades\LocaleUrlFacade',
-];
-```
-
-The two public methods of the LocaleUrl class `LocaleUrl::to()` and `LocaleUrl::route()` can both be 
-accessed via a respective helper function.
-
-``` php
-
-    // A shortcut for calling LocaleUrl::route();
-    $url = localeroute($name, $locale = null, $parameters = [], $absolute = true);
-    
-    // A shortcut for calling LocaleUrl::to()
-    $url = localeurl($url, $locale = null, $extra = [], $secure = null);
-
-```
-
-
 ## Usage
 
 To make your routes localized, place them inside a Route::group() with a following prefix:
 
 ``` php
     
-    Route::group(['prefix' => Locale::set()],function(){
+    Route::group(['prefix' => localeRoutePrefix()],function(){
         
         // Routes registered within this group will be localized
         
     });
     
 ```
-**Note**: *Subdomain- and tld-based localization should be possible as well but this is currently not fully supported yet.*
+
 
 ## Generating a localized url
 
@@ -118,13 +52,13 @@ To create an url with a specific locale other than the active one, you can use t
 ``` php
     
     // Generate localized url from uri (resolves as laravel url() function)
-    LocaleUrl::to('about','en'); // http://example.com/en/about
+    localeroute('about','en'); // http://example.com/en/about
     
     // Generate localized url from named route (resolves as laravel route() function)
-    LocaleUrl::route('pages.about','en'); // http://example.com/en/about  
+    localeroute('pages.about','en'); // http://example.com/en/about  
     
     // Add additional parameters as third parameter
-    LocaleUrl::route('products.show','en',['slug' => 'tablet'])); // http://example/en/products/tablet
+    localeroute('products.show','en',['slug' => 'tablet'])); // http://example/en/products/tablet
     
 ```
 
@@ -132,7 +66,40 @@ To create an url with a specific locale other than the active one, you can use t
 *example.com/en/about?lang=nl* makes sure the request will deal with a 'nl' locale.
 
 ## Configuration
-- **available_locales**: Whitelist of locales available for usage inside your application. 
+- **locales**: Whitelist of locales available for usage inside your application. 
+    Basic usage:
+    ```php
+        'locales' => [
+            '*' => [
+                'nl',
+                'en',
+            ]
+        ],
+    ```
+
+    Multi-domain usage:
+    ```php
+        'locales' => [
+            'https://awesome-domain-nl.com' => [
+                '/' => 'nl',
+            ],
+            'https://awesome-domain-en.com' => [
+                '/' => 'en',
+            ]
+        ],
+    ```
+    Each multi-domain can have multiple locale as well:
+    Multi-domain usage:
+    ```php
+        'locales' => [
+            'https://awesome-domain.com' => [
+                'en'    => 'en',
+                '/'     => 'nl',
+            ]
+        ],
+    ```
+
+
 - **hidden_locale**: You can set one of the available locales as 'hidden' which means any request without a locale in its uri, should be localized as this hidden locale.
 For example if the hidden locale is 'nl' and the request uri is /foo/bar, this request is interpreted with the 'nl' locale. 
 Note that this is best used for your main / default locale.
@@ -163,7 +130,6 @@ Note that this is best used for your main / default locale.
 ``` php
     Locale::isHidden(); // checks current or passed locale and returns boolean
 ```
-
 
 ## Testing
 
