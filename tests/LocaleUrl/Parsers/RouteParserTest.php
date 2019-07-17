@@ -11,7 +11,7 @@ class RouteParserTest extends TestCase
 {
     private $routeParser;
 
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 

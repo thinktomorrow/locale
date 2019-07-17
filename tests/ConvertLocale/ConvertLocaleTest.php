@@ -24,7 +24,7 @@ class ConvertLocaleTest extends TestCase
                 'locale-ten' => 'converted-ten',
             ],
         ]);
-
+            
         $this->assertEquals('locale-ten', app(Detect::class)->getLocale()->get());
         $this->assertEquals('converted-ten', app()->getLocale());
         $this->assertEquals('locale-ten', ScopeFacade::activeLocale());

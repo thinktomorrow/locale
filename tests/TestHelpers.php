@@ -2,23 +2,23 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\Request;
-use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Scope;
-use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Locale\Values\Config;
+use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Support\Facades\Config as LaravelConfig;
 
 trait TestHelpers
 {
     protected function detectLocaleAfterVisiting($url, array $overrides = []): string
     {
         $root = Root::fromString($url)->get();
-
         // We enforce the environment to let the application believe
         // the root being visited is the current active root.
         putenv('APP_URL='.$root);
-
+        
         // Reboot the application to accept this root
         $this->createApplication();
         $this->refreshLocaleBindings($overrides);
