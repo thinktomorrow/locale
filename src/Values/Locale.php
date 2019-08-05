@@ -23,8 +23,8 @@ final class Locale
     {
         $value = $this->value;
 
-        if($region = $this->region()) {
-            $value = str_replace(['-' . $region, '_' . $region], '', $value);
+        if ($region = $this->region()) {
+            $value = str_replace(['-'.$region, '_'.$region], '', $value);
         }
 
         return new static($value);
@@ -35,11 +35,11 @@ final class Locale
         $value = $this->value;
 
         if (false !== strpos($value, '-')) {
-            return substr($value, strpos($value, '-')+1);
+            return substr($value, strpos($value, '-') + 1);
         }
 
         if (false !== strpos($value, '_')) {
-            return substr($value, strpos($value, '_')+1);
+            return substr($value, strpos($value, '_') + 1);
         }
 
         return null;
