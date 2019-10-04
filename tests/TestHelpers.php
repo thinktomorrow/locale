@@ -2,13 +2,13 @@
 
 namespace Thinktomorrow\Locale\Tests;
 
-use Illuminate\Support\Arr;
-use Illuminate\Http\Request;
-use Thinktomorrow\Locale\Scope;
-use Thinktomorrow\Locale\Detect;
-use Thinktomorrow\Locale\Values\Root;
-use Thinktomorrow\Locale\Values\Config;
 use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Thinktomorrow\Locale\Detect;
+use Thinktomorrow\Locale\Scope;
+use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Values\Root;
 
 trait TestHelpers
 {
