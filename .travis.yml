@@ -25,7 +25,7 @@ env:
     - COMPOSER_FLAGS=""
       LARAVEL_VERSION="5.7.*"
     - COMPOSER_FLAGS=""
-      LARAVEL_VERSION="5.8.*"
+      LARAVEL_VERSION="~5.8.7"
     - COMPOSER_FLAGS=""
       LARAVEL_VERSION="6.*"
 
