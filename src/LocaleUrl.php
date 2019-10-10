@@ -42,12 +42,12 @@ class LocaleUrl
     public function __construct(Detect $detect, UrlParser $urlparser, RouteParser $routeparser, Config $config)
     {
         // TODO check if this still returns proper results when loading before routes
-        $this->scope = $detect->getScope();
+        $this->scope           = $detect->getScope();
         $this->scopeCollection = ScopeCollection::fromConfig($config);
-        $this->urlparser = $urlparser;
-        $this->routeparser = $routeparser;
+        $this->urlparser       = $urlparser;
+        $this->routeparser     = $routeparser;
 
-        $this->routeKey = $config->get('route_key');
+        $this->routeKey    = $config->get('route_key');
         $this->forceSecure = $config->get('secure') === true;
     }
 

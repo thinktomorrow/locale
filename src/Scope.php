@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale;
 
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
+use Thinktomorrow\Locale\Exceptions\NotDetectedException;
 use Thinktomorrow\Locale\Values\Locale;
 use Thinktomorrow\Locale\Values\Root;
 
@@ -82,6 +83,10 @@ class Scope
 
     public static function activeLocale(): ?Locale
     {
+        if(is_null(static::$activeLocale)){
+            throw new NotDetectedException('Make sure you detect the locale by using the routeprefix helper.');
+        } 
+
         return static::$activeLocale;
     }
 
@@ -127,5 +132,10 @@ class Scope
         }
 
         return isset($this->locales[$segment]);
+    }
+
+    public function refresh()
+    {
+        static::$activeLocale = null;
     }
 }

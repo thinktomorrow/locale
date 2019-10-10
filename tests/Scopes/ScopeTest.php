@@ -2,20 +2,28 @@
 
 namespace Thinktomorrow\Locale\Tests\Scopes;
 
-use Thinktomorrow\Locale\Exceptions\InvalidScope;
-use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Scope;
-use Thinktomorrow\Locale\Tests\TestCase;
-use Thinktomorrow\Locale\Values\Locale;
+use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Locale\Values\Locale;
+use Thinktomorrow\Locale\Tests\TestCase;
+use Thinktomorrow\Locale\Facades\ScopeFacade;
+use Thinktomorrow\Locale\Exceptions\InvalidScope;
+use Thinktomorrow\Locale\Exceptions\NotDetectedException;
 
 class ScopeTest extends TestCase
 {
-    public function setUp() : void
+    /** @test */
+    public function it_throws_error_if_not_detected()
     {
-        parent::setUp();
+        $this->expectException(NotDetectedException::class);
 
-        $this->detectLocaleAfterVisiting('http://unknown.com');
+        ScopeFacade::refresh();
+        
+        Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
+        }]);
+
+        localeroute('route.first');
     }
 
     /** @test */
@@ -36,6 +44,8 @@ class ScopeTest extends TestCase
     /** @test */
     public function it_can_list_all_locales_in_scope()
     {
+        $this->detectLocaleAfterVisiting('http://unknown.com');
+
         $this->assertEquals([
             'segment-four' => 'locale-four',
             'segment-five' => 'locale-five',
@@ -46,6 +56,8 @@ class ScopeTest extends TestCase
     /** @test */
     public function it_can_get_locale_by_key()
     {
+        $this->detectLocaleAfterVisiting('http://unknown.com');
+
         $this->assertEquals(Locale::from('locale-five'), ScopeFacade::findLocale('segment-five'));
         $this->assertEquals(Locale::from('locale-zero'), ScopeFacade::findLocale('/'));
         $this->assertNull(ScopeFacade::findLocale('unknown'));
@@ -54,6 +66,8 @@ class ScopeTest extends TestCase
     /** @test */
     public function it_can_get_segment_key_by_locale()
     {
+        $this->detectLocaleAfterVisiting('http://unknown.com');
+
         $this->assertEquals('segment-five', ScopeFacade::segment('locale-five'));
         $this->assertEquals('/', ScopeFacade::segment('locale-zero'));
         $this->assertNull(ScopeFacade::segment('unknown'));
@@ -71,6 +85,8 @@ class ScopeTest extends TestCase
     /** @test */
     public function it_can_validate_if_the_locale_is_allowed_in_current_scope()
     {
+        $this->detectLocaleAfterVisiting('http://unknown.com');
+
         $this->assertTrue(ScopeFacade::validateLocale('locale-zero'));
         $this->assertTrue(ScopeFacade::validateLocale('locale-four'));
         $this->assertFalse(ScopeFacade::validateLocale('locale-one'));
