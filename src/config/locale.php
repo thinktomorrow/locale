@@ -3,10 +3,15 @@
 return [
 
     /*
-     * Available locale scopes for the application
+     * Locale Scopes
      *
-     * Matches are done from top to bottom so declare the more specific hosts above general ones.
-     * The only mandatory scope entry is '*' which are the default locales and apply to all requests.
+     * All available application locales are grouped by so called scopes. Each scope has its own set
+     * of locales.  A scope which can be compared with domains. Each scope
+     * could represent a domain and its supported locales. Each scope entry consists of a key as the
+     * pattern identifier and an array of locales. Matches are done from top to bottom so declare
+     * the more specific hosts above general ones.
+     *
+     * The only required scope entry is '*' which are the default locales and apply to all requests.
      */
     'locales' => [
         '*' => 'en',

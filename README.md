@@ -7,21 +7,79 @@
 [![Quality Score][ico-code-quality]][link-code-quality]
 [![Total Downloads][ico-downloads]][link-downloads]
 
-## Install
+## Requirements
+The package requires a php version of `7.1.3` or more. Laravel version `5.6.*` and upwards is supported.
 
-Via Composer
+## Installation
 
+The package can be installed via Composer.
 ``` bash
 $ composer require thinktomorrow/locale
 ```
 
-The package will be autodiscovered by laravel so no need to add the provider to the config/app.php file.
+The package service provider will be autodiscovered by laravel.
 
-Finally create a configuration file to `/config/thinktomorrow/locale.php`
-
+To publish the config file to `/config/thinktomorrow/locale.php`, run:
 ``` bash
     php artisan vendor:publish --provider="Thinktomorrow\Locale\LocaleServiceProvider"
 ```
+
+These are the config defaults:
+
+## Setup
+
+Let's say you want to support two locales: nl and en, where nl is the default locale. Here's how you would configure this:
+```php
+# config/thinktomorrow/locale.php
+
+'locales' => [
+        '*' => [
+            'en' => 'en',
+            '/'  => 'nl',
+        ],
+    ],
+```
+
+Some important things to note here:
+- The key of each entry represents the uri segment whereas the value is the application locale.
+- The * acts as a wildcard group, which means any *host* will match. This is called the default *scope* but more on scopes later on.
+- The default locale has a forward slash '/' as its key. This is a required item. It is the locale when no specific uri segment matches.
+
+### Segments
+The package allows for two ways to identify the locale in a request url. Either via path segments or via the host. Let's take a moment to introduce these concepts.
+A locale segment is the uri path identifier of a specific locale. E.g. *example.com/nl* has *nl* as a locale segment since it identifies the locale in the given request uri..
+This is the most common way of determining locales via the incoming request. This is also sufficient when your application only has to deal with one domain root.
+
+The configuration for this is the most basic setup where you give a list of locales under the default scope, like the config example from above.
+
+### Scopes
+A scope is a higher level identifier for a group of locales. Generally, you can compare a scope with the host part of the request url.
+A scope bundles one or more of these segments together.
+
+Let's say we want to allow *example.com* and *fr.example.com*, where the first host localises in nl and the latter in fr. We can provide the following configuration:
+```php
+# config/thinktomorrow/locale.php
+
+'locales' => [
+        'fr.example.com' => 'fr',
+        '*' => 'nl',
+    ],
+```
+
+- If the scope detects only one locale, it can be entered as a string, instead of an array.
+- The more specific scope should be placed first, because matching is performed from top to bottom.
+- The default scope '*' is always required and because of the *first match first serve* rule, should be placed at the bottom of the list.
+
+
+
+
+If your application is visitable by only one domain root, which is the case for most apps,
+you are good to go with the default scope.
+All available application locales are grouped by so called scopes. Each scope has its own set
+     * of locales.  A scope which can be compared with domains. Each scope
+     * could represent a domain and its supported locales. Each scope entry consists of a key as the
+     * pattern identifier and an array of locales. Matches are done from top to bottom so declare
+     * the more specific hosts above general ones.
 
 ## Usage
 

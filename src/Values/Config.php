@@ -58,7 +58,7 @@ class Config implements \ArrayAccess
 
         foreach ($config['locales'] as $rootKey => $locales) {
 
-            // We currently do not accept wildcard domains as canonicals as we cannot know to which root this should resolve to.
+            // wildcard domains are not accepted as canonicals as we cannot know to which root this should resolve to.
             if (false !== strpos($rootKey, '*')) {
                 continue;
             }

@@ -50,7 +50,7 @@ final class Locale
         return $this->value;
     }
 
-    public function equals(self $other): bool
+    public function equals($other): bool
     {
         return get_class($this) === get_class($other) && (string) $this === (string) $other;
     }
