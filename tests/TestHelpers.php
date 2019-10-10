@@ -4,6 +4,7 @@ namespace Thinktomorrow\Locale\Tests;
 
 use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Values\Config;
@@ -33,12 +34,12 @@ trait TestHelpers
         // Okay so we want to override all values but only the locales we want to prepend
         // This is because the order of the locales matters and we want to keep the
         // default as set below
-        $overrides_locales = array_only($overrides, 'locales');
+        $overrides_locales = Arr::only($overrides, 'locales');
         if (!empty($overrides_locales)) {
             $overrides_locales = $overrides_locales['locales'];
         }
 
-        $overrides_without_locales = array_except($overrides, 'locales');
+        $overrides_without_locales = Arr::except($overrides, 'locales');
 
         $locales = array_merge($overrides_locales, [
             'example.com' => [
