@@ -194,6 +194,7 @@ Note that this is best used for your main / default locale.
 ``` bash
 $ vendor/bin/phpunit
 ```
+For more details check out our full documentation https://thinktomorrow.github.io/package-docs/src/locale/
 
 ## Security
 

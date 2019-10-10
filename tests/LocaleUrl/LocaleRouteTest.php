@@ -11,7 +11,7 @@ use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleRouteTest extends TestCase
 {
-    public function setUp()
+    public function setUp() : void
     {
         parent::setUp();
 

@@ -33,6 +33,8 @@ tools:
             - tests
 
 build:
+    environment:
+        php: 7.2.13
     tests:
         override:
             -
