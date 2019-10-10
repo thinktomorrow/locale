@@ -95,6 +95,8 @@ To make your routes localized, place them inside a Route::group() with a followi
     
 ```
 
+The `localeRoutePrefix` function will automatically detect the active locale based on the request and will return the appropriate url segment as well.
+Behind the scenes this calls `app(\Thinktomorrow\Locale\Detect::class)->detectLocale()`. This needs to be called as early as possible in your application, like in a service provider or via the given `localeRoutePrefix` in the *routes/web.php* file. It is required for the locale package to be fully functional. 
 
 ## Generating a localized url
 

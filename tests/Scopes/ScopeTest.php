@@ -9,17 +9,17 @@ use Thinktomorrow\Locale\Values\Locale;
 use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
-use Thinktomorrow\Locale\Exceptions\NotDetectedException;
+use Thinktomorrow\Locale\Exceptions\ActiveLocaleMissing;
 
 class ScopeTest extends TestCase
 {
     /** @test */
     public function it_throws_error_if_not_detected()
     {
-        $this->expectException(NotDetectedException::class);
+        $this->expectException(ActiveLocaleMissing::class);
 
         ScopeFacade::refresh();
-        
+
         Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
         }]);
 
