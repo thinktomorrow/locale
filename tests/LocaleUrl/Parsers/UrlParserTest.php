@@ -10,7 +10,7 @@ class UrlParserTest extends TestCase
 {
     private $parser;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

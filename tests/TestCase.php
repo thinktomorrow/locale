@@ -13,7 +13,7 @@ class TestCase extends OrchestraTestCase
 
     protected $localeUrl;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
     }

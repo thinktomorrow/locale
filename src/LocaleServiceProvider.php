@@ -18,7 +18,8 @@ class LocaleServiceProvider extends ServiceProvider
         ]);
 
         $this->mergeConfigFrom(
-            __DIR__.'/config/locale.php', 'thinktomorrow.locale'
+            __DIR__.'/config/locale.php',
+            'thinktomorrow.locale'
         );
 
         $config = Config::from($this->getConfigValues());
