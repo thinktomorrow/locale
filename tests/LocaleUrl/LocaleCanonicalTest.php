@@ -9,7 +9,7 @@ use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleCanonicalTest extends TestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 

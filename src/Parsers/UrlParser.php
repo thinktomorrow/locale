@@ -43,7 +43,9 @@ class UrlParser
         }
 
         return $this->generator->to(
-            $this->url->localize($this->localeSegment, $this->available_locales)->get(), $this->parameters, $this->secure
+            $this->url->localize($this->localeSegment, $this->available_locales)->get(),
+            $this->parameters,
+            $this->secure
         );
     }
 

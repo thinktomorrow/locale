@@ -63,12 +63,13 @@ class Url
 
     public function localize(string $localeSegment = null, array $available_locales = [])
     {
-        $this->parsed['path'] = str_replace('//', '/',
+        $this->parsed['path'] = str_replace(
+            '//',
+            '/',
             rtrim(
                 '/'.trim($localeSegment.$this->delocalizePath($available_locales), '/'),
                 '/'
             )
-
         );
 
         return $this;

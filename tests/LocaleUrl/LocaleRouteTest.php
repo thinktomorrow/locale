@@ -11,7 +11,7 @@ use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleRouteTest extends TestCase
 {
-    public function setUp() : void
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -24,8 +24,6 @@ class LocaleRouteTest extends TestCase
         // Route with required param
         Route::get('{slug}/second', ['as' => 'route.second', 'uses' => function () {
         }]);
-
-
     }
 
     /** @test */

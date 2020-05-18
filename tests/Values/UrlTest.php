@@ -49,7 +49,8 @@ class UrlTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result,
+            $this->assertEquals(
+                $result,
                 Url::fromString($original)
                     ->localize('fr', ['fr' => 'BE_fr', '/' => 'en'])
                     ->get()
@@ -70,7 +71,8 @@ class UrlTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result,
+            $this->assertEquals(
+                $result,
                 Url::fromString($original)
                     ->localize(null, ['fr' => 'BE_fr', '/' => 'en'])
                     ->get()
@@ -91,7 +93,8 @@ class UrlTest extends TestCase
         ];
 
         foreach ($urls as $original => $result) {
-            $this->assertEquals($result,
+            $this->assertEquals(
+                $result,
                 Url::fromString($original)
                     ->localize('nl', ['fr' => 'BE_fr', '/' => 'en'])
                     ->get()
@@ -102,7 +105,8 @@ class UrlTest extends TestCase
     /** @test */
     public function it_keeps_passed_root_if_not_set_explicitly()
     {
-        $this->assertEquals('http://example.fr/fr/foo/bar',
+        $this->assertEquals(
+            'http://example.fr/fr/foo/bar',
             Url::fromString('http://example.fr/foo/bar')
                 ->localize('fr', ['fr' => 'BE_fr', '/' => 'en'])
                 ->get()
@@ -112,7 +116,8 @@ class UrlTest extends TestCase
     /** @test */
     public function it_can_set_custom_root()
     {
-        $this->assertEquals('https://example.com/fr/foo/bar',
+        $this->assertEquals(
+            'https://example.com/fr/foo/bar',
             Url::fromString('/foo/bar')
                 ->setCustomRoot(Root::fromString('https://example.com'))
                 ->localize('fr')
@@ -123,7 +128,8 @@ class UrlTest extends TestCase
     /** @test */
     public function it_can_set_url_as_secure()
     {
-        $this->assertEquals('https://example.com/fr/foo/bar',
+        $this->assertEquals(
+            'https://example.com/fr/foo/bar',
             Url::fromString('http://example.com/foo/bar')
                 ->localize('fr', ['fr' => 'BE_fr', '/' => 'en'])
                 ->secure()
@@ -134,7 +140,8 @@ class UrlTest extends TestCase
     /** @test */
     public function it_can_set_url_as_unsecure()
     {
-        $this->assertEquals('http://example.com/fr/foo/bar',
+        $this->assertEquals(
+            'http://example.com/fr/foo/bar',
             Url::fromString('https://example.com/foo/bar')
                 ->localize('fr', ['fr' => 'BE_fr', '/' => 'en'])
                 ->secure(false)
