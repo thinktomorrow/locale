@@ -66,7 +66,7 @@ class RouteParser
         $this->reset();
 
         $this->routename = $routename;
-        $this->parameters = $parameters;
+        $this->parameters = SanitizeParameters::rawurlencode($parameters);
         $this->secure = $secure;
 
         return $this;
@@ -106,6 +106,6 @@ class RouteParser
 
     public function resolveRoute($routekey, $parameters = [])
     {
-        return $this->urlParser->resolveRoute($routekey, $parameters, true);
+        return $this->urlParser->resolveRoute($routekey, $parameters);
     }
 }

@@ -111,6 +111,15 @@ class LocaleUrlTest extends TestCase
     }
 
     /** @test */
+    public function it_sanitizes_a_xss_injection()
+    {
+        $this->assertEquals(
+            'http://example.com/segment-one/first/%22%2520qss%253D%22QssAttrValue',
+            $this->localeUrl->to('first', 'locale-one', '"%20qss%3D"QssAttrValue')
+        );
+    }
+
+    /** @test */
     public function localeurl_is_available_as_a_global_function()
     {
         Scope::setActiveLocale(Locale::from('locale-two'));

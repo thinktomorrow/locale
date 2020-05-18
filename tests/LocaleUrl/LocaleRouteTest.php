@@ -24,6 +24,8 @@ class LocaleRouteTest extends TestCase
         // Route with required param
         Route::get('{slug}/second', ['as' => 'route.second', 'uses' => function () {
         }]);
+
+
     }
 
     /** @test */
@@ -136,6 +138,15 @@ class LocaleRouteTest extends TestCase
         }]);
 
         $this->assertEquals('http://example.com/first', $this->localeUrl->route('route.first'));
+    }
+
+    /** @test */
+    public function it_sanitizes_a_xss_injection()
+    {
+        $this->assertEquals(
+            'http://example.com/segment-one/first/%22%2520qss%253D%22QssAttrValue',
+            $this->localeUrl->route('route.first', 'locale-one', '"%20qss%3D"QssAttrValue')
+        );
     }
 
     /** @test */

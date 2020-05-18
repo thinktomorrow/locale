@@ -71,7 +71,7 @@ class LocaleUrl
 
         return $this->urlparser->set($url)
             ->localize($this->scope->segment($locale), $this->scope->locales())
-            ->parameters($parameters)
+            ->parameters((array) $parameters)
             ->get();
     }
 
