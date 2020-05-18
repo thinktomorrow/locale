@@ -12,7 +12,7 @@
             "name": "Ben Cavens",
             "email": "cavensben@gmail.com"
         }
-    ], 
+    ],
     "require": {
         "php" : ">=7.2",
         "laravel/framework": "~5.7|~5.8.7|~6.0",
@@ -21,7 +21,7 @@
     "require-dev": {
         "phpunit/phpunit" : "~7.5|8.*",
         "mockery/mockery" : "~1.1",
-        "orchestra/testbench": "^4.2.0"
+        "orchestra/testbench": "^3.7.0|^3.8.0|^4.2.0"
     },
     "autoload": {
         "psr-4": {
