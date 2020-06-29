@@ -19,7 +19,9 @@ class SanitizeParameters
                 return $param;
             }
 
-            return rawurlencode($param);
+            $param = rawurlencode($param);
+
+            return str_replace('%2F', '/', $param);
         }, $parameters);
     }
 }
