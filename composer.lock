@@ -4170,22 +4170,22 @@
         },
         {
             "name": "orchestra/testbench",
-            "version": "v5.5.0",
+            "version": "v5.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench.git",
-                "reference": "114de73d05d0ae3866967bdc345a4af02c44712a"
+                "reference": "cfae4db470fcac1e33541369b9ef9be8661a523a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench/zipball/114de73d05d0ae3866967bdc345a4af02c44712a",
-                "reference": "114de73d05d0ae3866967bdc345a4af02c44712a",
+                "url": "https://api.github.com/repos/orchestral/testbench/zipball/cfae4db470fcac1e33541369b9ef9be8661a523a",
+                "reference": "cfae4db470fcac1e33541369b9ef9be8661a523a",
                 "shasum": ""
             },
             "require": {
                 "laravel/framework": "^7.24",
                 "mockery/mockery": "^1.3.1",
-                "orchestra/testbench-core": "^5.3",
+                "orchestra/testbench-core": "^5.4",
                 "php": ">=7.2.5",
                 "phpunit/phpunit": "^8.4 || ^9.0"
             },
@@ -4226,29 +4226,30 @@
                     "type": "liberapay"
                 }
             ],
-            "time": "2020-08-31T05:24:47+00:00"
+            "time": "2020-09-27T23:52:00+00:00"
         },
         {
             "name": "orchestra/testbench-core",
-            "version": "v5.3.0",
+            "version": "v5.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench-core.git",
-                "reference": "2a0d4686e5ad815f8fee5a36eeada0a3c4797e18"
+                "reference": "9f7177629c8be2b6b07b9bf0c030669a09fabf16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/2a0d4686e5ad815f8fee5a36eeada0a3c4797e18",
-                "reference": "2a0d4686e5ad815f8fee5a36eeada0a3c4797e18",
+                "url": "https://api.github.com/repos/orchestral/testbench-core/zipball/9f7177629c8be2b6b07b9bf0c030669a09fabf16",
+                "reference": "9f7177629c8be2b6b07b9bf0c030669a09fabf16",
                 "shasum": ""
             },
             "require": {
                 "fzaninotto/faker": "^1.9.1",
-                "php": ">=7.2.5"
+                "php": ">=7.2.5",
+                "symfony/yaml": "^4.3 || ^5.0"
             },
             "require-dev": {
                 "laravel/framework": "^7.24",
-                "laravel/laravel": "dev-master",
+                "laravel/laravel": "7.x-dev",
                 "mockery/mockery": "^1.3.1",
                 "orchestra/canvas": "^5.0",
                 "phpunit/phpunit": "^8.4 || ^9.0"
@@ -4260,6 +4261,9 @@
                 "orchestra/testbench-dusk": "Allow using Laravel Dusk for testing (^5.0).",
                 "phpunit/phpunit": "Allow using PHPUnit for testing (^8.4 || ^9.0)."
             },
+            "bin": [
+                "testbench"
+            ],
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -4302,7 +4306,7 @@
                     "type": "liberapay"
                 }
             ],
-            "time": "2020-08-31T05:19:35+00:00"
+            "time": "2020-09-27T23:46:39+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -5575,6 +5579,83 @@
             "description": "Library that helps with managing the version number of Git-hosted PHP projects",
             "homepage": "https://github.com/sebastianbergmann/version",
             "time": "2016-10-03T07:35:21+00:00"
+        },
+        {
+            "name": "symfony/yaml",
+            "version": "v5.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/yaml.git",
+                "reference": "e147a68cb66a8b510f4b7481fe4da5b2ab65ec6a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/e147a68cb66a8b510f4b7481fe4da5b2ab65ec6a",
+                "reference": "e147a68cb66a8b510f4b7481fe4da5b2ab65ec6a",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.2.5",
+                "symfony/deprecation-contracts": "^2.1",
+                "symfony/polyfill-ctype": "~1.8"
+            },
+            "conflict": {
+                "symfony/console": "<4.4"
+            },
+            "require-dev": {
+                "symfony/console": "^4.4|^5.0"
+            },
+            "suggest": {
+                "symfony/console": "For validating YAML files using the lint command"
+            },
+            "bin": [
+                "Resources/bin/yaml-lint"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Yaml\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Yaml Component",
+            "homepage": "https://symfony.com",
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2020-09-27T03:44:28+00:00"
         },
         {
             "name": "theseer/tokenizer",
