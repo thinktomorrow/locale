@@ -52,22 +52,22 @@ class CanonicalScopeTest extends TestCase
 
     private function canonicalConfig(array $canonicals = null)
     {
-        if (!$canonicals) {
+        if (! $canonicals) {
             $canonicals = [
-                'nl'    => 'https://foobar.nl',
+                'nl' => 'https://foobar.nl',
                 'en-gb' => 'https://uk.foobar.com',
                 'en-us' => 'https://us.foobar.com',
             ];
         }
 
         return [
-            'locales'    => [
+            'locales' => [
                 'https://foobar.nl' => 'nl',
-                '*.foobar.com'      => [
+                '*.foobar.com' => [
                     'us' => 'en-us',
-                    '/'  => 'en-gb',
+                    '/' => 'en-gb',
                 ],
-                '*'                 => 'en-gb',
+                '*' => 'en-gb',
             ],
             'canonicals' => $canonicals,
         ];

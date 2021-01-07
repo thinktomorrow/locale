@@ -95,7 +95,7 @@ class RouteParser
         $this->available_locales = $available_locales;
 
         // Our route translator requires the corresponding application locale
-        $locale = (!$localeSegment || $localeSegment == '/')
+        $locale = (! $localeSegment || $localeSegment == '/')
             ? $available_locales['/']
             : $available_locales[$localeSegment];
 

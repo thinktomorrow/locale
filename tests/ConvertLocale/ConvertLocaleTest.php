@@ -15,11 +15,11 @@ class ConvertLocaleTest extends TestCase
         $this->detectLocaleAfterVisiting('http://convert.example.com/segment-ten', [
             'locales' => [
                 'convert.example.com' => [
-                    'segment-ten'           => 'locale-ten',
-                    '/'                     => 'locale-eleven',
+                    'segment-ten' => 'locale-ten',
+                    '/' => 'locale-eleven',
                 ],
             ],
-            'convert_locales'    => true,
+            'convert_locales' => true,
             'convert_locales_to' => [
                 'locale-ten' => 'converted-ten',
             ],
@@ -38,10 +38,10 @@ class ConvertLocaleTest extends TestCase
             'locales' => [
                 'convert.example.com' => [
                     'segment-ten' => 'locale-ten',
-                    '/'           => 'locale-eleven',
+                    '/' => 'locale-eleven',
                 ],
             ],
-            'convert_locales'    => true,
+            'convert_locales' => true,
             'convert_locales_to' => [
                 'locale-ten' => 'locale-twenty',
             ],
@@ -67,7 +67,7 @@ class ConvertLocaleTest extends TestCase
         $this->detectLocaleAfterVisiting('http://convert.example.com/', [
             'locales' => [
                 'convert.example.com' => [
-                    '/'           => 'locale-ten',
+                    '/' => 'locale-ten',
                 ],
             ],
             'convert_locales' => 'auto',
@@ -83,10 +83,10 @@ class ConvertLocaleTest extends TestCase
         $this->detectLocaleAfterVisiting('http://convert.example.com/', [
             'locales' => [
                 'convert.example.com' => [
-                    '/'           => 'locale-ten',
+                    '/' => 'locale-ten',
                 ],
             ],
-            'convert_locales'    => 'auto',
+            'convert_locales' => 'auto',
             'convert_locales_to' => [
                 'locale-ten' => 'converted-ten',
             ],

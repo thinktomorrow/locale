@@ -20,21 +20,21 @@ class LocaleUrlTest extends TestCase
     public function when_localizing_an_url_it_keeps_all_uri_segments_intact()
     {
         $urls = [
-            '/foo/bar'                                 => 'http://example.com/segment-four/foo/bar',
-            'foo/bar'                                  => 'http://example.com/segment-four/foo/bar',
-            ''                                         => 'http://example.com/segment-four',
-            'http://example.com'                       => 'http://example.com/segment-four',
-            'http://example.com/foo/bar'               => 'http://example.com/segment-four/foo/bar',
-            'http://example.com/foo/bar?s=q'           => 'http://example.com/segment-four/foo/bar?s=q',
+            '/foo/bar' => 'http://example.com/segment-four/foo/bar',
+            'foo/bar' => 'http://example.com/segment-four/foo/bar',
+            '' => 'http://example.com/segment-four',
+            'http://example.com' => 'http://example.com/segment-four',
+            'http://example.com/foo/bar' => 'http://example.com/segment-four/foo/bar',
+            'http://example.com/foo/bar?s=q' => 'http://example.com/segment-four/foo/bar?s=q',
             'https://example.com/segment-four/foo/bar' => 'https://example.com/segment-four/foo/bar',
-            'http://example.com:4000/foo/bar'          => 'http://example.com:4000/segment-four/foo/bar',
-            'https://example.com/foo/bar#index'        => 'https://example.com/segment-four/foo/bar#index',
+            'http://example.com:4000/foo/bar' => 'http://example.com:4000/segment-four/foo/bar',
+            'https://example.com/foo/bar#index' => 'https://example.com/segment-four/foo/bar#index',
 
             // removes existing valid locale segment
             'https://example.com/segment-five/foo/bar' => 'https://example.com/segment-four/foo/bar',
 
             // non-matching domain is passed as is
-            'http://example.fr/foo/bar'                => 'http://example.fr/segment-four/foo/bar',
+            'http://example.fr/foo/bar' => 'http://example.fr/segment-four/foo/bar',
         ];
 
         foreach ($urls as $original => $result) {
@@ -46,20 +46,20 @@ class LocaleUrlTest extends TestCase
     public function when_localizing_an_url_with_default_locale_it_keeps_all_uri_segments_intact()
     {
         $urls = [
-            '/foo/bar'                                 => 'http://example.com/foo/bar',
-            'foo/bar'                                  => 'http://example.com/foo/bar',
-            ''                                         => 'http://example.com',
-            'http://example.com'                       => 'http://example.com',
-            'http://example.com/foo/bar'               => 'http://example.com/foo/bar',
-            'http://example.com/foo/bar?s=q'           => 'http://example.com/foo/bar?s=q',
-            'https://example.com/foo/bar#index'        => 'https://example.com/foo/bar#index',
-            'http://example.com:4000/foo/bar'          => 'http://example.com:4000/foo/bar',
+            '/foo/bar' => 'http://example.com/foo/bar',
+            'foo/bar' => 'http://example.com/foo/bar',
+            '' => 'http://example.com',
+            'http://example.com' => 'http://example.com',
+            'http://example.com/foo/bar' => 'http://example.com/foo/bar',
+            'http://example.com/foo/bar?s=q' => 'http://example.com/foo/bar?s=q',
+            'https://example.com/foo/bar#index' => 'https://example.com/foo/bar#index',
+            'http://example.com:4000/foo/bar' => 'http://example.com:4000/foo/bar',
 
             // removes existing valid locale segment
             'https://example.com/segment-four/foo/bar' => 'https://example.com/foo/bar',
 
             // non-matching domain is passed as is
-            'http://example.nl/foo/bar'                => 'http://example.nl/foo/bar',
+            'http://example.nl/foo/bar' => 'http://example.nl/foo/bar',
         ];
 
         foreach ($urls as $original => $result) {

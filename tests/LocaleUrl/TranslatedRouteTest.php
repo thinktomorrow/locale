@@ -42,8 +42,8 @@ class TranslatedRouteTest extends TestCase
 
         $this->assertEquals('http://example.com/segment-two/second/{slug}/{tag}/end', $this->localeUrl->route('trans.multiple', 'locale-two'));
         $this->assertEquals('http://example.com/segment-two/second/this/great/story/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['this', 'great', 'story']));
-        $this->assertEquals('http://example.com/segment-two/second/{slug}/great/story/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['subcat' =>'great', 'tag' => 'story']));
-        $this->assertEquals('http://example.com/segment-two/second/{slug}/great/story/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['tag' => 'story', 'subcat' =>'great']));
+        $this->assertEquals('http://example.com/segment-two/second/{slug}/great/story/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['subcat' => 'great', 'tag' => 'story']));
+        $this->assertEquals('http://example.com/segment-two/second/{slug}/great/story/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['tag' => 'story', 'subcat' => 'great']));
         $this->assertEquals('http://example.com/segment-two/second/{slug}/great/{tag}/end', $this->localeUrl->route('trans.multiple', 'locale-two', ['subcat' => 'great']));
     }
 }

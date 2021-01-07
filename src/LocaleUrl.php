@@ -138,7 +138,7 @@ class LocaleUrl
 
     private function parseWithCanonicalScope(Scope $scope, RouteParser $parser): RouteParser
     {
-        if (!$scope->customRoot()) {
+        if (! $scope->customRoot()) {
             return $parser;
         }
 

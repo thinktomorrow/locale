@@ -18,24 +18,24 @@ class RootTest extends TestCase
     public function it_normalizes_domain_to_complete_root()
     {
         $urls = [
-            'example.com'                => 'http://example.com',
-            'example.com/'               => 'http://example.com',
-            'example.com/foo/bar'        => 'http://example.com',
-            'foobar'                     => 'http://foobar',
-            'foo/bar'                    => 'http://foo',
-            'http://example.com'         => 'http://example.com',
-            'https://example.com'        => 'https://example.com',
+            'example.com' => 'http://example.com',
+            'example.com/' => 'http://example.com',
+            'example.com/foo/bar' => 'http://example.com',
+            'foobar' => 'http://foobar',
+            'foo/bar' => 'http://foo',
+            'http://example.com' => 'http://example.com',
+            'https://example.com' => 'https://example.com',
             'http://example.com/foo/bar' => 'http://example.com',
-            'localhost:5000'             => 'http://localhost:5000',
-            '127.0.0.1'                  => 'http://127.0.0.1',
+            'localhost:5000' => 'http://localhost:5000',
+            '127.0.0.1' => 'http://127.0.0.1',
 
             // Schemeless
-            '//example.com/foo/bar?s=q'  => '//example.com',
+            '//example.com/foo/bar?s=q' => '//example.com',
 
             // Edgecases - are there any?
-            '/'                          => 'http:///', // Is this expected behaviour?
-            '//'                         => 'http:///',
-            ''                           => 'http://',
+            '/' => 'http:///', // Is this expected behaviour?
+            '//' => 'http:///',
+            '' => 'http://',
         ];
 
         foreach ($urls as $original => $result) {
@@ -47,8 +47,8 @@ class RootTest extends TestCase
     public function it_can_set_root_as_secure()
     {
         $urls = [
-            'example.com'         => 'https://example.com',
-            'http://example.com'  => 'https://example.com',
+            'example.com' => 'https://example.com',
+            'http://example.com' => 'https://example.com',
             'https://example.com' => 'https://example.com',
         ];
 
@@ -85,9 +85,9 @@ class RootTest extends TestCase
     public function it_can_get_scheme()
     {
         $urls = [
-            'example.com'         => null,
-            '//example.com'       => null,
-            'http://example.com'  => 'http',
+            'example.com' => null,
+            '//example.com' => null,
+            'http://example.com' => 'http',
             'https://example.com' => 'https',
         ];
 

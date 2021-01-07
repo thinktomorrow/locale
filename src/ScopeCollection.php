@@ -41,7 +41,7 @@ final class ScopeCollection
     {
         $canonicals = $this->config->get('canonicals');
 
-        if (!isset($canonicals[$locale])) {
+        if (! isset($canonicals[$locale])) {
             return null;
         }
 

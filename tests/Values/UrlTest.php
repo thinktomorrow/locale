@@ -38,13 +38,13 @@ class UrlTest extends TestCase
     public function it_accepts_a_locale_segment()
     {
         $urls = [
-            null                             => '/fr',
-            '//'                             => '/fr',
-            '/foo/bar'                       => '/fr/foo/bar',
-            'foo/bar'                        => '/fr/foo/bar',
-            ''                               => '/fr',
-            'http://example.com'             => 'http://example.com/fr',
-            'http://example.com/foo/bar'     => 'http://example.com/fr/foo/bar',
+            null => '/fr',
+            '//' => '/fr',
+            '/foo/bar' => '/fr/foo/bar',
+            'foo/bar' => '/fr/foo/bar',
+            '' => '/fr',
+            'http://example.com' => 'http://example.com/fr',
+            'http://example.com/foo/bar' => 'http://example.com/fr/foo/bar',
             'http://example.com/foo/bar?s=q' => 'http://example.com/fr/foo/bar?s=q',
         ];
 
@@ -62,11 +62,11 @@ class UrlTest extends TestCase
     public function it_can_set_a_hidden_locale()
     {
         $urls = [
-            '/foo/bar'                       => '/foo/bar',
-            'foo/bar'                        => '/foo/bar',
-            ''                               => '',
-            'http://example.com'             => 'http://example.com',
-            'http://example.com/foo/bar'     => 'http://example.com/foo/bar',
+            '/foo/bar' => '/foo/bar',
+            'foo/bar' => '/foo/bar',
+            '' => '',
+            'http://example.com' => 'http://example.com',
+            'http://example.com/foo/bar' => 'http://example.com/foo/bar',
             'http://example.com/foo/bar?s=q' => 'http://example.com/foo/bar?s=q',
         ];
 
@@ -84,11 +84,11 @@ class UrlTest extends TestCase
     public function it_removes_existing_locale_segment()
     {
         $urls = [
-            ''                              => '/nl',
-            '/fr/foo/bar'                   => '/nl/foo/bar',
-            'fr/foo/bar'                    => '/nl/foo/bar',
-            'fr'                            => '/nl',
-            'http://example.com/fr'         => 'http://example.com/nl',
+            '' => '/nl',
+            '/fr/foo/bar' => '/nl/foo/bar',
+            'fr/foo/bar' => '/nl/foo/bar',
+            'fr' => '/nl',
+            'http://example.com/fr' => 'http://example.com/nl',
             'http://example.com/fr/foo/bar' => 'http://example.com/nl/foo/bar',
         ];
 
@@ -153,13 +153,13 @@ class UrlTest extends TestCase
     public function it_can_check_if_given_url_is_absolute()
     {
         $urls = [
-            '/foo/bar'                  => false,
-            'foo/bar'                   => false,
-            ''                          => false,
-            'example.com'               => false,
-            'http://example.com'        => true,
+            '/foo/bar' => false,
+            'foo/bar' => false,
+            '' => false,
+            'example.com' => false,
+            'http://example.com' => true,
             '//example.com/foo/bar?s=q' => true,
-            'https://example.com'       => true,
+            'https://example.com' => true,
         ];
 
         foreach ($urls as $original => $result) {

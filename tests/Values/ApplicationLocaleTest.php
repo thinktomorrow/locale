@@ -37,7 +37,7 @@ class ApplicationLocaleTest extends TestCase
     public function it_converts_to_application_locale()
     {
         $this->refreshLocaleBindings([
-            'convert_locales'    => true,
+            'convert_locales' => true,
             'convert_locales_to' => [
                 'locale-ten' => 'convert-ten',
             ],
@@ -50,7 +50,7 @@ class ApplicationLocaleTest extends TestCase
     public function it_does_not_convert_to_application_locale_if_not_set_to_do_so()
     {
         $this->refreshLocaleBindings([
-            'convert_locales'    => false,
+            'convert_locales' => false,
             'convert_locales_to' => [
                 'locale-ten' => 'convert-ten',
             ],
@@ -63,7 +63,7 @@ class ApplicationLocaleTest extends TestCase
     public function automatic_conversion_removes_region_portion_of_locale()
     {
         $this->refreshLocaleBindings([
-            'convert_locales'    => 'auto',
+            'convert_locales' => 'auto',
             'convert_locales_to' => [],
         ]);
 

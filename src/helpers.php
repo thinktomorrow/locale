@@ -2,7 +2,7 @@
 
 use Thinktomorrow\Locale\LocaleUrl;
 
-if (!function_exists('localeurl')) {
+if (! function_exists('localeurl')) {
     /**
      * @param $url
      * @param null  $locale
@@ -17,7 +17,7 @@ if (!function_exists('localeurl')) {
     }
 }
 
-if (!function_exists('localeroute')) {
+if (! function_exists('localeroute')) {
     /**
      * @param $name
      * @param null  $locale
@@ -35,7 +35,7 @@ if (!function_exists('localeroute')) {
 /*
  * Detect locale and return the active segment. Useful for route segment injections
  */
-if (!function_exists('localeRoutePrefix')) {
+if (! function_exists('localeRoutePrefix')) {
     function localeRoutePrefix()
     {
         return app(\Thinktomorrow\Locale\Detect::class)
@@ -48,7 +48,7 @@ if (!function_exists('localeRoutePrefix')) {
 /*
  * Get the sanitized locale config which gives you access to the canonicals
  */
-if (!function_exists('localeConfig')) {
+if (! function_exists('localeConfig')) {
     function localeConfig()
     {
         return app(\Thinktomorrow\Locale\Detect::class)->getConfig();

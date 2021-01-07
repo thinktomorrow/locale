@@ -32,8 +32,8 @@ class Root
 
     public function get()
     {
-        $scheme = (!is_null($this->scheme)) ? $this->scheme.'://' : ($this->schemeless ? '//' : $this->defaultScheme.'://');
-        $port = (!is_null($this->port)) ? ':'.$this->port : null;
+        $scheme = (! is_null($this->scheme)) ? $this->scheme.'://' : ($this->schemeless ? '//' : $this->defaultScheme.'://');
+        $port = (! is_null($this->port)) ? ':'.$this->port : null;
 
         if ($scheme == 'http://' && $this->secure) {
             $scheme = 'https://';
@@ -80,7 +80,7 @@ class Root
 
         // If a schemeless url is passed, parse_url will ignore this and strip the first tags
         // so we keep a reminder to explicitly reassemble the 'anonymous scheme' manually
-        $this->schemeless = !isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
+        $this->schemeless = ! isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
 
         $this->scheme = $parsed['scheme'] ?? null;
         if ($this->scheme == 'https') {
@@ -102,7 +102,7 @@ class Root
             return $parsed['host'];
         }
 
-        if (!isset($parsed['path'])) {
+        if (! isset($parsed['path'])) {
             return null;
         }
 

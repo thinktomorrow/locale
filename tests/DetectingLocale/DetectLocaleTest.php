@@ -41,7 +41,7 @@ class DetectLocaleTest extends TestCase
             'locales' => [
                 '*.example.com' => [
                     'segment-ten' => 'locale-ten',
-                    '/'           => 'locale-eleven',
+                    '/' => 'locale-eleven',
                 ],
             ],
         ];
@@ -56,8 +56,8 @@ class DetectLocaleTest extends TestCase
     {
         $config = [
             'locales' => [
-                'ten.example.com'    => 'locale-ten',
-                '*.example.com'      => 'locale-eleven',
+                'ten.example.com' => 'locale-ten',
+                '*.example.com' => 'locale-eleven',
             ],
         ];
 

@@ -39,7 +39,7 @@ class ScopeTest extends TestCase
         $this->assertEquals([
             'segment-four' => 'locale-four',
             'segment-five' => 'locale-five',
-            '/'            => 'locale-zero',
+            '/' => 'locale-zero',
         ], ScopeFacade::locales());
     }
 
