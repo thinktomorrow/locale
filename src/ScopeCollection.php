@@ -52,7 +52,7 @@ final class ScopeCollection
 
     private function guessKeyFromRoot(string $value): string
     {
-        foreach ($this->config->get('locales') as $scopeKey => $locales) {
+        foreach (array_keys($this->config->get('locales', [])) as $scopeKey) {
             $pattern = preg_quote($scopeKey, '#');
 
             /*

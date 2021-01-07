@@ -60,8 +60,10 @@ class LocaleServiceProvider extends ServiceProvider
 
     private function getConfigValues()
     {
-        if (file_exists(config_path('thinktomorrow/locale.php'))) {
-            return require config_path('thinktomorrow/locale.php');
+        $projectConfigPath = config_path('thinktomorrow/locale.php');
+
+        if (file_exists($projectConfigPath)) {
+            return require $projectConfigPath;
         }
 
         return require __DIR__.'/config/locale.php';

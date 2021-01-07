@@ -122,7 +122,7 @@ class Config implements \ArrayAccess
         foreach ($locales as $group => $segments) {
             // If single locale is passed, it's considered the default for this group
             if (! is_array($segments)) {
-                $locales[$group] = $segments = ['/' => $segments];
+                $locales[$group] = ['/' => $segments];
             }
         }
 
@@ -148,7 +148,7 @@ class Config implements \ArrayAccess
             throw new InvalidConfig('Group [default] is missing the default locale. e.g. ["/" => "en"]');
         }
 
-        foreach ($locales as $group => $segments) {
+        foreach (array_keys($locales) as $group) {
             if (! is_string($group)) {
                 throw new InvalidConfig('Invalid config structure for locales group ['.$group.']');
             }
@@ -165,7 +165,7 @@ class Config implements \ArrayAccess
     private function validateEachCanonicalLocaleExists(array $config)
     {
         $canonicals = $config['canonicals'] ?? [];
-        foreach ($canonicals as $locale => $canonical) {
+        foreach (array_keys($canonicals) as $locale) {
             if (! $this->existsAsLocale($config['locales'], $locale)) {
                 throw new InvalidConfig('Canonical key '.$locale.' is not present as locale.');
             }

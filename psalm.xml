@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <psalm
-    errorLevel="4"
+    errorLevel="8"
     resolveFromConfigFile="true"
     findUnusedVariablesAndParams="true"
     useDocblockPropertyTypes="true"
@@ -9,13 +9,21 @@
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
 >
     <projectFiles>
-        <directory name="src" />
+        <directory name="src"/>
         <ignoreFiles>
-            <directory name="vendor" />
+            <directory name="vendor"/>
         </ignoreFiles>
     </projectFiles>
 
     <plugins>
         <pluginClass class="Psalm\LaravelPlugin\Plugin"/>
     </plugins>
+
+    <issueHandlers>
+        <MissingFile>
+            <errorLevel type="suppress">
+                <file name="src/LocaleServiceProvider.php" />
+            </errorLevel>
+        </MissingFile>
+    </issueHandlers>
 </psalm>
