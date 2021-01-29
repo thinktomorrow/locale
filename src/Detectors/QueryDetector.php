@@ -21,11 +21,11 @@ class QueryDetector implements Detector
 
     public function get(Scope $scope, Config $config): ?Locale
     {
-        if (! isset($config['query_key'])) {
+        if (!isset($config['query_key'])) {
             return null;
         }
 
-        if (! $queryValue = $this->request->get($config['query_key'])) {
+        if (!$queryValue = $this->request->get($config['query_key'])) {
             return null;
         }
 

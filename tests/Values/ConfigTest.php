@@ -30,15 +30,15 @@ class ConfigTest extends TestCase
         $config = Config::from([
             'locales' => [
                 'two.example.com/' => 'locale-two',
-                'example.com/' => 'locale-three',
-                '*' => 'locale-zero',
+                'example.com/'     => 'locale-three',
+                '*'                => 'locale-zero',
             ],
         ]);
 
         $this->assertSame([
             'two.example.com' => ['/' => 'locale-two'],
-            'example.com' => ['/' => 'locale-three'],
-            '*' => ['/' => 'locale-zero'],
+            'example.com'     => ['/' => 'locale-three'],
+            '*'               => ['/' => 'locale-zero'],
         ], $config->get('locales'));
     }
 
@@ -87,21 +87,21 @@ class ConfigTest extends TestCase
             [
                 [
                     'example.com' => ['/en' => 'en-gb'],
-                    '*' => 'nl',
+                    '*'           => 'nl',
                 ],
                 [
                     'example.com' => ['en' => 'en-gb'],
-                    '*' => ['/' => 'nl'],
+                    '*'           => ['/' => 'nl'],
                 ],
             ],
             [
                 [
                     '*.fr' => 'fr',
-                    '*' => 'nl',
+                    '*'    => 'nl',
                 ],
                 [
                     '*.fr' => ['/' => 'fr'],
-                    '*' => ['/' => 'nl'],
+                    '*'    => ['/' => 'nl'],
                 ],
             ],
         ];
@@ -159,7 +159,7 @@ class ConfigTest extends TestCase
         Config::from([
             'locales' => [
                 'example.com/' => 'locale-three',
-                '*' => 'locale-zero',
+                '*'            => 'locale-zero',
             ],
             'canonicals' => [
                 'locale-unknown' => 'canonical.com',
@@ -178,25 +178,25 @@ class ConfigTest extends TestCase
             'locales' => [
                 'convert.example.com' => [
                     'segment-ten' => 'locale-ten',
-                    '/' => 'locale-eleven',
+                    '/'           => 'locale-eleven',
                 ],
                 'example.com' => [
                     'segment-one' => 'locale-one',
                     'segment-two' => 'locale-two',
-                    '/' => 'locale-three',
+                    '/'           => 'locale-three',
                 ],
                 '*' => [
                     'segment-four' => 'locale-four',
                     'segment-five' => 'locale-five',
-                    '/' => 'locale-zero',
+                    '/'            => 'locale-zero',
                 ],
             ],
             'canonicals' => [
-                'locale-ten' => 'convert.example.com',
+                'locale-ten'    => 'convert.example.com',
                 'locale-eleven' => 'convert.example.com',
-                'locale-one' => 'example.com',
-                'locale-two' => 'example.com',
-                'locale-three' => 'example.com',
+                'locale-one'    => 'example.com',
+                'locale-two'    => 'example.com',
+                'locale-three'  => 'example.com',
             ],
         ]);
     }
@@ -207,8 +207,8 @@ class ConfigTest extends TestCase
         $config = Config::from([
             'locales' => [
                 'two.example.com/' => 'locale-two',
-                'example.com/' => 'locale-three',
-                '*' => 'locale-zero',
+                'example.com/'     => 'locale-three',
+                '*'                => 'locale-zero',
             ],
             'canonicals' => [
                 'locale-three' => 'custom-canonical.com',
@@ -217,7 +217,7 @@ class ConfigTest extends TestCase
 
         $this->assertSame([
             'locale-three' => 'custom-canonical.com',
-            'locale-two' => 'two.example.com',
+            'locale-two'   => 'two.example.com',
         ], $config->get('canonicals'));
     }
 
@@ -228,11 +228,11 @@ class ConfigTest extends TestCase
             'locales' => [
                 'two.example.com/' => [
                     'segment-three' => 'locale-three',
-                    'segment-two' => 'locale-two',
-                    '/' => 'locale-four',
+                    'segment-two'   => 'locale-two',
+                    '/'             => 'locale-four',
                 ],
                 'example.com/' => 'locale-two',
-                '*' => 'locale-zero',
+                '*'            => 'locale-zero',
             ],
             'canonicals' => [
                 'locale-three' => 'custom-canonical.com',
@@ -241,8 +241,8 @@ class ConfigTest extends TestCase
 
         $this->assertSame([
             'locale-three' => 'custom-canonical.com',
-            'locale-two' => 'two.example.com',
-            'locale-four' => 'two.example.com',
+            'locale-two'   => 'two.example.com',
+            'locale-four'  => 'two.example.com',
         ], $config->get('canonicals'));
     }
 
@@ -251,10 +251,10 @@ class ConfigTest extends TestCase
     {
         $config = Config::from([
             'locales' => [
-                '*.example.com/' => 'locale-two',
+                '*.example.com/'   => 'locale-two',
                 'two.example.com/' => 'locale-two',
-                'example.com/' => 'locale-three',
-                '*' => 'locale-zero',
+                'example.com/'     => 'locale-three',
+                '*'                => 'locale-zero',
             ],
             'canonicals' => [
                 'locale-three' => 'custom-canonical.com',
@@ -263,7 +263,7 @@ class ConfigTest extends TestCase
 
         $this->assertSame([
             'locale-three' => 'custom-canonical.com',
-            'locale-two' => 'two.example.com',
+            'locale-two'   => 'two.example.com',
         ], $config->get('canonicals'));
     }
 }

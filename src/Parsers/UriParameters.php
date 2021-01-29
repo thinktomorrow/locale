@@ -40,7 +40,7 @@ class UriParameters
         $path = static::replaceNamedParameters($path, $parameters);
 
         $path = preg_replace_callback('/\{.*?\}/', function ($match) use (&$parameters) {
-            return (empty($parameters) && ! Str::endsWith($match[0], '?}'))
+            return (empty($parameters) && !Str::endsWith($match[0], '?}'))
                 ? $match[0]
                 : array_shift($parameters);
         }, $path);
