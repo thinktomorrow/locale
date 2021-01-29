@@ -39,7 +39,7 @@ class Scope
 
     public function __construct(array $locales)
     {
-        if (! isset($locales['/'])) {
+        if (!isset($locales['/'])) {
             throw new InvalidScope('Default locale is required for scope. Add this as \'/\' => locale.');
         }
         $this->locales = $locales;
@@ -113,7 +113,7 @@ class Scope
 
     public function validateLocale(string $locale = null): bool
     {
-        if (! $locale) {
+        if (!$locale) {
             return false;
         }
 
@@ -122,7 +122,7 @@ class Scope
 
     public function validateSegment(string $segment = null): bool
     {
-        if (! $segment) {
+        if (!$segment) {
             return false;
         }
 

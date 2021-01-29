@@ -23,16 +23,16 @@ class LocaleCanonicalTest extends TestCase
         return parent::detectLocaleAfterVisiting($url, array_merge([
             'locales' => [
                 '*.custom-domain.com' => 'locale-thirteen',
-                'one-domain.com' => 'locale-one',
-                'custom-domain.com' => 'locale-ten',
-                'eleventh-domain' => [
+                'one-domain.com'      => 'locale-one',
+                'custom-domain.com'   => 'locale-ten',
+                'eleventh-domain'     => [
                     'segment-eleven' => 'locale-eleven',
                     'segment-twelve' => 'locale-twelve',
                 ],
             ],
             'canonicals' => [
-                'locale-one' => 'overridden-domain.com',
-                'locale-ten' => 'https://custom-domain.com',
+                'locale-one'    => 'overridden-domain.com',
+                'locale-ten'    => 'https://custom-domain.com',
                 'locale-eleven' => 'http://www.eleventh-domain',
             ],
         ], $overrides));

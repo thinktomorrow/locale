@@ -25,7 +25,7 @@ class UrlParserTest extends TestCase
 
         $urls = [
             '/foo/bar' => 'http://example.com/foo/bar',
-            '' => 'http://example.com',
+            ''         => 'http://example.com',
         ];
 
         foreach ($urls as $original => $result) {
@@ -59,14 +59,14 @@ class UrlParserTest extends TestCase
     public function with_localization_parameter_url_is_injected_with_localeslug()
     {
         $urls = [
-            '/foo/bar' => 'http://example.com/segment-one/foo/bar',
-            'foo/bar' => 'http://example.com/segment-one/foo/bar',
-            '' => 'http://example.com/segment-one',
-            'http://example.com' => 'http://example.com/segment-one',
-            'http://example.com/foo/bar' => 'http://example.com/segment-one/foo/bar',
-            'http://example.com/foo/bar?s=q' => 'http://example.com/segment-one/foo/bar?s=q',
+            '/foo/bar'                                => 'http://example.com/segment-one/foo/bar',
+            'foo/bar'                                 => 'http://example.com/segment-one/foo/bar',
+            ''                                        => 'http://example.com/segment-one',
+            'http://example.com'                      => 'http://example.com/segment-one',
+            'http://example.com/foo/bar'              => 'http://example.com/segment-one/foo/bar',
+            'http://example.com/foo/bar?s=q'          => 'http://example.com/segment-one/foo/bar?s=q',
             'https://example.com/segment-one/foo/bar' => 'https://example.com/segment-one/foo/bar',
-            'https://example.com/foo/bar#index' => 'https://example.com/segment-one/foo/bar#index',
+            'https://example.com/foo/bar#index'       => 'https://example.com/segment-one/foo/bar#index',
 
             'http://unknown.be/foo/bar' => 'http://unknown.be/segment-one/foo/bar',
         ];
@@ -89,9 +89,9 @@ class UrlParserTest extends TestCase
     public function to_make_url_secure()
     {
         $urls = [
-            '/foo/bar' => 'https://example.com/segment-one/foo/bar',
-            'foo/bar' => 'https://example.com/segment-one/foo/bar',
-            '' => 'https://example.com/segment-one',
+            '/foo/bar'                               => 'https://example.com/segment-one/foo/bar',
+            'foo/bar'                                => 'https://example.com/segment-one/foo/bar',
+            ''                                       => 'https://example.com/segment-one',
             'http://example.com/segment-one/foo/bar' => 'https://example.com/segment-one/foo/bar',
         ];
 

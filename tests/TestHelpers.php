@@ -35,7 +35,7 @@ trait TestHelpers
         // This is because the order of the locales matters and we want to keep the
         // default as set below
         $overrides_locales = Arr::only($overrides, 'locales');
-        if (! empty($overrides_locales)) {
+        if (!empty($overrides_locales)) {
             $overrides_locales = $overrides_locales['locales'];
         }
 
@@ -45,27 +45,27 @@ trait TestHelpers
             'example.com' => [
                 'segment-one' => 'locale-one',
                 'segment-two' => 'locale-two',
-                '/' => 'locale-three',
+                '/'           => 'locale-three',
             ],
             '*' => [
                 'segment-four' => 'locale-four',
                 'segment-five' => 'locale-five',
-                '/' => 'locale-zero',
+                '/'            => 'locale-zero',
             ],
         ]);
 
         return Config::from(array_merge([
-            'locales' => $locales,
+            'locales'    => $locales,
             'canonicals' => [
                 //
             ],
-            'convert_locales' => false,
+            'convert_locales'    => false,
             'convert_locales_to' => [
 
             ],
-            'secure' => false,
-            'route_key' => 'locale_slug',
-            'query_key' => 'locale',
+            'secure'          => false,
+            'route_key'       => 'locale_slug',
+            'query_key'       => 'locale',
             'routes_filename' => 'routes',
         ], $overrides_without_locales));
     }
@@ -75,7 +75,7 @@ trait TestHelpers
         return new Scope([
             'segment-four' => 'locale-four',
             'segment-five' => 'locale-five',
-            '/' => 'locale-zero',
+            '/'            => 'locale-zero',
         ]);
     }
 }

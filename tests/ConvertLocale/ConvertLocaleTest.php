@@ -16,10 +16,10 @@ class ConvertLocaleTest extends TestCase
             'locales' => [
                 'convert.example.com' => [
                     'segment-ten' => 'locale-ten',
-                    '/' => 'locale-eleven',
+                    '/'           => 'locale-eleven',
                 ],
             ],
-            'convert_locales' => true,
+            'convert_locales'    => true,
             'convert_locales_to' => [
                 'locale-ten' => 'converted-ten',
             ],
@@ -38,10 +38,10 @@ class ConvertLocaleTest extends TestCase
             'locales' => [
                 'convert.example.com' => [
                     'segment-ten' => 'locale-ten',
-                    '/' => 'locale-eleven',
+                    '/'           => 'locale-eleven',
                 ],
             ],
-            'convert_locales' => true,
+            'convert_locales'    => true,
             'convert_locales_to' => [
                 'locale-ten' => 'locale-twenty',
             ],
@@ -86,7 +86,7 @@ class ConvertLocaleTest extends TestCase
                     '/' => 'locale-ten',
                 ],
             ],
-            'convert_locales' => 'auto',
+            'convert_locales'    => 'auto',
             'convert_locales_to' => [
                 'locale-ten' => 'converted-ten',
             ],

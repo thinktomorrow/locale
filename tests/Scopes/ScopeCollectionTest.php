@@ -56,11 +56,11 @@ class ScopeCollectionTest extends TestCase
     {
         $this->assertEquals(new Scope($locales), ScopeCollection::fromArray([
             'locales' => [
-                'segment-ten.example.com' => 'locale-ten',
+                'segment-ten.example.com'      => 'locale-ten',
                 'segment-ten.example.com:8000' => 'locale-eleven',
-                'example.com' => 'locale-twelve',
-                'segment-thirteen.*' => 'locale-thirteen',
-                '*' => 'locale-zero',
+                'example.com'                  => 'locale-twelve',
+                'segment-thirteen.*'           => 'locale-thirteen',
+                '*'                            => 'locale-zero',
             ],
         ])->findByRoot($root));
     }
@@ -89,7 +89,7 @@ class ScopeCollectionTest extends TestCase
         $this->assertEquals(new Scope(['/' => 'locale-one']), ScopeCollection::fromConfig(Config::from([
             'locales' => [
                 'example.com/' => 'locale-one',
-                '*' => 'locale-zero',
+                '*'            => 'locale-zero',
             ],
         ]))->findByRoot('http://www.example.com'));
     }
@@ -100,7 +100,7 @@ class ScopeCollectionTest extends TestCase
         $this->assertEquals(new Scope(['/' => 'locale-zero']), ScopeCollection::fromArray([
             'locales' => [
                 'example.com' => 'locale-twelve',
-                '*' => 'locale-zero',
+                '*'           => 'locale-zero',
             ],
         ])->findByRoot(''));
     }
@@ -111,7 +111,7 @@ class ScopeCollectionTest extends TestCase
         $collection = ScopeCollection::fromArray([
             'locales' => [
                 'segment-ten.foobar.com' => 'locale-ten',
-                '*' => ['segment-eleven' => 'locale-ten', '/' => 'locale-zero'],
+                '*'                      => ['segment-eleven' => 'locale-ten', '/' => 'locale-zero'],
             ],
         ]);
 
