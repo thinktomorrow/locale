@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dadc41f60a9b545a147f45f6e6b90a09",
+    "content-hash": "de8cffe43b27ad17a1474a199920ba8e",
     "packages": [
         {
             "name": "brick/math",
@@ -3796,16 +3796,16 @@
         },
         {
             "name": "thinktomorrow/url",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thinktomorrow/url.git",
-                "reference": "65ba048b676d7e9614b0a1bab937a71ca9335b6c"
+                "reference": "2f3c2956fbcec5890eaa73f76d5c58cf000ad56e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thinktomorrow/url/zipball/65ba048b676d7e9614b0a1bab937a71ca9335b6c",
-                "reference": "65ba048b676d7e9614b0a1bab937a71ca9335b6c",
+                "url": "https://api.github.com/repos/thinktomorrow/url/zipball/2f3c2956fbcec5890eaa73f76d5c58cf000ad56e",
+                "reference": "2f3c2956fbcec5890eaa73f76d5c58cf000ad56e",
                 "shasum": ""
             },
             "require": {
@@ -3848,9 +3848,9 @@
             ],
             "support": {
                 "issues": "https://github.com/thinktomorrow/url/issues",
-                "source": "https://github.com/thinktomorrow/url/tree/master"
+                "source": "https://github.com/thinktomorrow/url/tree/1.0.1"
             },
-            "time": "2019-05-21T11:13:50+00:00"
+            "time": "2021-05-04T13:39:36+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
