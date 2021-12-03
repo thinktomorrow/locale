@@ -24,14 +24,14 @@ final class Detect
     private $config;
 
     /**
-     * @var Locale
+     * @var ?Locale
      */
     private $locale;
 
     /**
      * Current scope of locales.
      *
-     * @var Scope
+     * @var ?Scope
      */
     private $scope;
 
@@ -77,7 +77,7 @@ final class Detect
 
     public function getLocale(): Locale
     {
-        if (!$this->locale) {
+        if (! $this->locale) {
             $this->detectLocale();
         }
 
@@ -86,7 +86,7 @@ final class Detect
 
     public function getScope(): Scope
     {
-        if (!$this->scope) {
+        if (! $this->scope) {
             $this->detectScope();
         }
 

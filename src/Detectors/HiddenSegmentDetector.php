@@ -32,7 +32,7 @@ class HiddenSegmentDetector implements Detector
         return $scope->defaultLocale();
     }
 
-    public function segment(Scope $scope): ?Locale
+    private function segment(Scope $scope): ?Locale
     {
         $segment = $this->request->segment(1);
 
