@@ -25,7 +25,7 @@ class Config implements \ArrayAccess
 
     public function get($key, $default = null)
     {
-        if (!isset($this->config[$key])) {
+        if (! isset($this->config[$key])) {
             return $default;
         }
 
@@ -64,7 +64,7 @@ class Config implements \ArrayAccess
             }
 
             foreach ($locales as $locale) {
-                if (!isset($canonicals[$locale])) {
+                if (! isset($canonicals[$locale])) {
                     $canonicals[$locale] = $rootKey;
                 }
             }
@@ -121,7 +121,7 @@ class Config implements \ArrayAccess
     {
         foreach ($locales as $group => $segments) {
             // If single locale is passed, it's considered the default for this group
-            if (!is_array($segments)) {
+            if (! is_array($segments)) {
                 $locales[$group] = ['/' => $segments];
             }
         }
@@ -134,22 +134,22 @@ class Config implements \ArrayAccess
      */
     private function validate(array $config)
     {
-        if (!isset($config['locales'])) {
+        if (! isset($config['locales'])) {
             throw new InvalidConfig('Value [Locales] is missing for config structure.');
         }
 
         $locales = $config['locales'];
 
-        if (!isset($locales['*'])) {
+        if (! isset($locales['*'])) {
             throw new InvalidConfig('Default group [*] is missing for locales structure.');
         }
 
-        if (is_array($locales['*']) && !isset($locales['*']['/'])) {
+        if (is_array($locales['*']) && ! isset($locales['*']['/'])) {
             throw new InvalidConfig('Group [default] is missing the default locale. e.g. ["/" => "en"]');
         }
 
         foreach (array_keys($locales) as $group) {
-            if (!is_string($group)) {
+            if (! is_string($group)) {
                 throw new InvalidConfig('Invalid config structure for locales group ['.$group.']');
             }
         }
@@ -166,7 +166,7 @@ class Config implements \ArrayAccess
     {
         $canonicals = $config['canonicals'] ?? [];
         foreach (array_keys($canonicals) as $locale) {
-            if (!$this->existsAsLocale($config['locales'], $locale)) {
+            if (! $this->existsAsLocale($config['locales'], $locale)) {
                 throw new InvalidConfig('Canonical key '.$locale.' is not present as locale.');
             }
         }
@@ -197,7 +197,7 @@ class Config implements \ArrayAccess
 
     public function offsetExists($offset)
     {
-        if (!is_string($offset) && !is_int($offset)) {
+        if (! is_string($offset) && ! is_int($offset)) {
             return false;
         }
 

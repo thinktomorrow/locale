@@ -77,7 +77,7 @@ class Url
 
     private function delocalizePath(array $available_locales)
     {
-        if (!isset($this->parsed['path'])) {
+        if (! isset($this->parsed['path'])) {
             return;
         }
 
@@ -108,7 +108,7 @@ class Url
         // so we keep a reminder to explicitly reassemble the 'anonymous scheme' manually
         $this->schemeless = (0 === strpos($url, '//') && isset($this->parsed['host']));
 
-        $this->absolute = (!preg_match('~^(#|//|https?://|mailto:|tel:)~', $url))
+        $this->absolute = (! preg_match('~^(#|//|https?://|mailto:|tel:)~', $url))
                 ? filter_var($url, FILTER_VALIDATE_URL) !== false
                 : true;
     }
@@ -149,7 +149,7 @@ class Url
      */
     private function reassembleWithoutRoot()
     {
-        if (!$this->root) {
+        if (! $this->root) {
             return $this->reassemble();
         }
 
