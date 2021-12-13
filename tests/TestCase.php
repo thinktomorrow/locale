@@ -15,6 +15,8 @@ class TestCase extends OrchestraTestCase
 
     public function setUp(): void
     {
+        error_reporting(E_DEPRECATED);
+
         parent::setUp();
     }
 

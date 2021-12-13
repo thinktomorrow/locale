@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Thinktomorrow\Locale\Values;
 
@@ -6,15 +7,15 @@ use Thinktomorrow\Locale\Exceptions\InvalidUrl;
 
 class Root
 {
-    private $valid = false;
+    private bool $valid = false;
 
-    private $scheme;
-    private $schemeless = false;
-    private $defaultScheme = 'http';
-    private $secure = false;
+    private ?string $scheme = null;
+    private ?string $host = null;
+    private ?string $port = null;
 
-    private $host;
-    private $port;
+    private bool $schemeless = false;
+    private string $defaultScheme = 'http';
+    private bool $secure = false;
 
     private function __construct(string $host)
     {
@@ -25,12 +26,12 @@ class Root
         }
     }
 
-    public static function fromString(string $host)
+    public static function fromString(string $host): self
     {
-        return new self($host);
+        return new static($host);
     }
 
-    public function get()
+    public function get(): string
     {
         $scheme = (! is_null($this->scheme)) ? $this->scheme.'://' : ($this->schemeless ? '//' : $this->defaultScheme.'://');
         $port = (! is_null($this->port)) ? ':'.$this->port : null;
@@ -78,9 +79,9 @@ class Root
             throw new InvalidUrl('Failed to parse url. Invalid url ['.$host.'] passed as parameter.');
         }
 
-        // If a schemeless url is passed, parse_url will ignore this and strip the first tags
+        // If a schemeless url is passed, parse_url will ignore this and strip the first tags,
         // so we keep a reminder to explicitly reassemble the 'anonymous scheme' manually
-        $this->schemeless = ! isset($parsed['scheme']) && (0 === strpos($host, '//') && isset($parsed['host']));
+        $this->schemeless = ! isset($parsed['scheme']) && (str_starts_with($host, '//') && isset($parsed['host']));
 
         $this->scheme = $parsed['scheme'] ?? null;
         if ($this->scheme == 'https') {
@@ -88,7 +89,7 @@ class Root
         }
 
         $this->host = $this->parseHost($parsed);
-        $this->port = $parsed['port'] ?? null;
+        $this->port = isset($parsed['port']) ? (string) $parsed['port'] : null;
     }
 
     public function __toString(): string
@@ -103,7 +104,7 @@ class Root
         }
 
         if (! isset($parsed['path'])) {
-            return null;
+            return '';
         }
 
         return (0 < strpos($parsed['path'], '/'))

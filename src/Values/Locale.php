@@ -1,25 +1,24 @@
 <?php
+declare(strict_types=1);
 
 namespace Thinktomorrow\Locale\Values;
 
 final class Locale
 {
-    /**
-     * @var string Locale key identifier
-     */
-    private $value;
+    /** Locale key identifier */
+    private string $value;
 
     private function __construct(string $value)
     {
         $this->value = $value;
     }
 
-    public static function from(string $value)
+    public static function from(string $value): self
     {
         return new static($value);
     }
 
-    public function withoutRegion()
+    public function withoutRegion(): self
     {
         $value = $this->value;
 
@@ -34,11 +33,11 @@ final class Locale
     {
         $value = $this->value;
 
-        if (false !== strpos($value, '-')) {
+        if (str_contains($value, '-')) {
             return substr($value, strpos($value, '-') + 1);
         }
 
-        if (false !== strpos($value, '_')) {
+        if (str_contains($value, '_')) {
             return substr($value, strpos($value, '_') + 1);
         }
 

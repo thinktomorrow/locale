@@ -1,15 +1,14 @@
 <?php
+declare(strict_types=1);
 
 namespace Thinktomorrow\Locale\Values;
 
+use ArrayAccess;
 use Thinktomorrow\Locale\Exceptions\InvalidConfig;
 
-class Config implements \ArrayAccess
+class Config implements ArrayAccess
 {
-    /**
-     * @var array
-     */
-    private $config;
+    private array $config;
 
     private function __construct(array $config)
     {
@@ -18,7 +17,7 @@ class Config implements \ArrayAccess
         $this->config = $this->sanitize($config);
     }
 
-    public static function from(array $config)
+    public static function from(array $config): self
     {
         return new static($config);
     }
@@ -59,7 +58,7 @@ class Config implements \ArrayAccess
         foreach ($config['locales'] as $rootKey => $locales) {
 
             // wildcard domains are not accepted as canonicals as we cannot know to which root this should resolve to.
-            if (false !== strpos($rootKey, '*')) {
+            if (str_contains($rootKey, '*')) {
                 continue;
             }
 
@@ -83,7 +82,7 @@ class Config implements \ArrayAccess
         foreach ($locales as $group => $segments) {
             foreach ($segments as $segment => $locale) {
                 // remove slashes if any e.g. '/nl' will be sanitized to 'nl'
-                if ($segment != '/' && false !== strpos($segment, '/')) {
+                if ($segment != '/' && str_contains($segment, '/')) {
                     $_segment = str_replace('/', '', $segment);
 
                     unset($locales[$group][$segment]);
@@ -102,7 +101,7 @@ class Config implements \ArrayAccess
      *
      * @return array
      */
-    private function removeTrailingDomainSlashes(array $locales)
+    private function removeTrailingDomainSlashes(array $locales): array
     {
         foreach ($locales as $scopeKey => $segments) {
             unset($locales[$scopeKey]);
@@ -204,12 +203,12 @@ class Config implements \ArrayAccess
         return array_key_exists($offset, $this->config);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->config[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->config[] = $value;
@@ -218,7 +217,7 @@ class Config implements \ArrayAccess
         }
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->config[$offset]);
     }

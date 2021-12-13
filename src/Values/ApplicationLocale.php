@@ -1,16 +1,13 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Thinktomorrow\Locale\Values;
 
 class ApplicationLocale
 {
-    /** @var Config */
-    private $config;
+    private Config $config;
 
-    /** @var Locale */
-    private $originalLocale;
+    private Locale $originalLocale;
 
     private function __construct(Locale $originalLocale, Config $config)
     {
@@ -18,7 +15,7 @@ class ApplicationLocale
         $this->config = $config;
     }
 
-    public static function from($originalLocale)
+    public static function from($originalLocale): self
     {
         if (is_string($originalLocale)) {
             $originalLocale = Locale::from($originalLocale);

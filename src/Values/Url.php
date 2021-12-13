@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Thinktomorrow\Locale\Values;
 
@@ -18,26 +19,26 @@ class Url
         $this->parse($url);
     }
 
-    public static function fromString(string $url)
+    public static function fromString(string $url): self
     {
-        return new self($url);
+        return new static($url);
     }
 
-    public function setCustomRoot(Root $root)
+    public function setCustomRoot(Root $root): self
     {
         $this->root = $root;
 
         return $this;
     }
 
-    public function secure($secure = true)
+    public function secure($secure = true): self
     {
         $this->secure = (bool) $secure;
 
         return $this;
     }
 
-    public function get()
+    public function get(): string
     {
         if ($this->root) {
             if ($this->secure) {
@@ -61,7 +62,7 @@ class Url
         return $this->absolute;
     }
 
-    public function localize(string $localeSegment = null, array $available_locales = [])
+    public function localize(string $localeSegment = null, array $available_locales = []): self
     {
         $this->parsed['path'] = str_replace(
             '//',
@@ -75,10 +76,10 @@ class Url
         return $this;
     }
 
-    private function delocalizePath(array $available_locales)
+    private function delocalizePath(array $available_locales): string
     {
         if (! isset($this->parsed['path'])) {
-            return;
+            return '';
         }
 
         $path_segments = explode('/', trim($this->parsed['path'], '/'));
@@ -104,13 +105,12 @@ class Url
             throw new InvalidUrl('Failed to parse url. Invalid url ['.$url.'] passed as parameter.');
         }
 
-        // If a schemeless url is passed, parse_url will ignore this and strip the first tags
+        // If a schemeless url is passed, parse_url will ignore this and strip the first tags,
         // so we keep a reminder to explicitly reassemble the 'anonymous scheme' manually
         $this->schemeless = (0 === strpos($url, '//') && isset($this->parsed['host']));
 
-        $this->absolute = (! preg_match('~^(#|//|https?://|mailto:|tel:)~', $url))
-                ? filter_var($url, FILTER_VALIDATE_URL) !== false
-                : true;
+        $this->absolute =
+            preg_match('~^(#|//|https?://|mailto:|tel:)~', $url) || filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
     public function __toString(): string
@@ -147,7 +147,7 @@ class Url
      *
      * @return string
      */
-    private function reassembleWithoutRoot()
+    private function reassembleWithoutRoot(): string
     {
         if (! $this->root) {
             return $this->reassemble();
