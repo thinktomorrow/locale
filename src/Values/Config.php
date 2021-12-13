@@ -195,7 +195,7 @@ class Config implements \ArrayAccess
         return $flag;
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         if (! is_string($offset) && ! is_int($offset)) {
             return false;
