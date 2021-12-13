@@ -66,7 +66,7 @@ final class Detect
             $locale = app($detector)->get($this->getScope(), $this->config) ?? $locale;
         }
 
-        if($locale) {
+        if ($locale) {
             $this->locale = $locale;
             Scope::setActiveLocale($locale);
             $this->setApplicationLocale();
