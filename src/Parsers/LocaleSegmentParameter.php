@@ -51,7 +51,6 @@ class LocaleSegmentParameter
     public static function normalizeLocaleAsParameter(Scope $scope, string $routeKey, $locale)
     {
         if (! is_array($locale)) {
-
             // You should provide the actual locale but in case the segment value is passed
             // we allow for this as well and normalize it to the expected locale value.
             if (! $scope->validateLocale($locale) && $scope->validateSegment($locale)) {

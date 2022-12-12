@@ -56,7 +56,6 @@ class Config implements ArrayAccess
         $canonicals = $config['canonicals'] ?? [];
 
         foreach ($config['locales'] as $rootKey => $locales) {
-
             // wildcard domains are not accepted as canonicals as we cannot know to which root this should resolve to.
             if (str_contains($rootKey, '*')) {
                 continue;
