@@ -100,7 +100,7 @@ class Scope
     public function segment($locale = null): ?string
     {
         if (is_null($locale)) {
-            return $this->activeSegment();
+            $locale = $this->activeLocale() ? $this->activeLocale()->get() : $this->defaultLocale()->get();
         }
 
         return ($key = array_search($locale, $this->locales)) ? $key : null;
