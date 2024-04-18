@@ -53,7 +53,7 @@ class ConfigTest extends TestCase
         Config::from(['locales' => $locales]);
     }
 
-    public function invalidLocalesDataProvider()
+    public static function invalidLocalesDataProvider()
     {
         return [
             [['foobar']],
@@ -73,7 +73,7 @@ class ConfigTest extends TestCase
         $this->assertEquals($outcome, Config::from(['locales' => $original])->get('locales'));
     }
 
-    public function expectedStructureDataProvider()
+    public static function expectedStructureDataProvider()
     {
         return [
             [

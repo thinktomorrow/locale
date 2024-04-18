@@ -38,7 +38,7 @@ class ScopeCollectionTest extends TestCase
         ScopeCollection::fromArray(['locales' => $locales]);
     }
 
-    public function invalidLocalesDataProvider()
+    public static function invalidLocalesDataProvider()
     {
         return [
             [['foobar']],
@@ -65,7 +65,7 @@ class ScopeCollectionTest extends TestCase
         ])->findByRoot($root));
     }
 
-    public function provideRootScopes()
+    public static function provideRootScopes()
     {
         return [
             // Full matches
