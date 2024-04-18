@@ -21,16 +21,32 @@ class ScopeTest extends TestCase
     /** @test */
     public function it_can_get_default_locale_in_scope()
     {
+        $scope = new Scope(['segment-ten' => 'locale-ten', '/' => 'locale-zero']);
+        $this->assertEquals('locale-zero', $scope->defaultLocale());
+    }
+
+    /** @test */
+    public function it_can_get_default_locale_in_scope_via_facade()
+    {
         $this->detectLocaleAfterVisiting('http://unknown.com');
         $this->assertEquals('locale-zero', ScopeFacade::defaultLocale());
     }
 
     /** @test */
-    public function a_default_locale_is_required()
+    public function a_default_locale_is_taken_from_last_locale_if_omitted()
+    {
+        $scope = new Scope(['segment-ten' => 'locale-ten']);
+        $this->assertEquals('locale-ten', $scope->defaultLocale());
+
+        $scope = new Scope(['segment-ten' => 'locale-ten', 'segment-eleven' => 'locale-eleven']);
+        $this->assertEquals('locale-eleven', $scope->defaultLocale());
+    }
+
+    public function test_it_throws_error_when_no_default_locale_can_be_guessed()
     {
         $this->expectException(InvalidScope::class);
 
-        new Scope(['segment-ten' => 'locale-ten']);
+        new Scope([]);
     }
 
     /** @test */

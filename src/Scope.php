@@ -39,11 +39,19 @@ class Scope
 
     public function __construct(array $locales)
     {
-        if (! isset($locales['/'])) {
-            throw new InvalidScope('Default locale is required for scope. Add this as \'/\' => locale.');
+        $defaultLocale = ! isset($locales['/']) ? null : $locales['/'];
+
+        // When no default locale is set, we take the last locale as default.
+        if (! $defaultLocale) {
+            if(count($locales) < 1) {
+                throw new InvalidScope('Default locale is required for scope. Add this as \'/\' => locale.');
+            }
+
+            $defaultLocale = $locales[array_key_last($locales)];
         }
+
         $this->locales = $locales;
-        $this->default = Locale::from($this->locales['/']);
+        $this->default = Locale::from($defaultLocale);
     }
 
     public function setCustomRoot(Root $customRoot)
