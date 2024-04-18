@@ -28,7 +28,7 @@ class Root
 
     public static function fromString(string $host): self
     {
-        return new static($host);
+        return new self($host);
     }
 
     public function get(): string

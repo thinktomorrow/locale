@@ -8,10 +8,8 @@ if (! function_exists('localeurl')) {
      * @param null  $locale
      * @param array $extra
      * @param null  $secure
-     *
-     * @return mixed
      */
-    function localeurl($url, $locale = null, $extra = [], $secure = null)
+    function localeurl($url, $locale = null, $extra = [], $secure = null): string
     {
         return app(LocaleUrl::class)->to($url, $locale, $extra, $secure);
     }
@@ -23,10 +21,8 @@ if (! function_exists('localeroute')) {
      * @param null  $locale
      * @param array $parameters
      * @param bool  $asCanonical
-     *
-     * @return
      */
-    function localeroute($name, $locale = null, $parameters = [], $asCanonical = true)
+    function localeroute($name, $locale = null, $parameters = [], $asCanonical = true): string
     {
         return app(LocaleUrl::class)->route($name, $locale, $parameters, $asCanonical);
     }

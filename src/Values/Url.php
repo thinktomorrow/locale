@@ -21,7 +21,7 @@ class Url
 
     public static function fromString(string $url): self
     {
-        return new static($url);
+        return new self($url);
     }
 
     public function setCustomRoot(Root $root): self

@@ -19,12 +19,10 @@
         "thinktomorrow/url": "^2.0.0"
     },
     "require-dev": {
-        "phpunit/phpunit" : "^9.6.11",
+        "phpunit/phpunit" : "^10.5",
         "mockery/mockery" : "^1.6.6",
-        "orchestra/testbench": "^7.30|^8.5",
-        "vimeo/psalm": "^4.30",
-        "psalm/plugin-laravel": "^2.8",
-        "larastan/larastan": "^v2.9.5"
+        "orchestra/testbench": "^8.5",
+        "phpstan/phpstan": "^1.9.14"
     },
     "autoload": {
         "psr-4": {

@@ -19,7 +19,7 @@ class UriParameters
     {
         $parameters = (array) $parameters;
 
-        $uri = static::replaceRouteParameters($uri, $parameters);
+        $uri = self::replaceRouteParameters($uri, $parameters);
         $uri = str_replace('//', '/', $uri);
 
         return $uri;
@@ -35,9 +35,9 @@ class UriParameters
      *
      * @return string
      */
-    private static function replaceRouteParameters($path, array $parameters)
+    private static function replaceRouteParameters($path, array $parameters): string
     {
-        $path = static::replaceNamedParameters($path, $parameters);
+        $path = self::replaceNamedParameters($path, $parameters);
 
         $path = preg_replace_callback('/\{.*?\}/', function ($match) use (&$parameters) {
             return (empty($parameters) && ! Str::endsWith($match[0], '?}'))
@@ -58,7 +58,7 @@ class UriParameters
      *
      * @return string
      */
-    private static function replaceNamedParameters($path, &$parameters)
+    private static function replaceNamedParameters($path, &$parameters): string
     {
         return preg_replace_callback('/\{(.*?)\??\}/', function ($m) use (&$parameters) {
             return isset($parameters[$m[1]]) ? Arr::pull($parameters, $m[1]) : $m[0];

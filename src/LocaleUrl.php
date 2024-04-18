@@ -9,35 +9,14 @@ use Thinktomorrow\Locale\Values\Config;
 
 class LocaleUrl
 {
-    /**
-     * @var Scope
-     */
-    private $scope;
+    private Scope $scope;
+    private ScopeCollection $scopeCollection;
 
-    /**
-     * @var ScopeCollection
-     */
-    private $scopeCollection;
+    private UrlParser $urlparser;
+    private RouteParser $routeparser;
 
-    /**
-     * @var UrlParser
-     */
-    private $urlparser;
-
-    /**
-     * @var null|string
-     */
-    private $routeKey;
-
-    /**
-     * @var RouteParser
-     */
-    private $routeparser;
-
-    /**
-     * @var bool
-     */
-    private $forceSecure = false;
+    private ?string $routeKey;
+    private bool $forceSecure;
 
     public function __construct(Detect $detect, UrlParser $urlparser, RouteParser $routeparser, Config $config)
     {
@@ -58,10 +37,8 @@ class LocaleUrl
      * @param null  $locale
      * @param array $parameters
      * @param null  $secure
-     *
-     * @return mixed
      */
-    public function to($url, $locale = null, $parameters = [], $secure = null)
+    public function to($url, $locale = null, $parameters = [], $secure = null): string
     {
         if (is_bool($secure)) {
             $this->urlparser->secure($secure);
@@ -84,10 +61,8 @@ class LocaleUrl
      * @param null  $locale
      * @param array $parameters
      * @param bool  $asCanonical
-     *
-     * @return mixed
      */
-    public function route($name, $locale = null, $parameters = [], $asCanonical = false)
+    public function route($name, $locale = null, $parameters = [], $asCanonical = false): string
     {
         $scope = $this->scope;
         $forceSecure = $this->forceSecure;

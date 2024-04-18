@@ -19,7 +19,7 @@ class Config implements ArrayAccess
 
     public static function from(array $config): self
     {
-        return new static($config);
+        return new self($config);
     }
 
     public function get($key, $default = null)

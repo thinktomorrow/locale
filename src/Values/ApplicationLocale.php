@@ -21,13 +21,11 @@ class ApplicationLocale
             $originalLocale = Locale::from($originalLocale);
         }
 
-        return new static($originalLocale, Config::from(app('config')->get('thinktomorrow.locale', [])));
+        return new self($originalLocale, Config::from(app('config')->get('thinktomorrow.locale', [])));
     }
 
     /**
      * Convert locale to application locale.
-     *
-     * @return Locale
      */
     public function get(): Locale
     {

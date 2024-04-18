@@ -8,34 +8,21 @@ use Thinktomorrow\Locale\Values\Root;
 
 class Scope
 {
-    /**
-     * @var array
-     */
-    private $locales;
-
-    /**
-     * The active locale.
-     *
-     * @var Locale
-     */
-    private static $activeLocale;
+    private array $locales;
+    private static ?Locale $activeLocale = null;
 
     /**
      * The default locale. In the request path
      * it's the hidden segment, e.g. /.
-     *
-     * @var Locale
      */
-    private $default;
+    private Locale $default;
 
     /**
      * When the canonical scope has a root set to be
      * other than the current, that specific root is defined here
      * By default the current request root is of use (NULL).
-     *
-     * @var null|Root
      */
-    private $customRoot = null;
+    private ?Root $customRoot = null;
 
     public function __construct(array $locales)
     {
@@ -90,12 +77,12 @@ class Scope
 
     public static function activeLocale(): ?Locale
     {
-        return static::$activeLocale;
+        return self::$activeLocale;
     }
 
-    public static function setActiveLocale(Locale $locale)
+    public static function setActiveLocale(Locale $locale): void
     {
-        static::$activeLocale = $locale;
+        self::$activeLocale = $locale;
     }
 
     /**
