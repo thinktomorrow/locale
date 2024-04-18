@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "php" : ">=8.2",
+        "php" : ">=8.1",
         "laravel/framework": "^9.52.15|^10.0",
         "thinktomorrow/url": "^2.0.0"
     },
@@ -24,7 +24,7 @@
         "orchestra/testbench": "^7.30|^8.5",
         "vimeo/psalm": "^4.30",
         "psalm/plugin-laravel": "^2.8",
-        "nunomaduro/larastan": "^0.7.15"
+        "larastan/larastan": "^v2.9.5"
     },
     "autoload": {
         "psr-4": {
