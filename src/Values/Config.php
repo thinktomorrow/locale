@@ -142,8 +142,12 @@ class Config implements ArrayAccess
             throw new InvalidConfig('Default group [*] is missing for locales structure.');
         }
 
-        if (is_array($locales['*']) && ! isset($locales['*']['/'])) {
-            throw new InvalidConfig('Group [default] is missing the default locale. e.g. ["/" => "en"]');
+        if (is_array($locales['*']) && count($locales['*']) < 1) {
+            throw new InvalidConfig('Group [default] is missing an entry. At least one locale should be present.');
+        }
+
+        if (is_array($locales['*']) && array_is_list($locales['*'])) {
+            throw new InvalidConfig('Locales should consist of key-value pairs where key is the url segment and value is the locale. Use / as key for default locale.');
         }
 
         foreach (array_keys($locales) as $group) {
