@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\Unit;
+namespace Thinktomorrow\Locale\Tests\Scopes;
 
 use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\ScopeCollection;

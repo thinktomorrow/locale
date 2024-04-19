@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\Locale\Tests\ConverLocale;
+namespace Thinktomorrow\Locale\Tests\ConvertLocale;
 
 use Illuminate\Support\Facades\Route;
 use Thinktomorrow\Locale\Detect;
