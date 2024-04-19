@@ -6,6 +6,7 @@ use Thinktomorrow\Locale\Parsers\LocaleSegmentParameter;
 use Thinktomorrow\Locale\Parsers\RouteParser;
 use Thinktomorrow\Locale\Parsers\UrlParser;
 use Thinktomorrow\Locale\Values\Config;
+use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleUrl
 {
@@ -32,13 +33,8 @@ class LocaleUrl
 
     /**
      * Generate a localized url.
-     *
-     * @param $url
-     * @param null  $locale
-     * @param array $parameters
-     * @param null  $secure
      */
-    public function to($url, $locale = null, $parameters = [], $secure = null): string
+    public function to(string $url, $locale = null, string|array $parameters = [], ?bool $secure = null): string
     {
         if (is_bool($secure)) {
             $this->urlparser->secure($secure);
@@ -56,13 +52,8 @@ class LocaleUrl
      * Generate a localized route.
      * Note that unlike the Illuminate route() no parameter for 'absolute' path is available
      * since urls will always be rendered as absolute ones.
-     *
-     * @param $name
-     * @param null  $locale
-     * @param array $parameters
-     * @param bool  $asCanonical
      */
-    public function route($name, $locale = null, $parameters = [], $asCanonical = false): string
+    public function route($name, null|string|array $locale = null, null|string|array $parameters = [], bool $asCanonical = false): string
     {
         $scope = $this->scope;
         $forceSecure = $this->forceSecure;
@@ -97,12 +88,12 @@ class LocaleUrl
         return $parser->get();
     }
 
-    public function canonicalRoute($name, $locale = null, $parameters = [])
+    public function canonicalRoute(string $name, $locale = null, $parameters = []): string
     {
         return $this->route($name, $locale, $parameters, true);
     }
 
-    private function getCanonicalScope($locale = null): ?Scope
+    private function getCanonicalScope(null|string $locale = null): ?Scope
     {
         if ($canonicalScope = $this->scopeCollection->findCanonical($locale ?? $this->scope->activeLocale())) {
             return $canonicalScope;

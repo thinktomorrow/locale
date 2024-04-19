@@ -11,8 +11,8 @@ class Url
     private $root;
 
     private $secure;
-    private $schemeless = false;
-    private $absolute = false;
+    private bool $schemeless = false;
+    private bool $absolute = false;
 
     private function __construct(string $url)
     {

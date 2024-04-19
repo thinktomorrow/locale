@@ -3,6 +3,7 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Http\Request;
+use Thinktomorrow\Locale\Detectors\Detector;
 use Thinktomorrow\Locale\Detectors\FallbackDetector;
 use Thinktomorrow\Locale\Detectors\HiddenSegmentDetector;
 use Thinktomorrow\Locale\Detectors\QueryDetector;
@@ -13,27 +14,12 @@ use Thinktomorrow\Locale\Values\Locale;
 
 final class Detect
 {
-    /**
-     * @var Request
-     */
-    private $request;
+    private Request $request;
+    private Config $config;
 
-    /**
-     * @var Config
-     */
-    private $config;
-
-    /**
-     * @var ?Locale
-     */
-    private $locale;
-
-    /**
-     * Current scope of locales.
-     *
-     * @var ?Scope
-     */
-    private $scope;
+    /** Current scope of locales */
+    private ?Scope $scope = null;
+    private ?Locale $locale = null;
 
     public function __construct(Request $request, Config $config)
     {
@@ -62,6 +48,7 @@ final class Detect
             QueryDetector::class,
         ];
 
+        /** @var Detector $detector */
         foreach ($detectors as $detector) {
             $locale = app($detector)->get($this->getScope(), $this->config) ?? $locale;
         }
@@ -101,12 +88,8 @@ final class Detect
     /**
      * This is handy for setting allowed scope via other source than config file.
      * this can be configurable from a cms.
-     *
-     * @param Scope|null $scope
-     *
-     * @return $this
      */
-    public function setScope(Scope $scope = null)
+    public function setScope(?Scope $scope = null): self
     {
         if ($scope) {
             $this->scope = $scope;
@@ -115,12 +98,12 @@ final class Detect
         return $this;
     }
 
-    private function detectScope()
+    private function detectScope(): void
     {
         $this->scope = ScopeCollection::fromConfig($this->config)->findByRoot($this->request->root());
     }
 
-    private function setApplicationLocale()
+    private function setApplicationLocale(): void
     {
         $applicationLocale = ApplicationLocale::from($this->locale);
 

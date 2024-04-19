@@ -14,12 +14,12 @@ class LocaleServiceProvider extends ServiceProvider
         require_once __DIR__.'/helpers.php';
 
         $this->publishes([
-            __DIR__.'/config/locale.php' => config_path('thinktomorrow/locale.php'),
+            __DIR__.'/config/locale.php' => config_path('locale.php'),
         ]);
 
         $this->mergeConfigFrom(
             __DIR__.'/config/locale.php',
-            'thinktomorrow.locale'
+            'locale'
         );
 
         $config = Config::from($this->getConfigValues());
@@ -60,7 +60,7 @@ class LocaleServiceProvider extends ServiceProvider
 
     private function getConfigValues()
     {
-        $projectConfigPath = config_path('thinktomorrow/locale.php');
+        $projectConfigPath = config_path('locale.php');
 
         if (file_exists($projectConfigPath)) {
             return require $projectConfigPath;
