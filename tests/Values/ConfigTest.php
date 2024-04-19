@@ -60,7 +60,7 @@ class ConfigTest extends TestCase
             [['nl' => '']],
             [['nl', 'fr']],
             [['foobar']],
-            [['*' => ['en', 'fr']]], // missing hidden /
+            [['*' => ['en', 'fr']]], // missing segments
         ];
     }
 

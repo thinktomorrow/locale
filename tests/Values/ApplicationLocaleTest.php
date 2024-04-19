@@ -1,6 +1,6 @@
 <?php
 
-namespace Thinktomorrow\ApplicationLocale\Tests\Values;
+namespace Thinktomorrow\Locale\Tests\Values;
 
 use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Values\ApplicationLocale;
