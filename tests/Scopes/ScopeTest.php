@@ -18,22 +18,19 @@ class ScopeTest extends TestCase
         $this->detectLocaleAfterVisiting('http://unknown.com');
     }
 
-    /** @test */
-    public function it_can_get_default_locale_in_scope()
+    public function test_it_can_get_default_locale_in_scope()
     {
         $scope = new Scope(['segment-ten' => 'locale-ten', '/' => 'locale-zero']);
         $this->assertEquals('locale-zero', $scope->defaultLocale());
     }
 
-    /** @test */
-    public function it_can_get_default_locale_in_scope_via_facade()
+    public function test_it_can_get_default_locale_in_scope_via_facade()
     {
         $this->detectLocaleAfterVisiting('http://unknown.com');
         $this->assertEquals('locale-zero', ScopeFacade::defaultLocale());
     }
 
-    /** @test */
-    public function a_default_locale_is_taken_from_last_locale_if_omitted()
+    public function test_a_default_locale_is_taken_from_last_locale_if_omitted()
     {
         $scope = new Scope(['segment-ten' => 'locale-ten']);
         $this->assertEquals('locale-ten', $scope->defaultLocale());
@@ -49,8 +46,7 @@ class ScopeTest extends TestCase
         new Scope([]);
     }
 
-    /** @test */
-    public function it_can_list_all_locales_in_scope()
+    public function test_it_can_list_all_locales_in_scope()
     {
         $this->assertEquals([
             'segment-four' => 'locale-four',
@@ -59,24 +55,21 @@ class ScopeTest extends TestCase
         ], ScopeFacade::locales());
     }
 
-    /** @test */
-    public function it_can_get_locale_by_key()
+    public function test_it_can_get_locale_by_key()
     {
         $this->assertEquals(Locale::from('locale-five'), ScopeFacade::findLocale('segment-five'));
         $this->assertEquals(Locale::from('locale-zero'), ScopeFacade::findLocale('/'));
         $this->assertNull(ScopeFacade::findLocale('unknown'));
     }
 
-    /** @test */
-    public function it_can_get_segment_key_by_locale()
+    public function test_it_can_get_segment_key_by_locale()
     {
         $this->assertEquals('segment-five', ScopeFacade::segment('locale-five'));
         $this->assertEquals('/', ScopeFacade::segment('locale-zero'));
         $this->assertNull(ScopeFacade::segment('unknown'));
     }
 
-    /** @test */
-    public function it_can_set_custom_root()
+    public function test_it_can_set_custom_root()
     {
         $customRoot = ScopeFacade::setCustomRoot(Root::fromString('awesome.be'))->customRoot();
 
@@ -84,8 +77,7 @@ class ScopeTest extends TestCase
         $this->assertEquals(Root::fromString('awesome.be'), $customRoot);
     }
 
-    /** @test */
-    public function it_can_validate_if_the_locale_is_allowed_in_current_scope()
+    public function test_it_can_validate_if_the_locale_is_allowed_in_current_scope()
     {
         $this->assertTrue(ScopeFacade::validateLocale('locale-zero'));
         $this->assertTrue(ScopeFacade::validateLocale('locale-four'));
