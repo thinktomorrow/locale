@@ -4,36 +4,21 @@ namespace Thinktomorrow\Locale\Parsers;
 
 use Illuminate\Contracts\Translation\Translator;
 use Thinktomorrow\Locale\Values\ApplicationLocale;
-use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Url\Root;
+use Thinktomorrow\Url\Url;
 
 class RouteParser
 {
-    /** @var string */
-    private $routename;
+    private Translator $translator;
+    private UrlParser $urlParser;
 
-    /** @var string */
-    private $locale;
-
-    /** @var string */
-    private $localeSegment = null;
-
-    /** @var array */
-    private $available_locales = [];
-
-    /** @var bool */
-    private $secure = null;
-
-    /** @var array */
-    private $parameters = [];
-
-    /** @var Root */
-    private $customRoot;
-
-    /** @var Translator */
-    private $translator;
-
-    /** @var UrlParser */
-    private $urlParser;
+    private ?string $routename = null;
+    private ?string $locale = null;
+    private ?string $localeSegment = null;
+    private array $available_locales = [];
+    private ?bool $secure = null;
+    private array $parameters = [];
+    private ?Root $customRoot = null;
 
     public function __construct(UrlParser $urlParser, Translator $translator)
     {
@@ -52,7 +37,9 @@ class RouteParser
             ? $this->resolveRoute($this->routename, $this->parameters)
             : UriParameters::replace($url, $this->parameters);
 
-        $parser = $this->urlParser->set($url)->secure($this->secure)->localize($this->localeSegment, $this->available_locales);
+        $secure = $this->secure ?? Url::fromString($url)->isSecure();
+
+        $parser = $this->urlParser->set($url)->secure($secure)->localize($this->localeSegment, $this->available_locales);
 
         if ($this->customRoot) {
             $parser->setCustomRoot($this->customRoot);

@@ -4,7 +4,7 @@ namespace Thinktomorrow\Locale;
 
 use Thinktomorrow\Locale\Exceptions\InvalidScope;
 use Thinktomorrow\Locale\Values\Locale;
-use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Url\Root;
 
 class Scope
 {

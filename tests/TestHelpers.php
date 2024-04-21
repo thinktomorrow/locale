@@ -8,7 +8,7 @@ use Illuminate\Support\Arr;
 use Thinktomorrow\Locale\Detect;
 use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Values\Config;
-use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Url\Root;
 
 trait TestHelpers
 {

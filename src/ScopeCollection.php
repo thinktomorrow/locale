@@ -3,7 +3,7 @@
 namespace Thinktomorrow\Locale;
 
 use Thinktomorrow\Locale\Values\Config;
-use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Url\Root;
 
 final class ScopeCollection
 {

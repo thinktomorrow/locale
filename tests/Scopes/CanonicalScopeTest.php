@@ -5,7 +5,7 @@ namespace Thinktomorrow\Locale\Tests\Scopes;
 use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\ScopeCollection;
 use Thinktomorrow\Locale\Tests\TestCase;
-use Thinktomorrow\Locale\Values\Root;
+use Thinktomorrow\Url\Root;
 
 class CanonicalScopeTest extends TestCase
 {

@@ -72,7 +72,7 @@ class LocaleUrl
              * Canonical that has no scheme will be forced as secure if set so in config.
              * If an explicit scheme is given, this is left unmodified in case of canonicals.
              */
-            $forceSecure = $scope->customRoot() && $scope->customRoot()->scheme() ? false : $forceSecure;
+            $forceSecure = $scope->customRoot() && $scope->customRoot()->getScheme() ? false : $forceSecure;
         }
 
         $parameters = array_merge(LocaleSegmentParameter::normalizeLocaleAsParameter($scope, $this->routeKey, $locale), (array) $parameters);

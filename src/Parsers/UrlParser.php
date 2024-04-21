@@ -3,28 +3,18 @@
 namespace Thinktomorrow\Locale\Parsers;
 
 use Illuminate\Routing\UrlGenerator;
-use Thinktomorrow\Locale\Values\Root;
-use Thinktomorrow\Locale\Values\Url;
+use Thinktomorrow\Url\Root;
+use Thinktomorrow\Url\Url;
 
 class UrlParser
 {
-    /** @var Url */
-    private $url;
+    private UrlGenerator $generator;
 
-    /** @var string */
-    private $localeSegment = null;
-
-    /** @var array */
-    private $available_locales = [];
-
-    /** @var bool */
-    private $secure;
-
-    /** @var array */
-    private $parameters = [];
-
-    /** @var UrlGenerator */
-    private $generator;
+    private Url $url;
+    private ?string $localeSegment = null;
+    private array $available_locales = [];
+    private ?bool $secure = null;
+    private array $parameters = [];
 
     public function __construct(UrlGenerator $generator)
     {
@@ -38,10 +28,14 @@ class UrlParser
 
     public function get(): string
     {
-        if (is_bool($this->secure)) {
-            $this->url->secure($this->secure);
+        if ($this->secure === true) {
+            $this->url->secure();
+        } elseif($this->secure === false) {
+            $this->url->nonSecure();
         }
 
+        // TODO: how to add parameters to the url if url is already valid...? Laravel does not
+        // change scheme and parameters if url is already valid
         return $this->generator->to(
             $this->url->localize($this->localeSegment, $this->available_locales)->get(),
             $this->parameters,
@@ -51,7 +45,13 @@ class UrlParser
 
     public function set(string $url): self
     {
-        $this->url = Url::fromString($url);
+        $url = Url::fromString($url);
+
+        if(!$url->hasScheme()) {
+            $url->setCustomRoot($this->url->getRoot());
+        }
+
+        $this->url = $url;
 
         return $this;
     }
@@ -78,9 +78,9 @@ class UrlParser
         return $this;
     }
 
-    public function secure($secure = true): self
+    public function secure(bool $secure = true): self
     {
-        $this->secure = (bool) $secure;
+        $this->secure = $secure;
 
         return $this;
     }

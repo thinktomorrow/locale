@@ -45,6 +45,7 @@ class ConvertLocaleTest extends TestCase
             'convert_locales_to' => [
                 'locale-ten' => 'locale-twenty',
             ],
+//            'secure' => false,
         ]);
 
         Route::get('first/{slug?}', ['as' => 'route.first', 'uses' => function () {
