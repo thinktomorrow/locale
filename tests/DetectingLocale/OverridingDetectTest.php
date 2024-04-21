@@ -9,20 +9,17 @@ use Thinktomorrow\Locale\Values\Config;
 
 class OverridingDetectTest extends TestCase
 {
-    /** @test */
-    public function it_detects_default_locale_with_invalid_query_parameter()
+    public function test_it_detects_default_locale_with_invalid_query_parameter()
     {
         $this->assertEquals('locale-zero', $this->detectLocaleAfterVisiting('http://unknown.com?locale=xxx'));
     }
 
-    /** @test */
-    public function it_detects_locale_with_valid_query_parameter()
+    public function test_it_detects_locale_with_valid_query_parameter()
     {
         $this->assertEquals('locale-four', $this->detectLocaleAfterVisiting('http://unknown.com?locale=locale-four'));
     }
 
-    /** @test */
-    public function locale_as_query_parameter_trumps_segment_locale()
+    public function test_locale_as_query_parameter_trumps_segment_locale()
     {
         // Sanity check
         $this->assertEquals('locale-five', $this->detectLocaleAfterVisiting('http://unknown.com/segment-five'));
@@ -31,8 +28,7 @@ class OverridingDetectTest extends TestCase
         $this->assertEquals('locale-four', $this->detectLocaleAfterVisiting('http://unknown.com/segment-five?locale=locale-four'));
     }
 
-    /** @test */
-    public function scope_can_be_overridden_at_runtime()
+    public function test_scope_can_be_overridden_at_runtime()
     {
         $this->detectLocaleAfterVisiting('http://unknown.com');
         $detect = app(Detect::class)->setScope(new Scope(['segment-ten' => 'locale-ten', '/' => 'locale-eleven']))->detectLocale();
@@ -43,8 +39,7 @@ class OverridingDetectTest extends TestCase
         $this->assertEquals('locale-ten', $detect->getLocale()->get());
     }
 
-    /** @test */
-    public function scope_can_be_overridden_with_binding_it_to_a_custom_instance()
+    public function test_scope_can_be_overridden_with_binding_it_to_a_custom_instance()
     {
         app()->singleton(Detect::class, function ($app) {
             $config = Config::from(['locales' => ['*' => 'locale-ten']]);

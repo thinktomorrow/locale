@@ -5,26 +5,23 @@ namespace Thinktomorrow\Locale;
 use Thinktomorrow\Locale\Values\Config;
 use Thinktomorrow\Url\Root;
 
-final class ScopeCollection
+final class ScopeRepository
 {
-    /**
-     * @var Config
-     */
-    private $config;
+    private Config $config;
 
     private function __construct(Config $config)
     {
         $this->config = $config;
     }
 
-    public static function fromArray(array $config)
+    public static function fromArray(array $config): self
     {
-        return new static(Config::from($config));
+        return new self(Config::from($config));
     }
 
-    public static function fromConfig(Config $config)
+    public static function fromConfig(Config $config): self
     {
-        return new static($config);
+        return new self($config);
     }
 
     public function findByRoot(string $root): Scope
@@ -33,9 +30,8 @@ final class ScopeCollection
     }
 
     /**
-     * @param string $locale
-     *
-     * @return null|Scope
+     * Find the canonical scope for a given locale.
+     * Any custom canonical root is set on the scope.
      */
     public function findCanonical(string $locale): ?Scope
     {

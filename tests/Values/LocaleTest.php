@@ -7,21 +7,18 @@ use Thinktomorrow\Locale\Values\Locale;
 
 class LocaleTest extends TestCase
 {
-    /** @test */
-    public function it_can_be_instantiated()
+    public function test_it_can_be_instantiated()
     {
         $this->assertInstanceOf(Locale::class, Locale::from('nl'));
     }
 
-    /** @test */
-    public function it_can_compare()
+    public function test_it_can_compare()
     {
         $this->assertTrue(Locale::from('nl')->equals(Locale::from('nl')));
         $this->assertFalse(Locale::from('nl')->equals(Locale::from('fr')));
     }
 
-    /** @test */
-    public function it_can_auto_convert_to_language_locale_without_region()
+    public function test_it_can_auto_convert_to_language_locale_without_region()
     {
         $this->assertEquals(Locale::from('nl'), Locale::from('nl-BE')->withoutRegion());
         $this->assertEquals(Locale::from('nl'), Locale::from('nl_BE')->withoutRegion());
@@ -30,8 +27,7 @@ class LocaleTest extends TestCase
         $this->assertEquals(Locale::from('nl'), Locale::from('nl')->withoutRegion());
     }
 
-    /** @test */
-    public function it_can_extract_region_element_if_present()
+    public function test_it_can_extract_region_element_if_present()
     {
         $this->assertEquals('BE', Locale::from('nl-BE')->region());
         $this->assertEquals('BE', Locale::from('nl_BE')->region());
@@ -40,8 +36,7 @@ class LocaleTest extends TestCase
         $this->assertNull(Locale::from('nl')->region());
     }
 
-    /** @test */
-    public function it_prints_out_as_string()
+    public function test_it_prints_out_as_string()
     {
         $this->assertEquals('nl', Locale::from('nl'));
     }

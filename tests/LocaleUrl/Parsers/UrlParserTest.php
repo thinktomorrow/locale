@@ -18,8 +18,7 @@ class UrlParserTest extends TestCase
         $this->parser = new UrlParser(app(UrlGenerator::class));
     }
 
-    /** @test */
-    public function url_path_is_by_default_prepended_with_current_root()
+    public function test_url_path_is_by_default_prepended_with_current_root()
     {
         $this->parser = new UrlParser(app(UrlGenerator::class));
 
@@ -35,8 +34,7 @@ class UrlParserTest extends TestCase
         $this->assertEquals('http://example.com/segment-one', $this->parser->localize('segment-one', ['segment-one' => 'locale-one'])->get());
     }
 
-    /** @test */
-    public function without_localization_parameter_urls_arent_altered()
+    public function test_without_localization_parameter_urls_arent_altered()
     {
         $urls = [
             'http://example.com/segment-one',
@@ -55,8 +53,7 @@ class UrlParserTest extends TestCase
         }
     }
 
-    /** @test */
-    public function with_localization_parameter_url_is_injected_with_localeslug()
+    public function test_with_localization_parameter_url_is_injected_with_localeslug()
     {
         $urls = [
             '/foo/bar'                                => 'http://example.com/segment-one/foo/bar',
@@ -85,8 +82,7 @@ class UrlParserTest extends TestCase
         $this->assertEquals('http://example.com/segment-one', $this->parser->set('//')->localize('segment-one', ['segment-one' => 'locale-one'])->get());
     }
 
-    /** @test */
-    public function to_make_url_secure()
+    public function test_to_make_url_secure()
     {
         $urls = [
             '/foo/bar'                               => 'https://example.com/segment-one/foo/bar',
@@ -101,8 +97,7 @@ class UrlParserTest extends TestCase
         }
     }
 
-    /** @test */
-    public function an_invalid_url_is_not_accepted()
+    public function test_an_invalid_url_is_not_accepted()
     {
         $this->expectException(\InvalidArgumentException::class);
 

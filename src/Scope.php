@@ -8,12 +8,16 @@ use Thinktomorrow\Url\Root;
 
 class Scope
 {
+    /**
+     * The locales in the scope.
+     * The key is the segment and the value is the locale.
+     */
     private array $locales;
     private static ?Locale $activeLocale = null;
 
     /**
-     * The default locale. In the request path
-     * it's the hidden segment, e.g. /.
+     * The default locale. In the request path it's usually
+     * represented by the absence of a segment, e.g. /.
      */
     private Locale $default;
 
@@ -26,19 +30,12 @@ class Scope
 
     public function __construct(array $locales)
     {
-        $defaultLocale = ! isset($locales['/']) ? null : $locales['/'];
-
-        // When no default locale is set, we take the last locale as default.
-        if (! $defaultLocale) {
-            if(count($locales) < 1) {
-                throw new InvalidScope('Default locale is required for scope. Add this as \'/\' => locale.');
-            }
-
-            $defaultLocale = $locales[array_key_last($locales)];
+        if (count($locales) < 1) {
+            throw new InvalidScope('At least one segment => locale value is required for a valid scope.');
         }
 
         $this->locales = $locales;
-        $this->default = Locale::from($defaultLocale);
+        $this->default = $this->extractDefaultLocale($locales);
     }
 
     public function setCustomRoot(Root $customRoot)
@@ -122,5 +119,17 @@ class Scope
         }
 
         return isset($this->locales[$segment]);
+    }
+
+    private function extractDefaultLocale(array $locales): Locale
+    {
+        $defaultLocale = !isset($locales['/']) ? null : $locales['/'];
+
+        // When no default locale is set, we take the last locale as default.
+        if (!$defaultLocale) {
+            $defaultLocale = $locales[array_key_last($locales)];
+        }
+
+        return Locale::from($defaultLocale);
     }
 }

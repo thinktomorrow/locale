@@ -9,8 +9,7 @@ use Thinktomorrow\Locale\Tests\TestCase;
 
 class ConvertLocaleTest extends TestCase
 {
-    /** @test */
-    public function it_can_convert_locale_to_application_one()
+    public function test_it_can_convert_locale_to_application_one()
     {
         $this->detectLocaleAfterVisiting('http://convert.example.com/segment-ten', [
             'locales' => [
@@ -31,8 +30,7 @@ class ConvertLocaleTest extends TestCase
         $this->assertEquals('segment-ten', ScopeFacade::activeSegment());
     }
 
-    /** @test */
-    public function route_is_translated_by_application_locale()
+    public function test_route_is_translated_by_application_locale()
     {
         $this->detectLocaleAfterVisiting('http://convert.example.com/segment-ten', [
             'locales' => [
@@ -62,8 +60,7 @@ class ConvertLocaleTest extends TestCase
         $this->assertEquals('http://convert.example.com/segment-ten/first/locale-twenty', localeroute('route.first', 'locale-twenty'));
     }
 
-    /** @test */
-    public function it_can_automatically_convert_locale_to_application_one()
+    public function test_it_can_automatically_convert_locale_to_application_one()
     {
         $this->detectLocaleAfterVisiting('http://convert.example.com/', [
             'locales' => [
@@ -78,8 +75,7 @@ class ConvertLocaleTest extends TestCase
         $this->assertEquals('locale', app()->getLocale());
     }
 
-    /** @test */
-    public function explicit_conversion_has_priority_over_automatic()
+    public function test_explicit_conversion_has_priority_over_automatic()
     {
         $this->detectLocaleAfterVisiting('http://convert.example.com/', [
             'locales' => [

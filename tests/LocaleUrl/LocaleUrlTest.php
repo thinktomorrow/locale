@@ -16,8 +16,7 @@ class LocaleUrlTest extends TestCase
         $this->detectLocaleAfterVisiting('http://example.com');
     }
 
-    /** @test */
-    public function when_localizing_an_url_it_keeps_all_uri_segments_intact()
+    public function test_when_localizing_an_url_it_keeps_all_uri_segments_intact()
     {
         $urls = [
             '/foo/bar'                                 => 'http://example.com/segment-four/foo/bar',
@@ -42,8 +41,7 @@ class LocaleUrlTest extends TestCase
         }
     }
 
-    /** @test */
-    public function when_localizing_an_url_with_default_locale_it_keeps_all_uri_segments_intact()
+    public function test_when_localizing_an_url_with_default_locale_it_keeps_all_uri_segments_intact()
     {
         $urls = [
             '/foo/bar'                          => 'http://example.com/foo/bar',
@@ -67,8 +65,7 @@ class LocaleUrlTest extends TestCase
         }
     }
 
-    /** @test */
-    public function url_is_localized_with_current_detected_locale()
+    public function test_url_is_localized_with_current_detected_locale()
     {
         // default locale
         $this->assertEquals('http://example.com', $this->localeUrl->to('/'));
@@ -80,8 +77,7 @@ class LocaleUrlTest extends TestCase
         $this->assertEquals('http://example.com/segment-four', LocaleUrlFacade::to('/'));
     }
 
-    /** @test */
-    public function url_is_localized_with_passed_locale_only_if_locale_is_present_in_scope()
+    public function test_url_is_localized_with_passed_locale_only_if_locale_is_present_in_scope()
     {
         // passing specific locale within scope
         $this->assertEquals('http://example.com/segment-four', $this->localeUrl->to('/', 'locale-four'));
@@ -93,16 +89,14 @@ class LocaleUrlTest extends TestCase
         $this->assertEquals('http://unknown.com', LocaleUrlFacade::to('/', 'locale-one'));
     }
 
-    /** @test */
-    public function if_secure_config_is_true_urls_are_created_as_secure()
+    public function test_if_secure_config_is_true_urls_are_created_as_secure()
     {
         $this->refreshLocaleBindings(['secure' => true]);
 
         $this->assertEquals('https://example.com/segment-five/foo/bar', localeurl('http://example.com/foo/bar', 'locale-five'));
     }
 
-    /** @test */
-    public function parameter_has_priority_over_secure_config()
+    public function test_parameter_has_priority_over_secure_config()
     {
         $this->detectLocaleAfterVisiting('http://example.com', ['secure' => true]);
 
@@ -110,8 +104,7 @@ class LocaleUrlTest extends TestCase
         $this->assertEquals('https://example.com/segment-five/foo/bar', localeurl('http://example.com/foo/bar', 'locale-five', [], true));
     }
 
-    /** @test */
-    public function it_sanitizes_a_xss_injection()
+    public function test_it_sanitizes_a_xss_injection()
     {
         $this->assertEquals(
             'http://example.com/segment-one/first/%22%2520qss%253D%22QssAttrValue',
@@ -119,8 +112,7 @@ class LocaleUrlTest extends TestCase
         );
     }
 
-    /** @test */
-    public function localeurl_is_available_as_a_global_function()
+    public function test_localeurl_is_available_as_a_global_function()
     {
         Scope::setActiveLocale(Locale::from('locale-two'));
 

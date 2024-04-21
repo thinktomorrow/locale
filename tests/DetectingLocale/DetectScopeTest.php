@@ -8,8 +8,7 @@ use Thinktomorrow\Locale\Tests\TestCase;
 
 class DetectScopeTest extends TestCase
 {
-    /** @test */
-    public function it_detects_default_scope_when_nothing_matches()
+    public function test_it_detects_default_scope_when_nothing_matches()
     {
         $this->detectLocaleAfterVisiting('http://unknown.com/');
 
@@ -18,8 +17,7 @@ class DetectScopeTest extends TestCase
         $this->assertEquals('/', ScopeFacade::activeSegment());
     }
 
-    /** @test */
-    public function detect_scope_from_request()
+    public function test_detect_scope_from_request()
     {
         $this->detectLocaleAfterVisiting('http://example.com/segment-one');
 

@@ -100,7 +100,7 @@ final class Detect
 
     private function detectScope(): void
     {
-        $this->scope = ScopeCollection::fromConfig($this->config)->findByRoot($this->request->root());
+        $this->scope = ScopeRepository::fromConfig($this->config)->findByRoot($this->request->root());
     }
 
     private function setApplicationLocale(): void

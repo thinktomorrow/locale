@@ -8,24 +8,21 @@ use Thinktomorrow\Locale\Values\Config;
 
 class ConfigTest extends TestCase
 {
-    /** @test */
-    public function it_expects_locales_as_key()
+    public function test_it_expects_locales_as_key()
     {
         $this->expectException(InvalidConfig::class);
 
         Config::from([]);
     }
 
-    /** @test */
-    public function it_sanitizes_passed_values()
+    public function test_it_sanitizes_passed_values()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
 
         $this->assertEquals(['locales' => ['*' => ['/' => 'nl']], 'canonicals' => []], $config->all());
     }
 
-    /** @test */
-    public function it_cleans_up_trailing_slash_of_domain_key()
+    public function test_it_cleans_up_trailing_slash_of_domain_key()
     {
         $config = Config::from([
             'locales' => [
@@ -43,10 +40,9 @@ class ConfigTest extends TestCase
     }
 
     /**
-     * @test
      * @dataProvider invalidLocalesDataProvider
      */
-    public function it_halts_invalid_locales_structure($locales)
+    public function test_it_halts_invalid_locales_structure($locales)
     {
         $this->expectException(InvalidConfig::class);
 
@@ -107,8 +103,7 @@ class ConfigTest extends TestCase
         ];
     }
 
-    /** @test */
-    public function it_can_export_to_array()
+    public function test_it_can_export_to_array()
     {
         $config = Config::from(['locales' => ['*' => 'nl'], 'foobar' => 'nl']);
 
@@ -117,8 +112,7 @@ class ConfigTest extends TestCase
         ], $config->toArray());
     }
 
-    /** @test */
-    public function non_found_key_returns_default_value()
+    public function test_non_found_key_returns_default_value()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
 
@@ -126,16 +120,14 @@ class ConfigTest extends TestCase
         $this->assertEquals([], $config->get('unknown', []));
     }
 
-    /** @test */
-    public function it_can_set_value_by_key()
+    public function test_it_can_set_value_by_key()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
         $config[2] = 'foobar';
         $this->assertEquals('foobar', $config[2]);
     }
 
-    /** @test */
-    public function it_can_unset_a_value()
+    public function test_it_can_unset_a_value()
     {
         $config = Config::from(['locales' => ['*' => 'nl'], 'foobar' => 'nl']);
         unset($config['locales']);
@@ -143,16 +135,14 @@ class ConfigTest extends TestCase
         $this->assertNull($config->get('locales'));
     }
 
-    /** @test */
-    public function it_can_check_if_key_exists()
+    public function test_it_can_check_if_key_exists()
     {
         $config = Config::from(['locales' => ['*' => 'nl']]);
         $this->assertTrue(isset($config['locales']));
         $this->assertFalse(isset($config['foobar']));
     }
 
-    /** @test */
-    public function it_validates_that_each_explicit_canonical_exists_as_locale()
+    public function test_it_validates_that_each_explicit_canonical_exists_as_locale()
     {
         $this->expectException(InvalidConfig::class);
 
@@ -201,8 +191,7 @@ class ConfigTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_computes_canonicals_for_all_locales_except_default()
+    public function test_it_computes_canonicals_for_all_locales_except_default()
     {
         $config = Config::from([
             'locales' => [
@@ -221,8 +210,7 @@ class ConfigTest extends TestCase
         ], $config->get('canonicals'));
     }
 
-    /** @test */
-    public function when_computing_canonicals_for_multiple_locales_it_takes_first_encountered_domain()
+    public function test_when_computing_canonicals_for_multiple_locales_it_takes_first_encountered_domain()
     {
         $config = Config::from([
             'locales' => [
@@ -246,8 +234,7 @@ class ConfigTest extends TestCase
         ], $config->get('canonicals'));
     }
 
-    /** @test */
-    public function it_computes_canonicals_for_all_locales_except_wildcard_ones()
+    public function test_it_computes_canonicals_for_all_locales_except_wildcard_ones()
     {
         $config = Config::from([
             'locales' => [

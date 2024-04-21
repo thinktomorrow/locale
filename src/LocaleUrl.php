@@ -11,7 +11,7 @@ use Thinktomorrow\Locale\Values\Locale;
 class LocaleUrl
 {
     private Scope $scope;
-    private ScopeCollection $scopeCollection;
+    private ScopeRepository $scopeCollection;
 
     private UrlParser $urlparser;
     private RouteParser $routeparser;
@@ -23,7 +23,7 @@ class LocaleUrl
     {
         // TODO check if this still returns proper results when loading before routes
         $this->scope = $detect->getScope();
-        $this->scopeCollection = ScopeCollection::fromConfig($config);
+        $this->scopeCollection = ScopeRepository::fromConfig($config);
         $this->urlparser = $urlparser;
         $this->routeparser = $routeparser;
 
