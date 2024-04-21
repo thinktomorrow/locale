@@ -47,7 +47,7 @@ class UrlParser
     {
         $url = Url::fromString($url);
 
-        if(!$url->hasScheme()) {
+        if(! $url->hasScheme()) {
             $url->setCustomRoot($this->url->getRoot());
         }
 
