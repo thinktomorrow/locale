@@ -7,6 +7,7 @@ use Thinktomorrow\Locale\Facades\ScopeFacade;
 use Thinktomorrow\Locale\Scope;
 use Thinktomorrow\Locale\Tests\TestCase;
 use Thinktomorrow\Locale\Values\Locale;
+use Thinktomorrow\Url\Root;
 
 class ScopeTest extends TestCase
 {
@@ -77,10 +78,10 @@ class ScopeTest extends TestCase
     /** @test */
     public function it_can_set_custom_root()
     {
-        $customRoot = ScopeFacade::setCustomRoot(RootOld::fromString('awesome.be'))->customRoot();
+        $customRoot = ScopeFacade::setCustomRoot(Root::fromString('awesome.be'))->customRoot();
 
-        $this->assertInstanceOf(RootOld::class, $customRoot);
-        $this->assertEquals(RootOld::fromString('awesome.be'), $customRoot);
+        $this->assertInstanceOf(Root::class, $customRoot);
+        $this->assertEquals(Root::fromString('awesome.be'), $customRoot);
     }
 
     /** @test */

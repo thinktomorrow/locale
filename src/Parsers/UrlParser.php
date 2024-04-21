@@ -28,10 +28,12 @@ class UrlParser
 
     public function get(): string
     {
-        if ($this->secure === true) {
-            $this->url->secure();
-        } elseif($this->secure === false) {
-            $this->url->nonSecure();
+        if($this->url->hasHost()) {
+            if ($this->secure === true) {
+                $this->url->secure();
+            } elseif($this->secure === false) {
+                $this->url->nonSecure();
+            }
         }
 
         // Only when a relative url is given, the parameters are added to the url
