@@ -34,8 +34,7 @@ class UrlParser
             $this->url->nonSecure();
         }
 
-        // TODO: how to add parameters to the url if url is already valid...? Laravel does not
-        // change scheme and parameters if url is already valid
+        // Only when a relative url is given, the parameters are added to the url
         return $this->generator->to(
             $this->url->localize($this->localeSegment, $this->available_locales)->get(),
             $this->parameters,
@@ -45,13 +44,7 @@ class UrlParser
 
     public function set(string $url): self
     {
-        $url = Url::fromString($url);
-
-        if(! $url->hasScheme()) {
-            $url->setCustomRoot($this->url->getRoot());
-        }
-
-        $this->url = $url;
+        $this->url = Url::fromString($url);
 
         return $this;
     }
