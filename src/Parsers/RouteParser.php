@@ -28,7 +28,7 @@ class RouteParser
 
     public function get(): string
     {
-        $translationKey = config('thinktomorrow.locale.routes_filename').'.'.$this->routename;
+        $translationKey = config('locale.routes_filename').'.'.$this->routename;
 
         $url = $this->translator->get($translationKey, [], $this->locale);
 

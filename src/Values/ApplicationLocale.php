@@ -21,7 +21,7 @@ class ApplicationLocale
             $originalLocale = Locale::from($originalLocale);
         }
 
-        return new self($originalLocale, Config::from(app('config')->get('thinktomorrow.locale', [])));
+        return new self($originalLocale, Config::from(app('config')->get('locale', [])));
     }
 
     /**

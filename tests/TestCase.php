@@ -28,7 +28,7 @@ class TestCase extends OrchestraTestCase
     protected function getEnvironmentSetUp($app)
     {
         $app['path.lang'] = $this->getStubDirectory('lang');
-        $app['config']->set('thinktomorrow.locale', $this->validConfig()->toArray());
+        $app['config']->set('locale', $this->validConfig()->toArray());
         $app['config']->set('app.locale', 'locale-fallback');
         $app['config']->set('app.fallback_locale', 'locale-fallback');
 
@@ -46,7 +46,7 @@ class TestCase extends OrchestraTestCase
     {
         $config = $this->validConfig($overrides);
 
-        app('config')->set('thinktomorrow.locale', $config->toArray());
+        app('config')->set('locale', $config->toArray());
 
         app()->singleton(Detect::class, function ($app) use ($config) {
             return new Detect($app['request'], $config);
