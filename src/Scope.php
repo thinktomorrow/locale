@@ -123,10 +123,10 @@ class Scope
 
     private function extractDefaultLocale(array $locales): Locale
     {
-        $defaultLocale = !isset($locales['/']) ? null : $locales['/'];
+        $defaultLocale = ! isset($locales['/']) ? null : $locales['/'];
 
         // When no default locale is set, we take the last locale as default.
-        if (!$defaultLocale) {
+        if (! $defaultLocale) {
             $defaultLocale = $locales[array_key_last($locales)];
         }
 
