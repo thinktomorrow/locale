@@ -1,6 +1,8 @@
 # Changelog
 
 ## Unreleased
+
+## 4.0.0 - 2024-06-06
 - A minimum of php8.2 is now required.
 - `thinktomorrow/url` package is used for Root and Url logic. 
 - The config file is now located at `config/locale` instead of `config/thinktomorrow/locale`.
