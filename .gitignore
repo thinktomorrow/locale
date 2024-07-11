@@ -2,9 +2,9 @@
 
 /build
 /build/*
-/build/logs
 
 docs
 vendor
+.php-cs-fixer.cache
 .phpunit.result.cache
 .phpunit.cache/
