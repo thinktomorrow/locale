@@ -1,8 +1,8 @@
 .idea
 
-!/build
+/build
 /build/*
-!/build/logs
+/build/logs
 
 docs
 vendor
