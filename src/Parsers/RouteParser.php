@@ -76,7 +76,7 @@ class RouteParser
         return $this;
     }
 
-    public function localize(string $localeSegment = null, array $available_locales): self
+    public function localize(?string $localeSegment, array $available_locales): self
     {
         $this->localeSegment = $localeSegment;
         $this->available_locales = $available_locales;

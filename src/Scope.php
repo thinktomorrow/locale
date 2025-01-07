@@ -85,11 +85,11 @@ class Scope
     /**
      * Get the url segment which corresponds with the passed locale.
      *
-     * @param null $locale
+     * @param string|null $locale
      *
      * @return null|string
      */
-    public function segment($locale = null): ?string
+    public function segment(?string $locale = null): ?string
     {
         if (is_null($locale)) {
             $locale = $this->activeLocale() ? $this->activeLocale()->get() : $this->defaultLocale()->get();
@@ -103,7 +103,7 @@ class Scope
         return $this->segment($this->activeLocale());
     }
 
-    public function validateLocale(string $locale = null): bool
+    public function validateLocale(?string $locale): bool
     {
         if (! $locale) {
             return false;
@@ -112,7 +112,7 @@ class Scope
         return in_array($locale, $this->locales);
     }
 
-    public function validateSegment(string $segment = null): bool
+    public function validateSegment(?string $segment): bool
     {
         if (! $segment) {
             return false;
