@@ -47,7 +47,7 @@ class CanonicalScopeTest extends TestCase
         $this->assertEquals((new Scope(['/' => 'en-gb']))->setCustomRoot(Root::fromString('awesome')), ScopeRepository::fromArray($config)->findCanonical('en-gb'));
     }
 
-    private function canonicalConfig(array $canonicals = null)
+    private function canonicalConfig(?array $canonicals = null)
     {
         if (!$canonicals) {
             $canonicals = [
