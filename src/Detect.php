@@ -3,7 +3,6 @@
 namespace Thinktomorrow\Locale;
 
 use Illuminate\Http\Request;
-use Thinktomorrow\Locale\Detectors\Detector;
 use Thinktomorrow\Locale\Detectors\FallbackDetector;
 use Thinktomorrow\Locale\Detectors\HiddenSegmentDetector;
 use Thinktomorrow\Locale\Detectors\QueryDetector;
@@ -48,7 +47,6 @@ final class Detect
             QueryDetector::class,
         ];
 
-        /** @var Detector $detector */
         foreach ($detectors as $detector) {
             $locale = app($detector)->get($this->getScope(), $this->config) ?? $locale;
         }
