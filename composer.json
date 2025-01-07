@@ -1,6 +1,6 @@
 {
     "name": "thinktomorrow/locale",
-    "description": "A Laravel package for scalable route localization",
+    "description": "A Laravel package for route and domain based localization",
     "keywords": [
         "thinktomorrow",
         "locale"
@@ -15,14 +15,14 @@
     ],
     "require": {
         "php" : ">=8.2",
-        "laravel/framework": "^10.0",
-        "thinktomorrow/url": "^3.0"
+        "laravel/framework": "^11.31",
+        "thinktomorrow/url": "^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit" : "^10.5",
+        "phpunit/phpunit" : "^11.5",
         "mockery/mockery" : "^1.6.6",
-        "orchestra/testbench": "^8.5",
-        "phpstan/phpstan": "^1.9.14"
+        "orchestra/testbench": "^9.9",
+        "phpstan/phpstan": "^2.1"
     },
     "autoload": {
         "psr-4": {

@@ -2,6 +2,7 @@
 
 namespace Thinktomorrow\Locale\Tests\Scopes;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Thinktomorrow\Locale\Exceptions\InvalidConfig;
 use Thinktomorrow\Locale\Scope;
@@ -25,11 +26,8 @@ class ScopeRepositoryTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     * @dataProvider invalidLocalesDataProvider
-     */
-    public function it_halts_invalid_locales_structure($locales)
+    #[dataProvider('invalidLocalesDataProvider')]
+    public function test_it_halts_invalid_locales_structure($locales)
     {
         $this->expectException(InvalidConfig::class);
 
@@ -46,11 +44,8 @@ class ScopeRepositoryTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider provideRootScopes
-     */
-    public function it_matches_the_proper_domain_and_locales($root, $locales)
+    #[dataProvider('provideRootScopes')]
+    public function test_it_matches_the_proper_domain_and_locales($root, $locales)
     {
         $this->assertEquals(new Scope($locales), ScopeRepository::fromArray([
             'locales' => [

@@ -73,10 +73,7 @@ class UrlParserTest extends TestCase
         }
     }
 
-    /**
-     * @test
-     */
-    public function it_does_not_fail_on_parsing_double_slashed()
+    public function test_it_does_not_fail_on_parsing_double_slashed()
     {
         $this->assertEquals('//foobar.com/segment-one', $this->parser->set('//foobar.com//')->localize('segment-one', ['segment-one' => 'locale-one'])->get());
         $this->assertEquals('http://example.com/segment-one', $this->parser->set('//')->localize('segment-one', ['segment-one' => 'locale-one'])->get());

@@ -2,6 +2,8 @@
 
 namespace Thinktomorrow\Locale\Tests\Values;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\TestCase;
 use Thinktomorrow\Locale\Exceptions\InvalidConfig;
 use Thinktomorrow\Locale\Values\Config;
@@ -39,9 +41,7 @@ class ConfigTest extends TestCase
         ], $config->get('locales'));
     }
 
-    /**
-     * @dataProvider invalidLocalesDataProvider
-     */
+    #[DataProvider('invalidLocalesDataProvider')]
     public function test_it_halts_invalid_locales_structure($locales)
     {
         $this->expectException(InvalidConfig::class);
@@ -60,11 +60,8 @@ class ConfigTest extends TestCase
         ];
     }
 
-    /**
-     * @test
-     * @dataProvider expectedStructureDataProvider
-     */
-    public function it_normalized_passed_locales($original, $outcome)
+    #[DataProvider('expectedStructureDataProvider')]
+    public function test_it_normalized_passed_locales($original, $outcome)
     {
         $this->assertEquals($outcome, Config::from(['locales' => $original])->get('locales'));
     }
@@ -157,11 +154,8 @@ class ConfigTest extends TestCase
         ]);
     }
 
-    /**
-     * @test
-     * @doesNotPerformAssertions
-     */
-    public function it_validates_canonical_exists_as_locale_when_using_multiple_domains()
+    #[doesNotPerformAssertions]
+    public function test_it_validates_canonical_exists_as_locale_when_using_multiple_domains()
     {
         // Test valid canonicals check with multiple domains
         Config::from([
