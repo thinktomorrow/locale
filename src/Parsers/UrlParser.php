@@ -28,10 +28,10 @@ class UrlParser
 
     public function get(): string
     {
-        if($this->url->hasHost()) {
+        if ($this->url->hasHost()) {
             if ($this->secure === true) {
                 $this->url->secure();
-            } elseif($this->secure === false) {
+            } elseif ($this->secure === false) {
                 $this->url->nonSecure();
             }
         }
