@@ -22,7 +22,7 @@ class LocaleServiceProvider extends ServiceProvider
             'locale'
         );
 
-        $config = Config::from($this->getConfigValues());
+        $config = Config::from(config('locale'));
 
         $this->app->singleton(Detect::class, function ($app) use ($config) {
             return new Detect($app['request'], $config);
@@ -56,16 +56,5 @@ class LocaleServiceProvider extends ServiceProvider
         $this->app->singleton('tt-locale-scope', function ($app) {
             return $app->make(Detect::class)->detectLocale()->getScope();
         });
-    }
-
-    private function getConfigValues()
-    {
-        $projectConfigPath = config_path('locale.php');
-
-        if (file_exists($projectConfigPath)) {
-            return require $projectConfigPath;
-        }
-
-        return require __DIR__.'/config/locale.php';
     }
 }
