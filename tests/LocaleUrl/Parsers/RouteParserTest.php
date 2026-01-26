@@ -52,4 +52,28 @@ class RouteParserTest extends TestCase
     {
         $this->assertEquals('https://example.com/first/blue', $this->routeParser->set('route.first', ['blue'], true)->get());
     }
+
+    public function test_parser_respects_route_prefix()
+    {
+        // Arrange: define a prefixed route
+        Route::group(['prefix' => 'admin'], function () {
+            Route::get('dashboard', [
+                'as' => 'admin.dashboard',
+                'uses' => function () {
+                },
+            ]);
+        });
+
+        // Act
+        $url = $this->routeParser
+            ->set('admin.dashboard')
+            ->localize('/', ['/' => 'locale-one'])
+            ->get();
+
+        // Assert
+        $this->assertEquals(
+            'http://example.com/admin/dashboard',
+            $url
+        );
+    }
 }
